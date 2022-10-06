@@ -1,3 +1,5 @@
+# description: MedSecId header model defaults
+
 deepnlp_default:
   0.condition:
     if: "eval: '${mimicsid_default:model_type}' == 'header'"

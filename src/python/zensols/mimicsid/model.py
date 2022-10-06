@@ -308,6 +308,10 @@ class SectionPredictionMapper(ClassificationPredictionMapper):
 
 @dataclass
 class SectionFacade(TokenClassifyModelFacade):
+    """The application model facade.  This only adds the ``zensols.install``
+    package to the CLI output logging.
+
+    """
     def _configure_cli_logging(self, info_loggers: List[str],
                                debug_loggers: List[str]):
         super()._configure_cli_logging(info_loggers, debug_loggers)

@@ -12,9 +12,9 @@ class TestParse(unittest.TestCase):
 
     def test_parse(self):
         write: bool = False
-        should_path = Path('test-resources/should-section.txt')
-        note_path = Path('test-resources/note.txt')
-        compare_section = 'current-medications'
+        should_path: Path = Path('test-resources/should-section.txt')
+        note_path: Path = Path('test-resources/note.txt')
+        compare_section: str = 'current-medications'
         harness: CliHarness = ApplicationFactory.create_harness()
         section_predictor: SectionPredictor = \
             harness.get_instance('predict -c test-resources/parse.conf').\

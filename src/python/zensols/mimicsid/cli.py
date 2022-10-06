@@ -12,6 +12,7 @@ from . import SectionPredictor, NoteStash
 
 class ApplicationFactory(CliApplicationFactory):
     """The application factory for section identification.
+
     """
     def __init__(self, *args, **kwargs):
         kwargs['package_resource'] = 'zensols.mimicsid'

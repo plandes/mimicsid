@@ -1,3 +1,5 @@
+# description: MedSecId header model overrides
+
 model_settings:
   condition:
     if: "eval: '${mimicsid_default:model_type}' == 'header'"
