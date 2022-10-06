@@ -1,0 +1,7 @@
+*.pyc
+*_flymake.py
+/target
+/data
+/model
+/*.log
+/preds

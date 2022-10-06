@@ -1,0 +1,7 @@
+model_settings:
+  condition:
+    if: "eval: '${mimicsid_default:model_type}' == 'header'"
+    then:
+      learning_rate: 0.0001
+    else:
+      learning_rate: ${model_settings:learning_rate}

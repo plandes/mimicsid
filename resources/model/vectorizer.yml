@@ -1,0 +1,100 @@
+# description: vectorizers, managers and set
+
+## Label
+#
+# override
+tok_label_1_vectorizer:
+  categories: ${mimicsid_section_id_metadata:labels}
+
+# add headers
+tok_header_label_1_vectorizer:
+#  class_name: zensols.deeplearn.vectorize.OneHotEncodedEncodableFeatureVectorizer
+  class_name: zensols.deeplearn.vectorize.NominalEncodedEncodableFeatureVectorizer
+  feature_id: tcheader1
+  categories: ${mimicsid_header:labels}
+
+tok_header_label_vectorizer:
+  class_name: zensols.deeplearn.vectorize.AggregateEncodableFeatureVectorizer
+  feature_id: tcheader
+  size: -1
+  delegate_feature_id: tcheader1
+
+# labels manager
+tok_label_vectorizer_manager:
+  configured_vectorizers:
+    - tok_label_1_vectorizer
+    - tok_label_vectorizer
+    - tok_mask_vectorizer
+    - tok_header_label_1_vectorizer
+    - tok_header_label_vectorizer
+
+
+## Token features
+#
+# document root token indicies
+token_idx_1_vectorizer:
+  class_name: zensols.deeplearn.vectorize.AttributeEncodableFeatureVectorizer
+  feature_id: tcidx1
+  
+token_idx_vectorizer:
+  class_name: zensols.deepnlp.vectorize.TokenEmbeddingFeatureVectorizer
+  feature_id: tcidx
+  size: -1
+  delegate_feature_id: tcidx1
+  encode_transformed: false
+  add_dims: 1
+
+# token types (sep, newline, colon etc)
+token_ttype_1_vectorizer:
+  class_name: zensols.deeplearn.vectorize.OneHotEncodedEncodableFeatureVectorizer
+  feature_id: tcttype1
+  optimize_bools: false
+  categories: "eval({'import': ['zensols.mimicsid.model as m']}): m.SectionDataPoint.TOKEN_TYPES"
+
+token_ttype_vectorizer:
+  class_name: zensols.deepnlp.vectorize.TokenEmbeddingFeatureVectorizer
+  feature_id: tcttype
+  size: -1
+  delegate_feature_id: tcttype1
+  encode_transformed: false
+
+# named entities
+token_ent_1_vectorizer:
+  class_name: zensols.deeplearn.vectorize.OneHotEncodedEncodableFeatureVectorizer
+  feature_id: tcent1
+  optimize_bools: false
+  categories: >
+    eval({'import': ['zensols.deepnlp.vectorize as s',
+                     'zensols.nlp as n']}):
+    s.NamedEntityRecognitionFeatureVectorizer.SYMBOLS.split() + [n.FeatureToken.NONE]
+
+token_ent_vectorizer:
+  class_name: zensols.deepnlp.vectorize.TokenEmbeddingFeatureVectorizer
+  feature_id: tcent
+  size: -1
+  delegate_feature_id: tcent1
+  encode_transformed: false
+
+tok_feature_vectorizer_manager:
+  class_name: zensols.deeplearn.vectorize.FeatureVectorizerManager
+  torch_config: 'instance: torch_config'
+  configured_vectorizers:
+    - token_idx_1_vectorizer
+    - token_idx_vectorizer
+    - token_ttype_1_vectorizer
+    - token_ttype_vectorizer
+    - token_ent_1_vectorizer
+    - token_ent_vectorizer
+
+language_vectorizer_manager:
+  doc_parser: 'instance: ${mednlp_default:doc_parser}'
+
+
+## Manager set
+#
+vectorizer_manager_set:
+  names:
+    - language_vectorizer_manager
+    - tok_label_vectorizer_manager
+    - tok_feature_vectorizer_manager
+    - cui2vec_feature_vectorizer_manager

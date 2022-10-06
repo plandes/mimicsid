@@ -1,0 +1,45 @@
+cff-version: 1.2.0
+title: 'Baseline model for the MedSecId paper'
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+date-released: 2022-10-12
+repository-code: https://github.com/plandes/deeplearn
+authors:
+  - given-names: Paul
+    family-names: Landes
+    email: landes@mailc.net
+    affiliation: University of Illinois at Chicago
+    orcid: 'https://orcid.org/0000-0003-0985-0864'
+preferred-citation:
+  type: conference-paper
+  authors:
+    - given-names: Paul
+      family-names: Landes
+      email: landes@mailc.net
+      affiliation: University of Illinois at Chicago
+      orcid: 'https://orcid.org/0000-0003-0985-0864'
+    - given-names: Kunal
+      family-names: Patel
+      affiliation: Department of Emergency Medicine, University of Illinois at Chicago
+    - given-names: Sean
+      family-names: Huang
+      affiliation: Department of Internal Medicine and Geriatrics,University of Illinois at Chicago
+    - given-names: Adam
+      family-names: Web
+      affiliation: Department of Emergency Medicine, University of Illinois at Chicago
+    - given-names: Barbara
+      family-names: Di Eugenio
+      affiliation: University of Illinois at Chicago
+    - given-names: Cornelia
+      family-names: Caragea
+      affiliation: University of Illinois at Chicago
+  title: 'A New Public Corpus for Clinical Section Identification: MedSecId'
+  year: 2022
+  conference:
+    name: Proceedings of the 29th International Conference on Computational Linguistics.
+    city: Gyeongju
+    country: KR
+    date-start: 2022-10-12
+    date-end: 2022-10-17

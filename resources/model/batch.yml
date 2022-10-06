@@ -1,0 +1,108 @@
+# description: batch model configuration
+
+# Feature
+#
+# train, validation, test dataset key splits
+note_feature_split_key_container:
+  class_name: zensols.dataset.StratifiedStashSplitKeyContainer
+  stash: 'instance: mimicsid_annotated_note_stash'
+  distribution:
+    train: 0.8
+    test: 0.1
+    validation: 0.1
+  pattern: '{name}.txt'
+  key_path: 'path: ${mimicsid_default:corpus_dir}/dataset-row-ids'
+  split_labels_path: 'path: ${mimicsid_default:temporary_dir}/feature-dataframe.dat'
+  partition_attr: category
+  stratified_write: false
+
+# train, validation, test dataset splits
+note_split_feature_stash:
+  class_name: zensols.dataset.DatasetSplitStash
+  delegate: 'instance: mimicsid_annotated_note_stash'
+  split_container: 'instance: note_feature_split_key_container'
+
+
+## Batch
+#
+batch_dir_stash:
+  groups:
+    - [section_names, tok_mask]
+    - [headers]
+    - [idxs, ttypes, ents, dependencies]
+    - [fasttext_crawl_300_embedding]
+    - [glove_300_embedding]
+    - [cui2vec_500_embedding]
+
+# map feature attributes (sections) to feature IDs to connect features to vectorizers
+batch_stash:
+  split_stash_container: 'instance: note_split_feature_stash'
+  batch_feature_mappings: 'dataclass(zensols.deeplearn.batch.ConfigBatchFeatureMapping): mimicsid_batch_mappings'
+  condition:
+    if: "eval: '${mimicsid_default:model_type}' == 'header'"
+    then:
+      decoded_attributes: '${mimicsid_default:decoded_attributes}, headers'
+    else:
+      decoded_attributes: '${mimicsid_default:decoded_attributes}, section_names'
+  data_point_type: "eval({'import': ['zensols.mimicsid.model as m']}): m.SectionDataPoint"
+  batch_size: ${mimicsid_default:batch_size}
+  # rebatching using 2 workers for memory limitations
+  workers: 2
+
+# label etc mappings (only provided on train)
+section_label_batch_mappings:
+  manager_mappings:
+    - vectorizer_manager_name: tok_label_vectorizer_manager
+      fields:
+        - attr: section_names
+          feature_id: tclabel
+          is_agg: true
+          is_label: true
+        - attr: headers
+          feature_id: tcheader
+          is_agg: true
+          attr_access: headers
+        - attr: tok_mask
+          feature_id: tmask
+          is_agg: true
+          attr_access: section_names
+
+# tokens' feature mapping
+section_feature_batch_mappings:
+  manager_mappings:
+    - vectorizer_manager_name: tok_feature_vectorizer_manager
+      fields:
+        - attr: idxs
+          feature_id: tcidx
+          is_agg: true
+        - attr: ttypes
+          feature_id: tcttype
+          is_agg: true
+        - attr: ents
+          feature_id: tcent
+          is_agg: true
+
+# batch mappings from attribute to feature IDs and which to use from resource libs
+mimicsid_batch_mappings:
+  condition:
+    if: "eval: '${mimicsid_default:model_type}' == 'header'"
+    then:
+      label_attribute_name: headers
+    else:
+      label_attribute_name: section_names
+  batch_feature_mapping_adds:
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): section_label_batch_mappings'
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): lang_batch_mappings'
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): section_feature_batch_mappings'
+    - 'dataclass(zensols.deeplearn.batch.BatchFeatureMapping): cui2vec_feature_batch_mappings'
+  field_keep:
+    - section_names
+    - headers
+    - tok_mask
+    - fasttext_crawl_300_embedding
+    - glove_300_embedding
+    - cui2vec_500_embedding
+    - idxs
+    - ttypes
+    - ents
+    - dependencies
