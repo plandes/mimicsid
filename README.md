@@ -333,7 +333,7 @@ Copyright (c) 2022 Paul Landes
 [Zensols Framework]: https://github.com/plandes/deepnlp
 
 [annotation example]: example/anon/anon.py
-[A New Public Corpus for Clinical Section Identification: MedSecId]: https://example.com
+[A New Public Corpus for Clinical Section Identification: MedSecId]: https://aclanthology.org/2022.coling-1.326.pdf
 [Zenodo]: https://zenodo.org/record/7150451#.Yz30BS2B3Bs
 
 [Note class]: https://plandes.github.io/mimic/api/zensols.mimic.html#zensols.mimic.note.Note
