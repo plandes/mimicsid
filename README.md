@@ -282,7 +282,8 @@ If you use this project in your research please use the following BibTeX entry:
     address = "Gyeongju, Republic of Korea",
     publisher = "International Committee on Computational Linguistics",
     url = "https://aclanthology.org/2022.coling-1.326",
-    pages = "3709--3721"}
+    pages = "3709--3721"
+}
 ```
 
 Also please cite the [Zensols Framework]:
