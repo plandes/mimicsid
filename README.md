@@ -7,7 +7,8 @@
 This repository contains the a Python package to automatically segment and
 identify sections of medical notes.  It also provides access to the MedSecId
 section annotations with MIMIC-III corpus parsing from the paper [A New Public
-Corpus for Clinical Section Identification: MedSecId].
+Corpus for Clinical Section Identification: MedSecId].  See the [medsecid
+repository] to reproduce the results from the paper.
 
 This package provides the following:
 
