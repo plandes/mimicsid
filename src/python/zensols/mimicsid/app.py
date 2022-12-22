@@ -97,9 +97,6 @@ class Application(FacadeApplication):
                     f'note ID {row_id} is not in the annotation set--using raw')
                 print(note.text)
 
-    def proto(self):
-        self.write_note()
-
 
 class PredOutputType(Enum):
     """The types of prediction output formats."""
