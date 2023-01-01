@@ -29,6 +29,7 @@ class OutputFormat(Enum):
     sections = auto()
     verbose = auto()
     raw = auto()
+    markdown = auto()
 
 
 @dataclass
@@ -85,6 +86,7 @@ class Application(FacadeApplication):
             {OutputFormat.sections: note.write_human,
              OutputFormat.verbose: note.write_sections,
              OutputFormat.raw: lambda: print(note.text),
+             OutputFormat.markdown: note.write_markdown,
              }[output_format]()
         else:
             hadm_id: int = self.corpus.note_event_persister.get_hadm_id(row_id)
