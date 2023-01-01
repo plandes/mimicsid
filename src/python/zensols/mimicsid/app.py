@@ -72,7 +72,7 @@ class Application(FacadeApplication):
         df.to_csv(output)
         logger.info(f'wrote: {output}')
 
-    def write_note(self, row_id: int = 14793,
+    def write_note(self, row_id: int,
                    output_format: OutputFormat = OutputFormat.sections):
         """Write an admission, note or section.
 
@@ -173,7 +173,7 @@ class PredictionApplication(object):
                 logger.info(f'wrote: {fpath}')
         return notes
 
-    def repredict(self, row_id: int = 14793,
+    def repredict(self, row_id: int,
                   output_path: Path = Path('preds'),
                   out_type: PredOutputType = PredOutputType.text):
         """Predict the section IDs of an existing MIMIC III note.
