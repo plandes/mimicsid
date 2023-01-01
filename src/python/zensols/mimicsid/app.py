@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 class OutputFormat(Enum):
     """CLI note output formats."""
     sections = auto()
-    full = auto()
+    verbose = auto()
     raw = auto()
 
 
@@ -82,8 +82,8 @@ class Application(FacadeApplication):
         row_id = str(row_id)
         if row_id in self.note_stash:
             note: Note = self.note_stash[row_id]
-            {OutputFormat.sections: note.write,
-             OutputFormat.full: lambda: Note.write(note),
+            {OutputFormat.sections: note.write_human,
+             OutputFormat.verbose: note.write_sections,
              OutputFormat.raw: lambda: print(note.text),
              }[output_format]()
         else:
