@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.0.0] - 2023-02-02
 ### Changed
 - Upgraded [zensols.deepnlp] to 1.7.0.
 - Upgraded [zensols.mimic] to 1.0.0.
@@ -19,7 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/mimicsid/compare/v0.0.1...HEAD
+[Unreleased]: https://github.com/plandes/mimicsid/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/plandes/mimicsid/compare/v0.0.1...v1.0.0
 [0.0.1]: https://github.com/plandes/mimicsid/compare/v0.0.0...v0.0.1
 
 [zensols.deepnlp]: https://github.com/plandes/deepnlp
