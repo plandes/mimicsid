@@ -192,10 +192,12 @@ This document explains how to create and package models for distribution.
 
 ### Preprocessing Step
 
-1. To train the model, first install the MIMIC-III database per the [mimic
+1. To train the model, first install the MIMIC-III Postgres database per the [mimic
    package] instructions in the *Installation* section.
-2. Vectorize the batches: `./mimicsid batch`.  This also creates cached
-   hospital admission and spaCy data parse files.
+2. Add the MIMIC-III Postgres credentials and database configuration to
+   `etc/batch.conf`.
+2. Vectorize the batches: `./mimicsid batch -c etc/batch.conf`.  This also
+   creates cached hospital admission and spaCy data parse files.
 
 
 ### Training and Testing
