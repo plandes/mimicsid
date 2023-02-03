@@ -46,6 +46,11 @@ trainfast:
 			$(ENTRY) traintest $(SID_ARGS) -p --override \
 			  'model_settings.epochs=2,batch_stash.batch_limit=3'
 
+.PHONY:			cleanbatch
+cleanbatch:
+			rm -rf target model data
+			$(ENTRY) batch -c etc/batch.conf
+
 .PHONY:			stop
 stop:
 			mkdir -p data/model/model
