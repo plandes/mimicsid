@@ -125,7 +125,7 @@ class PredictionApplication(object):
     to create from the ``config_factory``.
 
     """
-    def predict_sections(self, input_path: Path = Path('notes'),
+    def predict_sections(self, input_path: Path,
                          output_path: Path = Path('preds'),
                          out_type: PredOutputType = PredOutputType.text,
                          file_limit: int = None):

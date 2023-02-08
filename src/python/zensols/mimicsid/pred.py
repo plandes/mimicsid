@@ -157,3 +157,7 @@ class SectionPredictor(PersistableContainer):
                 self._header_app.clear()
         else:
             return self._predict(doc_texts)
+
+    def __call__(self, doc_texts: List[str]) -> List[PredictedNote]:
+        """See :meth:`predict`."""
+        return self.predict(doc_texts)
