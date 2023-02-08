@@ -1,5 +1,6 @@
 # MIMIC-III corpus parsing and section prediction with MedSecId
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7150451.svg)](https://doi.org/10.5281/zenodo.7150451)
 [![PyPI][pypi-badge]][pypi-link]
 [![Python 3.9][python39-badge]][python39-link]
 [![Python 3.10][python310-badge]][python310-link]
