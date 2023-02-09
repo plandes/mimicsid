@@ -27,8 +27,13 @@ testall:		test
 traintest:
 			nohup $(ENTRY) traintest $(SID_ARGS) > $(TRAIN_LOG) 2>&1 &
 
-.PHONY:			trainprod
-trainprod:
+.PHONY:			config
+config:
+
+			$(ENTRY) info -i config $(SID_ARGS) > config.txt
+
+.PHONY:			secprod
+secprod:
 			$(ENTRY) trainprod $(SID_ARGS) -p
 			$(ENTRY) pack $(SID_ARGS)
 
