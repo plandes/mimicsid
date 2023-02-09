@@ -9,7 +9,6 @@ tok_label_1_vectorizer:
 
 # add headers
 tok_header_label_1_vectorizer:
-#  class_name: zensols.deeplearn.vectorize.OneHotEncodedEncodableFeatureVectorizer
   class_name: zensols.deeplearn.vectorize.NominalEncodedEncodableFeatureVectorizer
   feature_id: tcheader1
   categories: ${mimicsid_header:labels}
