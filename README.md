@@ -250,8 +250,8 @@ on Windows).
 
 The distributed models add in the test set to the training set to improve the
 performance for inferencing, which is why only the validation metrics are
-given.  The validation set performance of the pretrained models are given
-below, where:
+given.  Only version 0.0.2 results are given.  The validation set performance
+of the pretrained models are given below, where:
 
 * **wF1** is the weighted F1
 * **mF1** is the micro F1
@@ -260,11 +260,10 @@ below, where:
 
 | Name                          | Type    | Id                                     | wF1   | mF1   | MF1   | acc   |
 |-------------------------------|---------|----------------------------------------|-------|-------|-------|-------|
-| `BiLSTM-CRF_tok (fastText)`   | Section | bilstm-crf-tok-fasttext-section-type   | 0.917 | 0.924 | 0.818 | 0.924 |
-| `BiLSTM-CRF_tok (GloVE 300D)` | Section | bilstm-crf-tok-glove-300d-section-type | 0.861 | 0.881 | 0.779 | 0.881 |
-| `BiLSTM-CRF_tok (fastText)`   | Header  | bilstm-crf-tok-fasttext-header         | 0.996 | 0.996 | 0.964 | 0.996 |
-| `BiLSTM-CRF_tok (GloVE 300D)` | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.967 | 0.996 |
-
+| `BiLSTM-CRF_tok (fastText)`   | Section | bilstm-crf-tok-fasttext-section-type   | 0.918 | 0.925 | 0.797 | 0.925 |
+| `BiLSTM-CRF_tok (GloVE 300D)` | Section | bilstm-crf-tok-glove-300d-section-type | 0.917 | 0.922 | 0.809 | 0.922 |
+| `BiLSTM-CRF_tok (fastText)`   | Header  | bilstm-crf-tok-fasttext-header         | 0.996 | 0.996 | 0.959 | 0.996 |
+| `BiLSTM-CRF_tok (GloVE 300D)` | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.962 | 0.996 |
 
 
 ## Citation
