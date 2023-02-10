@@ -32,6 +32,11 @@ config:
 
 			$(ENTRY) info -i config $(SID_ARGS) > config.txt
 
+.PHONY:			confighead
+confighead:
+
+			$(ENTRY) info -i config $(HEADER_ARGS) > config.txt
+
 .PHONY:			secprod
 secprod:
 			$(ENTRY) trainprod $(SID_ARGS) -p
