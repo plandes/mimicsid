@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
-## [1.0.0] - 2023-02-02
+## [1.0.0] - 2023-02-10
 ### Changed
 - Upgraded [zensols.deepnlp] to 1.7.0.
 - Upgraded [zensols.mimic] to 1.0.0.
