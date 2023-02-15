@@ -129,12 +129,13 @@ class Application(FacadeApplication):
         return df
 
     def note_counts_by_admission(self) -> pd.DataFrame:
-        """Write the counts of the notes for each admission.
+        """Write the counts of each category and row IDs for each admission.
 
         """
         output_file: Path = Path('note-counts.csv')
         df: pd.DataFrame = self.anon_resource.note_ids
         cats: List[str] = sorted(df['category'].drop_duplicates().tolist())
+        cols: List[str] = ['hadm_id'] + cats + ['total', 'row_ids']
         rows: List[Tuple[str, int]] = []
         for hadm_id, dfg in df.groupby('hadm_id'):
             cnts = dfg.groupby('category').size()
@@ -142,11 +143,15 @@ class Application(FacadeApplication):
             row.extend(map(lambda c: cnts[c] if c in cnts else 0, cats))
             row.append(cnts.sum())
             rows.append(row)
-        df = pd.DataFrame(rows, columns=['hadm_id'] + cats + ['total'])
+            row.append(','.join(dfg['row_id']))
+        df = pd.DataFrame(rows, columns=cols)
         df = df.sort_values('total', ascending=False)
         df.to_csv(output_file, index=False)
         logger.info(f'wrote: {output_file}')
         return df
+
+    def proto(self):
+        self.note_counts_by_admission()
 
 
 class PredOutputType(Enum):
