@@ -19,7 +19,7 @@ if (__name__ == '__main__'):
             3: 'info -i config',
             4: 'debug',
             5: 'repredict',
-            }[5]
+            }[0]
     harness = CliHarness(
         src_dir_name='src/python',
         app_factory_class='zensols.mimicsid.ApplicationFactory',

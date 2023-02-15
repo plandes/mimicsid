@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, List
+from typing import Tuple, List, Dict, Any, Union
 from dataclasses import dataclass, field
 from enum import Enum, auto
 import sys
@@ -98,6 +98,55 @@ class Application(FacadeApplication):
                 logger.warning(
                     f'note ID {row_id} is not in the annotation set--using raw')
                 print(note.text)
+
+    def admission_notes(self, hadm_id: str, keeps: str = None) -> pd.DataFrame:
+        """Create a CSV of note information by admission.
+
+        :param hadm_id: the admission ID
+
+        :param keeps: a comma-delimited list of column to keep in the output;
+                      defaults to all columns
+
+        """
+        output_file: Path = Path(f'notes-{hadm_id}.csv')
+        adm: HospitalAdmission = self.corpus.hospital_adm_stash.get(hadm_id)
+        rows: List[Dict[str, Any]] = []
+        note: Note
+        for note in adm.notes:
+            is_anon: bool = isinstance(note, AnnotatedNote)
+            dct: Dict[str, Any] = note.asdict()
+            for k in 'text sections'.split():
+                del dct[k]
+            dct['is_anon'] = is_anon
+            if is_anon:
+                dct['age_type'] = note.age_type.name
+            rows.append(dct)
+        df = pd.DataFrame(rows)
+        if keeps is not None:
+            df = df[keeps.split(',')]
+        df.to_csv(output_file)
+        logger.info(f'wrote: {output_file}')
+        return df
+
+    def note_counts_by_admission(self) -> pd.DataFrame:
+        """Write the counts of the notes for each admission.
+
+        """
+        output_file: Path = Path('note-counts.csv')
+        df: pd.DataFrame = self.anon_resource.note_ids
+        cats: List[str] = sorted(df['category'].drop_duplicates().tolist())
+        rows: List[Tuple[str, int]] = []
+        for hadm_id, dfg in df.groupby('hadm_id'):
+            cnts = dfg.groupby('category').size()
+            row: List[Union[str, int]] = [hadm_id]
+            row.extend(map(lambda c: cnts[c] if c in cnts else 0, cats))
+            row.append(cnts.sum())
+            rows.append(row)
+        df = pd.DataFrame(rows, columns=['hadm_id'] + cats + ['total'])
+        df = df.sort_values('total', ascending=False)
+        df.to_csv(output_file, index=False)
+        logger.info(f'wrote: {output_file}')
+        return df
 
 
 class PredOutputType(Enum):
