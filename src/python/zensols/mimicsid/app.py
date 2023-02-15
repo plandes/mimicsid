@@ -150,9 +150,6 @@ class Application(FacadeApplication):
         logger.info(f'wrote: {output_file}')
         return df
 
-    def proto(self):
-        self.note_counts_by_admission()
-
 
 class PredOutputType(Enum):
     """The types of prediction output formats."""
