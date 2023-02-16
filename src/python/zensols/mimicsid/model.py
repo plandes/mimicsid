@@ -281,7 +281,9 @@ class SectionPredictionMapper(ClassificationPredictionMapper):
         for doc, tok_lists in zip(docs, doc_tok_lists):
             secs: List[AnnotatedSection] = []
             self._create_secions(tok_lists, doc, secs)
-            pn = PredictedNote(doc, secs)
+            pn = PredictedNote(
+                predicted_sections=secs,
+                doc=doc)
             sec: Section
             for sec in secs:
                 sec.container = pn

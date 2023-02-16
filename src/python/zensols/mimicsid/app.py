@@ -60,17 +60,14 @@ class Application(FacadeApplication):
         with loglevel('zensols'):
             stash.clear()
 
-    def dump_ontology(self, output: Path = Path('ontology.csv')):
-        """Writes the ontology."""
-        self.anon_resource.ontology.to_csv(output)
-        logger.info(f'wrote: {output}')
+    def dump_ontology(self, output: Path = None):
+        """Writes the ontology.
 
-    def dump_note_ids(self):
-        """Writes hadm_id and note row_ids available in the annotation set."""
-        output = Path('note-ids.csv')
-        df: pd.DataFrame = self.anon_resource.note_ids
-        df = df.sort_values('hadm_id row_id'.split())
-        df.to_csv(output)
+        :param output: the output file
+
+        """
+        output = Path('ontology.csv') if output is None else output
+        self.anon_resource.ontology.to_csv(output)
         logger.info(f'wrote: {output}')
 
     def write_note(self, row_id: int,
@@ -99,16 +96,20 @@ class Application(FacadeApplication):
                     f'note ID {row_id} is not in the annotation set--using raw')
                 print(note.text)
 
-    def admission_notes(self, hadm_id: str, keeps: str = None) -> pd.DataFrame:
+    def admission_notes(self, hadm_id: str, output: Path = None,
+                        keeps: str = None) -> pd.DataFrame:
         """Create a CSV of note information by admission.
 
         :param hadm_id: the admission ID
+
+        :param output: the output file
 
         :param keeps: a comma-delimited list of column to keep in the output;
                       defaults to all columns
 
         """
-        output_file: Path = Path(f'notes-{hadm_id}.csv')
+        if output is None:
+            output: Path = Path(f'notes-{hadm_id}.csv')
         adm: HospitalAdmission = self.corpus.hospital_adm_stash.get(hadm_id)
         rows: List[Dict[str, Any]] = []
         note: Note
@@ -124,30 +125,20 @@ class Application(FacadeApplication):
         df = pd.DataFrame(rows)
         if keeps is not None:
             df = df[keeps.split(',')]
-        df.to_csv(output_file)
-        logger.info(f'wrote: {output_file}')
+        df.to_csv(output)
+        logger.info(f'wrote: {output}')
         return df
 
-    def note_counts_by_admission(self) -> pd.DataFrame:
+    def note_counts_by_admission(self, output: Path = None) -> pd.DataFrame:
         """Write the counts of each category and row IDs for each admission.
 
+        :param output: the output file
+
         """
-        output_file: Path = Path('note-counts.csv')
-        df: pd.DataFrame = self.anon_resource.note_ids
-        cats: List[str] = sorted(df['category'].drop_duplicates().tolist())
-        cols: List[str] = ['hadm_id'] + cats + ['total', 'row_ids']
-        rows: List[Tuple[str, int]] = []
-        for hadm_id, dfg in df.groupby('hadm_id'):
-            cnts = dfg.groupby('category').size()
-            row: List[Union[str, int]] = [hadm_id]
-            row.extend(map(lambda c: cnts[c] if c in cnts else 0, cats))
-            row.append(cnts.sum())
-            rows.append(row)
-            row.append(','.join(dfg['row_id']))
-        df = pd.DataFrame(rows, columns=cols)
-        df = df.sort_values('total', ascending=False)
-        df.to_csv(output_file, index=False)
-        logger.info(f'wrote: {output_file}')
+        output = Path('admissions.csv') if output is None else output
+        df: pd.DataFrame = self.anon_resource.note_counts_by_admission
+        df.to_csv(output, index=False)
+        logger.info(f'wrote: {output}')
         return df
 
 

@@ -3,12 +3,13 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Dict, Any, List
-from dataclasses import dataclass, field
+from typing import Dict, Any, List, ClassVar, Set
+from dataclasses import dataclass, field, InitVar
 from enum import Enum, auto
 import sys
 from io import TextIOBase
 import re
+from zensols.persist import persisted, PersistableContainer
 from zensols.nlp import LexicalSpan, FeatureDocument
 from zensols.mimic import Note, Section, SectionContainer
 
@@ -114,24 +115,47 @@ class PredictedSection(Section):
 
 
 @dataclass
-class PredictedNote(SectionContainer):
+class PredictedNote(PersistableContainer, SectionContainer):
     """A note with predicted sections.
 
     """
-    doc: FeatureDocument = field(repr=False)
-    """The used document that was parsed for prediction."""
+    _PERSITABLE_PROPERTIES: ClassVar[Set[str]] = {'sections'}
 
     predicted_sections: List[Section] = field(repr=False)
     """The sections predicted by the model.
 
     """
+    doc: InitVar[FeatureDocument] = field(repr=False)
+    """The used document that was parsed for prediction."""
+
+    def __post_init__(self, doc: FeatureDocument):
+        self._doc = doc
+        super().__init__()
+
     @property
     def text(self) -> str:
         """"The entire note text."""
-        return self.doc.text
+        return self._get_doc().text
+
+    @property
+    @persisted('_truncated_text', transient=True)
+    def truncted_text(self) -> str:
+        return self._trunc(self.text, 70).replace('\n', ' ').strip()
 
     def _get_sections(self) -> List[Section]:
         return self.predicted_sections
 
     def _get_doc(self) -> FeatureDocument:
-        return self.doc
+        return self._doc
+
+    def __setstate__(self, state: Dict[str, Any]):
+        super().__setstate__(state)
+        for sec in self.predicted_sections:
+            sec.container = self
+
+    def __str__(self):
+        text = self.truncted_text
+        if hasattr(self, 'row_id') and hasattr(self, 'category'):
+            return f'{self.row_id}: ({self.category}): {text}'
+        else:
+            return text

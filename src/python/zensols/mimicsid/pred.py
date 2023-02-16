@@ -5,7 +5,8 @@ from __future__ import annotations
 __author__ = 'Paul Landes'
 
 from typing import List, Tuple, Optional
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
+import dataclasses as dc
 import logging
 from pathlib import Path
 from zensols.config import ConfigFactory
@@ -13,8 +14,8 @@ from zensols.persist import PersistableContainer, persisted, PersistedWork
 from zensols.nlp import LexicalSpan, FeatureDocument, FeatureDocumentParser
 from zensols.deeplearn.model import ModelPacker, ModelFacade
 from zensols.deeplearn.cli import FacadeApplication
-from zensols.mimic import Section
-from . import PredictedNote
+from zensols.mimic import Section, NoteEvent, Note, NoteFactory
+from . import PredictedNote, AnnotationNoteFactory
 from .model import SectionFacade
 
 logger = logging.getLogger(__name__)
@@ -41,7 +42,7 @@ class SectionPredictor(PersistableContainer):
     config_factory: ConfigFactory = field()
     """The config factory used to help find the packed model."""
 
-    section_id_model_packer: ModelPacker = field()
+    section_id_model_packer: ModelPacker = field(default=None)
     """The packer used to create the section identifier model."""
 
     header_model_packer: Optional[ModelPacker] = field(default=None)
@@ -98,11 +99,15 @@ class SectionPredictor(PersistableContainer):
                         hspan = LexicalSpan(hspan.begin, hspan.end - 1)
                     hspans.append(hspan)
             if len(hspans) > 0:
+                p: int = None
                 for p in range(hspans[-1].end, sspan.end):
                     c: str = sn.text[p]
                     if c != ':' and c != ' ' and c != '\n' and c != '\t':
                         break
-                ssec.body_span = LexicalSpan(p, sspan.end)
+                if p is None:
+                    ssec.body_span = LexicalSpan(sspan.end, sspan.end)
+                else:
+                    ssec.body_span = LexicalSpan(p, sspan.end)
                 ssec.header_spans = tuple(hspans)
 
     def _merge_notes(self, snotes: List[PredictedNote],
@@ -161,3 +166,52 @@ class SectionPredictor(PersistableContainer):
     def __call__(self, doc_texts: List[str]) -> List[PredictedNote]:
         """See :meth:`predict`."""
         return self.predict(doc_texts)
+
+
+@dataclass
+class PredictionNoteFactory(AnnotationNoteFactory):
+    """An note factory that predicts so that
+    :class:`~zensols.mimic.adm.HospitalAdmissionDbStash` predicts missing
+    sections.
+
+    **Implementation note:** The :obj:`section_predictor_name` is used with the
+    application context factory :obj:`config_factory` since declaring it in the
+    configuration creates an instance cycle.
+
+    """
+    config_factory: ConfigFactory = field()
+    """The factory to get the section predictor."""
+
+    section_predictor_name: InitVar[str] = field(default=None)
+    """The name of the section predictor as an app config section name.  See
+    class docs.
+
+    """
+    def __post_init__(self, section_predictor_name: str):
+        self._section_predictor_name = section_predictor_name
+
+    @property
+    @persisted('_section_predictor')
+    def section_predictor(self) -> SectionPredictor:
+        """The section predictor (see class docs)."""
+        sp: SectionPredictor = self.config_factory(self._section_predictor_name)
+        sp.auto_deallocate = False
+        return sp
+
+    def _create_missing_anon_note(self, note_event: NoteEvent) -> Note:
+        sp: SectionPredictor = self.section_predictor
+        note: Note = None
+        try:
+            logger.info(f'predicting note: {note_event}')
+            note = sp.predict([note_event.text])[0]
+            if len(note.sections) == 0:
+                note = None
+            else:
+                for f in dc.fields(note_event):
+                    if f.name != 'text':
+                        setattr(note, f.name, getattr(note_event, f.name))
+        except Exception as e:
+            logger.error(f'could not predict note: {note_event}: {e}', e)
+        if note is None:
+            note = NoteFactory.__call__(self, note_event)
+        return note

@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Dict, Any, ClassVar, Iterable, Set
+from typing import Dict, Any, ClassVar, Iterable, Set, List, Tuple, Union
 from dataclasses import dataclass, field
 import logging
 import json
@@ -94,6 +94,26 @@ class AnnotationResource(Dictable):
         if item is not None:
             return json.load(BytesIO(item))
 
+    @property
+    @persisted('_note_counts_by_admission')
+    def note_counts_by_admission(self) -> pd.DataFrame:
+        """The counts of each category and row IDs for each admission.
+
+        """
+        df: pd.DataFrame = self.note_ids
+        cats: List[str] = sorted(df['category'].drop_duplicates().tolist())
+        cols: List[str] = ['hadm_id'] + cats + ['total', 'row_ids']
+        rows: List[Tuple[str, int]] = []
+        for hadm_id, dfg in df.groupby('hadm_id'):
+            cnts = dfg.groupby('category').size()
+            row: List[Union[str, int]] = [hadm_id]
+            row.extend(map(lambda c: cnts[c] if c in cnts else 0, cats))
+            row.append(cnts.sum())
+            rows.append(row)
+            row.append(','.join(dfg['row_id']))
+        df = pd.DataFrame(rows, columns=cols)
+        return df.sort_values('total', ascending=False)
+
 
 @dataclass
 class AnnotationNoteFactory(NoteFactory):
@@ -108,16 +128,22 @@ class AnnotationNoteFactory(NoteFactory):
     found in the annotation set.
 
     """
-    def __call__(self, note_event: NoteEvent) -> Note:
-        anon: Dict[str, Any] = self.anon_resource.get_annotation(note_event)
+    def _create_missing_anon_note(self, note_event: NoteEvent) -> Note:
+        return super().__call__(note_event)
+
+    def _create_note(self, note_event: NoteEvent, anon: Dict[str, Any]) -> Note:
         if anon is not None:
             note = self._event_to_note(
                 note_event,
                 section=self.annotated_note_section,
                 params={'annotation': anon})
         else:
-            note = super().__call__(note_event)
+            note = self._create_missing_anon_note(note_event)
         return note
+
+    def __call__(self, note_event: NoteEvent) -> Note:
+        anon: Dict[str, Any] = self.anon_resource.get_annotation(note_event)
+        return self._create_note(note_event, anon)
 
 
 @dataclass
