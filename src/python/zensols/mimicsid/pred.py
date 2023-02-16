@@ -143,6 +143,11 @@ class SectionPredictor(PersistableContainer):
             self._merge_notes(snotes, hnotes)
         return snotes
 
+    def deallocate(self):
+        super().deallocate()
+        self._section_id_app.clear()
+        self._header_app.clear()
+
     def predict(self, doc_texts: List[str]) -> List[PredictedNote]:
         """Collate the predictions of both the section ID (type) and header
         token models.
@@ -158,8 +163,6 @@ class SectionPredictor(PersistableContainer):
                 return self._predict(doc_texts)
             finally:
                 self.deallocate()
-                self._section_id_app.clear()
-                self._header_app.clear()
         else:
             return self._predict(doc_texts)
 
@@ -195,6 +198,7 @@ class PredictionNoteFactory(AnnotationNoteFactory):
     def section_predictor(self) -> SectionPredictor:
         """The section predictor (see class docs)."""
         sp: SectionPredictor = self.config_factory(self._section_predictor_name)
+        # turn off deallocation to keep the same facade for all prediction calls
         sp.auto_deallocate = False
         return sp
 
