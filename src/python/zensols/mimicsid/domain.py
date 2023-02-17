@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Dict, Any, List, ClassVar, Set
+from typing import Dict, Any, List, ClassVar, Set, Iterable
 from dataclasses import dataclass, field, InitVar
 from enum import Enum, auto
 import sys
@@ -84,7 +84,7 @@ class AnnotatedNote(Note):
             header_spans=header_spans,
             annotation=anon)
 
-    def _get_sections(self) -> List[Section]:
+    def _get_sections(self) -> Iterable[Section]:
         an = self.annotation
         assert self.hadm_id == an['hadm_id']
         assert self.row_id == an['row_id']
@@ -142,7 +142,7 @@ class PredictedNote(PersistableContainer, SectionContainer):
     def truncted_text(self) -> str:
         return self._trunc(self.text, 70).replace('\n', ' ').strip()
 
-    def _get_sections(self) -> List[Section]:
+    def _get_sections(self) -> Iterable[Section]:
         return self.predicted_sections
 
     def _get_doc(self) -> FeatureDocument:
@@ -159,3 +159,33 @@ class PredictedNote(PersistableContainer, SectionContainer):
             return f'{self.row_id}: ({self.category}): {text}'
         else:
             return text
+
+
+@dataclass(init=False)
+class MimicPredictedNote(Note):
+    """A note that comes from the MIMIC-III corpus with predicted sections.
+    This takes an instance of :class:`.PredictedNote` created by the model
+    during inference.  It creates :class:`~zensols.mimic.note.Section`
+    instances, and then discards the predicted note on pickling.
+
+    This method avoids having to serialize the
+    :class:`~zensols.nlp.container.FeatureDocument` (:obj:`.PredictedNote.doc`)
+    twice.
+
+    """
+    _PERSITABLE_TRANSIENT_ATTRIBUTES: ClassVar[Set[str]] = {'_pred_note'}
+
+    def __init__(self, *args, predicted_note: PredictedNote, **kwargs):
+        self._pred_note = predicted_note
+        super().__init__(*args, **kwargs)
+
+    def _get_sections(self) -> Iterable[Section]:
+        def map_sec(ps: PredictedSection) -> Section:
+            return Section(
+                id=ps.id,
+                name=ps.name,
+                container=self,
+                header_spans=ps.header_spans,
+                body_span=ps.body_span)
+
+        return map(map_sec, self._pred_note.predicted_sections)

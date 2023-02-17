@@ -15,7 +15,7 @@ from zensols.nlp import LexicalSpan, FeatureDocument, FeatureDocumentParser
 from zensols.deeplearn.model import ModelPacker, ModelFacade
 from zensols.deeplearn.cli import FacadeApplication
 from zensols.mimic import Section, NoteEvent, Note, NoteFactory
-from . import PredictedNote, AnnotationNoteFactory
+from . import PredictedNote, AnnotationNoteFactory, MimicPredictedNote
 from .model import SectionFacade
 
 logger = logging.getLogger(__name__)
@@ -185,6 +185,11 @@ class PredictionNoteFactory(AnnotationNoteFactory):
     config_factory: ConfigFactory = field()
     """The factory to get the section predictor."""
 
+    mimic_pred_note_section: str = field(default=None)
+    """The section name holding the configuration of the
+    :class:`.MimicPredictedNote` class.
+
+    """
     section_predictor_name: InitVar[str] = field(default=None)
     """The name of the section predictor as an app config section name.  See
     class docs.
@@ -207,13 +212,17 @@ class PredictionNoteFactory(AnnotationNoteFactory):
         note: Note = None
         try:
             logger.info(f'predicting note: {note_event}')
-            note = sp.predict([note_event.text])[0]
-            if len(note.sections) == 0:
+            pred_note: PredictedNote = sp.predict([note_event.text])[0]
+            if len(pred_note.sections) == 0:
                 note = None
             else:
-                for f in dc.fields(note_event):
-                    if f.name != 'text':
-                        setattr(note, f.name, getattr(note_event, f.name))
+                note: MimicPredictedNote = self._event_to_note(
+                    note_event,
+                    section=self.mimic_pred_note_section,
+                    params={'predicted_note': pred_note})
+                # for f in dc.fields(note_event):
+                #     if f.name != 'text':
+                #         setattr(note, f.name, getattr(note_event, f.name))
         except Exception as e:
             logger.error(f'could not predict note: {note_event}: {e}', e)
         if note is None:
