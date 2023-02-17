@@ -6,6 +6,7 @@ __author__ = 'Paul Landes'
 from typing import List, Any, Dict
 import sys
 from zensols.config import ConfigFactory
+from zensols.mimic import Corpus
 from zensols.cli import ActionResult, CliHarness
 from zensols.cli import ApplicationFactory as CliApplicationFactory
 from . import SectionPredictor, NoteStash, AnnotationResource
@@ -20,18 +21,26 @@ class ApplicationFactory(CliApplicationFactory):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def section_predictor(cls) -> SectionPredictor:
+    def instance(cls, name: str) -> ConfigFactory:
         """Return the section predictor using the app context."""
         harness: CliHarness = cls.create_harness()
         fac: ConfigFactory = harness.get_config_factory()
-        return fac('mimicsid_section_predictor')
+        return fac(name)
+
+    @classmethod
+    def corpus(cls) -> Corpus:
+        """Return the section predictor using the app context."""
+        return cls.instance('mimic_corpus')
+
+    @classmethod
+    def section_predictor(cls) -> SectionPredictor:
+        """Return the section predictor using the app context."""
+        return cls.instance('mimicsid_section_predictor')
 
     @classmethod
     def annotation_resource(cls) -> AnnotationResource:
         """Contains resources to acces the MIMIC-III MedSecId annotations."""
-        harness: CliHarness = cls.create_harness()
-        fac: ConfigFactory = harness.get_config_factory()
-        return fac('mimicsid_anon_resource')
+        return cls.instance('mimicsid_anon_resource')
 
     @classmethod
     def note_stash(cls, host: str, port: str, db_name: str,
