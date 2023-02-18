@@ -20,7 +20,7 @@ class AgeType(Enum):
 
     """
     adult = auto()
-    newbon = auto()
+    newborn = auto()
     pediatric = auto()
 
 
