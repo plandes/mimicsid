@@ -62,6 +62,9 @@ class AnnotatedNote(Note):
         atstr = self.annotation['age_type']
         return AgeType[atstr]
 
+    def _get_annotator(self) -> str:
+        return 'human'
+
     def _create_sec(self, sid: int, anon: Dict[str, Any]) -> Section:
         body_span = LexicalSpan(**anon['body_span'])
         header_spans: List[LexicalSpan] = []
@@ -133,6 +136,16 @@ class PredictedNote(PersistableContainer, SectionContainer):
         super().__init__()
 
     @property
+    def _predicted_sections(self) -> List[Section]:
+        return self._predicted_sections_val
+
+    @_predicted_sections.setter
+    def _predicted_sections(self, sections: List[Section]):
+        self._predicted_sections_val = sections
+        if hasattr(self, '_sections'):
+            self._sections.clear()
+
+    @property
     def text(self) -> str:
         """"The entire note text."""
         return self._get_doc().text
@@ -161,6 +174,9 @@ class PredictedNote(PersistableContainer, SectionContainer):
             return text
 
 
+PredictedNote.predicted_sections = PredictedNote._predicted_sections
+
+
 @dataclass(init=False)
 class MimicPredictedNote(Note):
     """A note that comes from the MIMIC-III corpus with predicted sections.
@@ -178,6 +194,9 @@ class MimicPredictedNote(Note):
     def __init__(self, *args, predicted_note: PredictedNote, **kwargs):
         self._pred_note = predicted_note
         super().__init__(*args, **kwargs)
+
+    def _get_annotator(self) -> str:
+        return 'model'
 
     def _get_sections(self) -> Iterable[Section]:
         def map_sec(ps: PredictedSection) -> Section:

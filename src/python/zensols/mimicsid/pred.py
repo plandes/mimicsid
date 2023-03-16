@@ -6,7 +6,6 @@ __author__ = 'Paul Landes'
 
 from typing import List, Tuple, Optional
 from dataclasses import dataclass, field, InitVar
-import dataclasses as dc
 import logging
 from pathlib import Path
 from zensols.config import ConfigFactory
@@ -53,6 +52,9 @@ class SectionPredictor(PersistableContainer):
     configured document parser.
 
     """
+    min_section_body_len: int = field(default=1)
+    """The minimum length of the body needed to make a section."""
+
     auto_deallocate: bool = field(default=True)
     """Whether or not to deallocate resources after every call to
     :meth:`predict`.  See class docs.
@@ -128,6 +130,15 @@ class SectionPredictor(PersistableContainer):
                 f'API {model_name} version ({packer.version}) does not ' +
                 f'match the trained model version ({model_packer.version})')
 
+    def _trim_notes(self, notes: List[PredictedNote]):
+        def filter_sec(sec: Section) -> bool:
+            return len(sec.body_span) > self.min_section_body_len
+
+        note: Note
+        for note in notes:
+            note.predicted_sections = list(
+                filter(filter_sec, note.predicted_sections))
+
     def _predict(self, doc_texts: List[str]) -> List[PredictedNote]:
         sid_fac: SectionFacade = self._get_section_id_app().get_cached_facade()
         self._validate_version('section_id_model_packer', sid_fac)
@@ -141,6 +152,7 @@ class SectionPredictor(PersistableContainer):
             self._validate_version('header_model_packer', head_fac)
             hnotes: List[PredictedNote] = head_fac.predict(docs)
             self._merge_notes(snotes, hnotes)
+        self._trim_notes(snotes)
         return snotes
 
     def deallocate(self):
@@ -220,9 +232,6 @@ class PredictionNoteFactory(AnnotationNoteFactory):
                     note_event,
                     section=self.mimic_pred_note_section,
                     params={'predicted_note': pred_note})
-                # for f in dc.fields(note_event):
-                #     if f.name != 'text':
-                #         setattr(note, f.name, getattr(note_event, f.name))
         except Exception as e:
             logger.error(f'could not predict note: {note_event}: {e}', e)
         if note is None:
