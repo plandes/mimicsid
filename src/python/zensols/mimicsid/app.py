@@ -78,13 +78,9 @@ class Application(FacadeApplication):
 
         """
         row_id = str(row_id)
+        note: Note
         if row_id in self.note_stash:
-            note: Note = self.note_stash[row_id]
-            {OutputFormat.sections: note.write_human,
-             OutputFormat.verbose: note.write_sections,
-             OutputFormat.raw: lambda: print(note.text),
-             OutputFormat.markdown: note.write_markdown,
-             }[output_format]()
+            note = self.note_stash[row_id]
         else:
             hadm_id: int = self.corpus.note_event_persister.get_hadm_id(row_id)
             if hadm_id is None:
@@ -94,7 +90,14 @@ class Application(FacadeApplication):
                 note: Note = adm[int(row_id)]
                 logger.warning(
                     f'note ID {row_id} is not in the annotation set--using raw')
-                print(note.text)
+        for s in note.sections.values():
+            print(s, s.header_spans, len(s))
+        return
+        {OutputFormat.sections: note.write_human,
+         OutputFormat.verbose: note.write_sections,
+         OutputFormat.raw: lambda: print(note.text),
+         OutputFormat.markdown: note.write_markdown,
+         }[output_format]()
 
     def admission_notes(self, hadm_id: str, output: Path = None,
                         keeps: str = None) -> pd.DataFrame:
