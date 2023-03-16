@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, List, Dict, Any, Union
+from typing import Tuple, List, Dict, Any
 from dataclasses import dataclass, field
 from enum import Enum, auto
 import sys

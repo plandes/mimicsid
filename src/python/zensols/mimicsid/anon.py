@@ -82,13 +82,18 @@ class AnnotationResource(Dictable):
                 rows.append(m.groups())
         return pd.DataFrame(rows, columns='hadm_id row_id category'.split())
 
+    @staticmethod
+    def category_to_id(name: str) -> str:
+        """Return the ID form for the category name."""
+        return name.replace(' ', '-').replace('/', '-').lower()
+
     def get_annotation(self, note_event: NoteEvent) -> Dict[str, Any]:
         """Get the raw annotation as Python dict of dics for a
         :class:`~zensols.mimic.NoteEvent`.
 
         """
         ne = note_event
-        cat = ne.category.replace(' ', '-').replace('/', '-').lower()
+        cat = self.category_to_id(ne.category)
         path = f'{self._ANN_ENTRY}/{ne.hadm_id}-{ne.row_id}-{cat}.json'
         item: bytearray = self._get_stash().get(path)
         if item is not None:
@@ -172,21 +177,21 @@ class AnnotatedNoteStash(ReadOnlyStash, PrimeableStash):
         """A mapping of row to hospital admission IDs."""
         with time('calc key diff'):
             df: pd.DataFrame = self.anon_resource.note_ids
-            stash: Stash = self.corpus.hospital_adm_stash
             rows: Dict[str, str] = dict(
                 df['row_id hadm_id'.split()].itertuples(index=False))
-            hadm_ids: Set[str] = set(df['hadm_id'].drop_duplicates())
-            remaining: Set[str] = hadm_ids - set(stash.keys())
+        return frozendict(rows)
+
+    def prime(self):
+        stash: Stash = self.corpus.hospital_adm_stash
+        df: pd.DataFrame = self.anon_resource.note_ids
+        hadm_ids: Set[str] = set(df['hadm_id'].drop_duplicates())
+        remaining: Set[str] = hadm_ids - set(stash.keys())
         if len(remaining) > 0:
             if logger.isEnabledFor(logging.INFO):
                 logger.info(f'priming {len(remaining)} admissions')
             with time(f'wrote {len(remaining)} admissions'):
                 for hadm_id in remaining:
                     stash[hadm_id]
-        return frozendict(rows)
-
-    def prime(self):
-        self.row_to_hadm_ids
 
     def clear(self):
         self._row_hadm_map.clear()
@@ -205,15 +210,12 @@ class AnnotatedNoteStash(ReadOnlyStash, PrimeableStash):
                                f'{hadm_id}, row_id: {row_id}')
 
     def keys(self) -> Iterable[str]:
-        self.prime()
         return self.anon_resource.note_ids['row_id'].tolist()
 
     def exists(self, row_id: str) -> bool:
-        self.prime()
         return any(self.anon_resource.note_ids['row_id'] == row_id)
 
     def __len__(self) -> int:
-        self.prime()
         return len(self.anon_resource.note_ids)
 
 
@@ -238,12 +240,3 @@ class NoteStash(DelegateStash):
 
     def get(self, name: str, default: Any = None) -> Any:
         return Stash.get(self, name, default)
-
-    def keys(self) -> Iterable[str]:
-        return self.corpus.note_event_persister.get_keys()
-
-    def exists(self, row_id: str) -> bool:
-        return self.corpus.note_event_persister.exists(row_id)
-
-    def __len__(self) -> int:
-        return self.corpus.note_event_persister.get_count()
