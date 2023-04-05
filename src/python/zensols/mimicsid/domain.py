@@ -189,7 +189,8 @@ class MimicPredictedNote(Note):
     twice.
 
     """
-    _PERSITABLE_TRANSIENT_ATTRIBUTES: ClassVar[Set[str]] = {'_pred_note'}
+    _PERSITABLE_TRANSIENT_ATTRIBUTES: ClassVar[Set[str]] = \
+        Note._PERSITABLE_TRANSIENT_ATTRIBUTES | {'_pred_note'}
 
     def __init__(self, *args, predicted_note: PredictedNote, **kwargs):
         self._pred_note = predicted_note
