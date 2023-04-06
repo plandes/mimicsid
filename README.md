@@ -213,20 +213,15 @@ For the header model use:
 ```
 
 
-## Training Usable Models
+## Training Production Models
 
 To train models used in your projects, train the model on both the training and
 test sets.  This still leaves the validation set to inform when to save for
 epochs where the loss decreases:
 
-1. Train section ID/type the model: `./mimicsid trainprod -p`
-2. Package the model creating a distribution file: `./mimicsid pack`
-3. Do the same for the header model:
-
-```bash
-$ ./mimicsid trainprod -c models/glove300.conf -p --override mimicsid_default.model_type=header
-$ ./mimicsid pack -c models/glove300.conf --override mimicsid_default.model_type=header
-```
+1. Update the `deeplearn_model_packer:version` in `resources/app.conf`.
+2. Run the script that trains the models and packages them: `src/sh/package.sh`.
+3. Check for errors.
 
 
 ## Models
