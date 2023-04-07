@@ -11,7 +11,7 @@ from io import TextIOBase
 import re
 from zensols.persist import persisted, PersistableContainer
 from zensols.nlp import LexicalSpan, FeatureDocument
-from zensols.mimic import Note, Section, SectionContainer
+from zensols.mimic import Note, Section, SectionContainer, SectionAnnotatorType
 
 
 class AgeType(Enum):
@@ -62,8 +62,8 @@ class AnnotatedNote(Note):
         atstr = self.annotation['age_type']
         return AgeType[atstr]
 
-    def _get_annotator(self) -> str:
-        return 'human'
+    def _get_section_annotator_type(self) -> SectionAnnotatorType:
+        return SectionAnnotatorType.HUMAN
 
     def _create_sec(self, sid: int, anon: Dict[str, Any]) -> Section:
         body_span = LexicalSpan(**anon['body_span'])
@@ -196,8 +196,8 @@ class MimicPredictedNote(Note):
         self._pred_note = predicted_note
         super().__init__(*args, **kwargs)
 
-    def _get_annotator(self) -> str:
-        return 'model'
+    def _get_section_annotator_type(self) -> SectionAnnotatorType:
+        return SectionAnnotatorType.MODEL
 
     def _get_sections(self) -> Iterable[Section]:
         def map_sec(ps: PredictedSection) -> Section:
