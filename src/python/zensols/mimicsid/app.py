@@ -30,6 +30,7 @@ class OutputFormat(Enum):
     verbose = auto()
     raw = auto()
     markdown = auto()
+    summary = auto()
 
 
 @dataclass
@@ -77,6 +78,10 @@ class Application(FacadeApplication):
         :param row_id: the row ID of the note to write
 
         """
+        def summary_format():
+            for s in note.sections.values():
+                print(s, s.header_spans, len(s))
+
         row_id = str(row_id)
         note: Note
         if row_id in self.note_stash:
@@ -90,13 +95,11 @@ class Application(FacadeApplication):
                 note: Note = adm[int(row_id)]
                 logger.warning(
                     f'note ID {row_id} is not in the annotation set--using raw')
-        for s in note.sections.values():
-            print(s, s.header_spans, len(s))
-        return
         {OutputFormat.sections: note.write_human,
          OutputFormat.verbose: note.write_sections,
          OutputFormat.raw: lambda: print(note.text),
          OutputFormat.markdown: note.write_markdown,
+         OutputFormat.summary: summary_format,
          }[output_format]()
 
     def admission_notes(self, hadm_id: str, output: Path = None,
