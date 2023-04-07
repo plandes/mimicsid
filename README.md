@@ -197,8 +197,11 @@ This document explains how to create and package models for distribution.
    package] instructions in the *Installation* section.
 2. Add the MIMIC-III Postgres credentials and database configuration to
    `etc/batch.conf`.
-2. Vectorize the batches: `./mimicsid batch -c etc/batch.conf`.  This also
-   creates cached hospital admission and spaCy data parse files.
+3. Comment out the line `resource(zensols.mimicsid): resources/model/adm.conf`
+   in `resources/app.conf`.
+4. Vectorize the batches using the preprocessing script:
+   `$ ./src/bin/preprocess.sh`.  This also creates cached hospital admission and
+   spaCy data parse files.
 
 
 ### Training and Testing
@@ -220,8 +223,10 @@ test sets.  This still leaves the validation set to inform when to save for
 epochs where the loss decreases:
 
 1. Update the `deeplearn_model_packer:version` in `resources/app.conf`.
-2. Run the script that trains the models and packages them: `src/sh/package.sh`.
-3. Check for errors.
+2. Preprocess (see the [preprocessing](#preprocessing-step)) section.
+3. Run the script that trains the models and packages them: `src/bin/package.sh`.
+4. Check for errors and verify models: `$ ./src/bin/verify-model.py`.
+5. Don't forget to revert files `etc/batch.conf` and `resources/app.conf`.
 
 
 ## Models
@@ -260,6 +265,17 @@ of the pretrained models are given below, where:
 | `BiLSTM-CRF_tok (GloVE 300D)` | Section | bilstm-crf-tok-glove-300d-section-type | 0.917 | 0.922 | 0.809 | 0.922 |
 | `BiLSTM-CRF_tok (fastText)`   | Header  | bilstm-crf-tok-fasttext-header         | 0.996 | 0.996 | 0.959 | 0.996 |
 | `BiLSTM-CRF_tok (GloVE 300D)` | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.962 | 0.996 |
+
+
+The model version 0.0.3 validation results:
+
+| Name                          | Type    | Id                                     | wF1   | mF1   | MF1   | acc   |
+|-------------------------------|---------|----------------------------------------|-------|-------|-------|-------|
+| `BiLSTM-CRF_tok (fastText)`   | Section | bilstm-crf-tok-fasttext-section-type   | 0.918 | 0.925 | 0.797 | 0.925 |
+| `BiLSTM-CRF_tok (GloVE 300D)` | Section | bilstm-crf-tok-glove-300d-section-type | 0.917 | 0.922 | 0.809 | 0.922 |
+| `BiLSTM-CRF_tok (fastText)`   | Header  | bilstm-crf-tok-fasttext-header         | 0.996 | 0.996 | 0.959 | 0.996 |
+| `BiLSTM-CRF_tok (GloVE 300D)` | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.962 | 0.996 |
+
 
 
 ## Citation
