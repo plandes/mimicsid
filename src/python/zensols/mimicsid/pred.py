@@ -1,9 +1,8 @@
-from __future__ import annotations
 """Collates the predictions of both models.
 
 """
+from __future__ import annotations
 __author__ = 'Paul Landes'
-
 from typing import List, Tuple, Optional
 from dataclasses import dataclass, field, InitVar
 import logging
