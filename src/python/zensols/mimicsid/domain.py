@@ -106,18 +106,6 @@ class AnnotatedNote(Note):
 
 
 @dataclass
-class PredictedSection(Section):
-    """A section with spans and ID/type predicted by the model.
-
-    """
-    doc: FeatureDocument = field(repr=False)
-    """The note document in :class:`.PredictedNote`."""
-
-    def _get_body_doc(self) -> FeatureDocument:
-        return self._narrow_doc(self.doc)
-
-
-@dataclass
 class PredictedNote(PersistableContainer, SectionContainer):
     """A note with predicted sections.
 
@@ -200,7 +188,7 @@ class MimicPredictedNote(Note):
         return SectionAnnotatorType.MODEL
 
     def _get_sections(self) -> Iterable[Section]:
-        def map_sec(ps: PredictedSection) -> Section:
+        def map_sec(ps: Section) -> Section:
             return Section(
                 id=ps.id,
                 name=ps.name,

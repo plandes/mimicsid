@@ -18,7 +18,7 @@ from zensols.deepnlp.classify import (
     ClassificationPredictionMapper, TokenClassifyModelFacade
 )
 from zensols.mimic import Section
-from . import AnnotatedNote, AnnotatedSection, PredictedSection, PredictedNote
+from . import AnnotatedNote, AnnotatedSection, PredictedNote
 
 logger = logging.getLogger(__name__)
 
@@ -250,13 +250,12 @@ class SectionPredictionMapper(ClassificationPredictionMapper):
                 end = toks[-1].lexspan.end
                 span = LexicalSpan(begin, end)
             assert span is not None
-            secs.append(PredictedSection(
+            secs.append(Section(
                 id=sid,
                 name=label,
                 container=None,
                 header_spans=(),
-                body_span=span,
-                doc=doc))
+                body_span=span))
 
     def _collate(self, docs: Tuple[FeatureDocument],
                  classes: Tuple[Tuple[str]]) -> List[PredictedNote]:
