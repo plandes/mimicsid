@@ -1,2 +1,2 @@
 zensols.deepnlp~=1.8.0
-zensols.mimic~=1.1.0
+zensols.mimic~=1.2.0
