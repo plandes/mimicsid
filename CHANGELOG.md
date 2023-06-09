@@ -14,8 +14,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Model training and automation process.
-- Upgraded to [zensols.mimic] 1.2.0.
 - Remove `PredictedSection` and switch to its super class.
+- Upgraded to [zensols.deepnlp] 1.9.0.
+- Upgraded to [zensols.mimic] 1.2.0.
 
 
 ## [1.1.0] - 2023-04-05
