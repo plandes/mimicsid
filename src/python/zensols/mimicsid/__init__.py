@@ -4,13 +4,14 @@
 __author__ = 'Paul Landes'
 
 
-def _silence_spacy_parser_warnings():
+def _silence_zennlp_parser_warnings():
+    """The pretrained model uses a deprecated API."""
     import warnings
     warnings.filterwarnings(
         'ignore', message='remove_empty_sentences is deprecated.*')
 
 
-_silence_spacy_parser_warnings()
+_silence_zennlp_parser_warnings()
 
 
 from .domain import *

@@ -1,12 +1,14 @@
 from typing import Set
 import unittest
 from pathlib import Path
+import zensols.mimicsid
 from zensols.mimicsid import PredictedNote, ApplicationFactory
 from zensols.mimicsid.pred import SectionPredictor
 
 
 class TestParse(unittest.TestCase):
     def setUp(self):
+        zensols.mimicsid._silence_zennlp_parser_warnings()
         self.maxDiff = 999999
 
     def test_parse(self):
