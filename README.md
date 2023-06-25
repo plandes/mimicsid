@@ -48,7 +48,7 @@ This package provides the following:
 
 The easiest way to install the command line program is via the `pip` installer:
 ```bash
-pip3 install zensols.mimicsid
+pip3 install --use-deprecated=legacy-resolver zensols.mimicsid
 ```
 
 Binaries are also available on [pypi].
