@@ -3,12 +3,11 @@
 PROJ_TYPE =		python
 PROJ_MODULES =		git python-resources python-cli python-doc python-doc-deploy
 ADD_CLEAN +=		$(shell find example -type d -name __pycache__)
+CLEAN_ALL_DEPS +=	data-clean
 PIP_ARGS +=		--use-deprecated=legacy-resolver
 PY_DEP_POST_DEPS +=	modeldeps
-CLEAN_ALL_DEPS +=	data-clean
 ENTRY =			./mimicsid
 MODEL =			glove300
-#MODEL =			fasttext
 SID_ARGS = 		-c models/$(MODEL).conf
 HEADER_ARGS =		$(SID_ARGS) --override mimicsid_default.model_type=header,model_settings.epochs=20
 TRAIN_LOG = 		train.log
@@ -74,3 +73,5 @@ hardstop:
 .PHONY:			data-clean
 data-clean:
 			$(ENTRY) clean --clevel 2
+			make -C docker/app down || /usr/bin/true
+			make -C docker/app cleanall
