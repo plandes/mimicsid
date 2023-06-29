@@ -81,9 +81,6 @@ RUN $DEV_USER_HOME/opt/lib/python/bin/mednlp \
 
 # force load models and test mimicsid models and functionality
 RUN mkdir -p trash
-# TODO: revert and test (stanford server is currently down)
-RUN mkdir -p $DEV_USER_HOME/.cache/zensols/deepnlp
-COPY src/image/glove.6B.zip $DEV_USER_HOME/.cache/zensols/deepnlp
 RUN $DEV_USER_HOME/opt/lib/python/bin/mimicsid \
     predict /etc/motd --path trash
 RUN $DEV_USER_HOME/opt/lib/python/bin/mimicsid \
