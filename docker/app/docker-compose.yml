@@ -1,0 +1,29 @@
+version: '3.5'
+
+services:
+  mimicdb:
+    container_name: mimicdb
+    image: 'postgres:9.6'
+    ports:
+      - '${DB_PORT}:5432/tcp'
+    environment:
+      TZ: 'US/Central'
+      POSTGRES_DB: mimic3
+      POSTGRES_USER: ${DB_SA_USER}
+      POSTGRES_PASSWORD: ${DB_SA_PASS}
+    volumes:
+      - ${DB_DIR}:/var/lib/postgresql/data
+
+  mimicsid:
+    container_name: mimicsid
+    image: 'plandes/mimicsid'
+    command: /usr/bin/tail -f /dev/null
+    ports:
+      - "1022:22"
+    environment:
+      TZ: 'US/Central'
+    volumes:
+      - ./src/mnt:/mnt
+      - ./src/data:/home/devusr/data
+    links:
+      - mimicdb

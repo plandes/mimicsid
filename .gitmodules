@@ -1,3 +1,6 @@
 [submodule "zenbuild"]
 	path = zenbuild
 	url = https://github.com/plandes/zenbuild
+[submodule "docker/mimicdb"]
+	path = docker/mimicdb
+	url = https://github.com/plandes/mimicdb

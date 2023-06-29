@@ -6,10 +6,11 @@
 [![Python 3.10][python310-badge]][python310-link]
 
 This repository contains the a Python package to automatically segment and
-identify sections of medical notes.  It also provides access to the MedSecId
-section annotations with MIMIC-III corpus parsing from the paper [A New Public
-Corpus for Clinical Section Identification: MedSecId].  See the [medsecid
-repository] to reproduce the results from the paper.
+identify sections of clinical notes, such as electronic health record (EHR)
+medical documents.  It also provides access to the MedSecId section annotations
+with MIMIC-III corpus parsing from the paper [A New Public Corpus for Clinical
+Section Identification: MedSecId].  See the [medsecid repository] to reproduce
+the results from the paper.
 
 This package provides the following:
 
@@ -33,10 +34,11 @@ This package provides the following:
 - [Training](#training)
     - [Preprocessing Step](#preprocessing-step)
     - [Training and Testing](#training-and-testing)
-- [Training Usable Models](#training-usable-models)
+- [Training Production Models](#training-production-models)
 - [Models](#models)
     - [Performance Metrics](#performance-metrics)
 - [Citation](#citation)
+- [Docker](#docker)
 - [Changelog](#changelog)
 - [License](#license)
 
@@ -52,6 +54,8 @@ pip3 install --use-deprecated=legacy-resolver zensols.mimicsid
 ```
 
 Binaries are also available on [pypi].
+
+A [docker](#docker) image is now available as well.
 
 
 ## Documentation
@@ -316,6 +320,20 @@ Also please cite the [Zensols Framework]:
 ```
 
 
+## Docker
+
+A [docker](docker/README.md) image is now available as well.
+
+To use the docker image, do the following:
+
+1. Clone this repository `git clone --recurse-submodules
+   https://github.com/plandes/mimicsid`
+1. Create (or obtain) the [Postgres docker image]
+1. Copy the configuration from the installed [mimicdb] image configuration:
+   `make -C docker/mimicdb SRC_DIR=~<cloned mimicdb directory> cpconfig`
+1. Start the container: `make -C docker/app up`
+
+
 ## Changelog
 
 An extensive changelog is available [here](CHANGELOG.md).
@@ -350,5 +368,8 @@ Copyright (c) 2022 Paul Landes
 [annotation example]: example/anon/anon.py
 [A New Public Corpus for Clinical Section Identification: MedSecId]: https://aclanthology.org/2022.coling-1.326.pdf
 [Zenodo]: https://zenodo.org/record/7150451#.Yz30BS2B3Bs
+
+[Postgres docker image]: https://github.com/plandes/mimicdb#installation
+[mimicdb]: https://github.com/plandes/mimicdb
 
 [Note class]: https://plandes.github.io/mimic/api/zensols.mimic.html#zensols.mimic.note.Note
