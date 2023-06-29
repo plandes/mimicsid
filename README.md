@@ -326,9 +326,10 @@ A [docker](docker/app/README.md) image is now available as well.
 
 To use the docker image, do the following:
 
+1. Create (or obtain) the [Postgres docker image]
 1. Clone this repository `git clone --recurse-submodules
    https://github.com/plandes/mimicsid`
-1. Create (or obtain) the [Postgres docker image]
+1. Set the working directory to the repo: `cs mimicsid`
 1. Copy the configuration from the installed [mimicdb] image configuration:
    `make -C docker/mimicdb SRC_DIR=~<cloned mimicdb directory> cpconfig`
 1. Start the container: `make -C docker/app up`
