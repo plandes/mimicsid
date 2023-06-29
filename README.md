@@ -331,8 +331,13 @@ To use the docker image, do the following:
    https://github.com/plandes/mimicsid`
 1. Set the working directory to the repo: `cd mimicsid`
 1. Copy the configuration from the installed [mimicdb] image configuration:
-   `make -C docker/mimicdb SRC_DIR=~<cloned mimicdb directory> cpconfig`
+   `make -C docker/mimicdb SRC_DIR=<cloned mimicdb directory> cpconfig`
 1. Start the container: `make -C docker/app up`
+1. Test sectioning a document: `make -C docker/app testdumpsec`
+1. Log in to the container: `make -C docker/app devlogin`
+1. Output a note to a temporary file: `mimic note 1118471 > note.txt`
+1. Predict the sections on the note: `mimicsid predict note.txt`
+1. Look at the section predictions: `cat preds/note-pred.txt`
 
 
 ## Changelog
