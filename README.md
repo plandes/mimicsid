@@ -322,7 +322,7 @@ Also please cite the [Zensols Framework]:
 
 ## Docker
 
-A [docker](docker/README.md) image is now available as well.
+A [docker](docker/app/README.md) image is now available as well.
 
 To use the docker image, do the following:
 
