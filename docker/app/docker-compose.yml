@@ -16,7 +16,7 @@ services:
 
   mimicsid:
     container_name: mimicsid
-    image: 'plandes/mimicsid'
+    image: 'plandes/mimicsid:latest'
     command: /usr/bin/tail -f /dev/null
     ports:
       - "1022:22"

@@ -22,6 +22,16 @@ build the image from scratch:
 1. Start the image(s): `make up`
 
 
+## Obtaining
+
+The [Docker image](https://hub.docker.com/repository/docker/plandes/mimicsid)
+can be installed with:
+```bash
+docker pull plandes/mimicsid:latest
+```
+
+
+
 <!-- links -->
 [mimicdb]: https://github.com/plandes/mimicdb
 [mednlp]: https://github.com/plandes/mednlp
