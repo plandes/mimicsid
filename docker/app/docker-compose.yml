@@ -5,7 +5,7 @@ services:
     container_name: mimicdb
     image: 'postgres:9.6'
     ports:
-      - '${DB_PORT}:5432/tcp'
+      - '${DB_PORT}:${DB_IN_PORT}/tcp'
     environment:
       TZ: 'US/Central'
       POSTGRES_DB: mimic3
