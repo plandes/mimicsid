@@ -16,6 +16,7 @@ or build the database from the [mimicdb] repository.
 The [makefile](makefile) controls building of the image and its life cycle.  To
 build the image from scratch:
 
+1. Build or obtain the [mimicdb] image as explained in the [MedSecId] docs.
 1. Remove any previous Docker image: `make dockerrm`
 1. Clean any previous derived objects: `make cleanall`
 1. Build the image: `make build`
