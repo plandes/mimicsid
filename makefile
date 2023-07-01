@@ -73,5 +73,4 @@ hardstop:
 .PHONY:			data-clean
 data-clean:
 			$(ENTRY) clean --clevel 2
-			make -C docker/app down || /usr/bin/true
 			make -C docker/app cleanall
