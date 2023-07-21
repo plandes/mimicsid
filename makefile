@@ -71,6 +71,6 @@ hardstop:
 				grep -v grep | awk '{print $$2}' | xargs kill
 
 .PHONY:			data-clean
-data-clean:
-			$(ENTRY) clean --clevel 2
+data-clean:		clean
+			rm -f *.log
 			make -C docker/app cleanall

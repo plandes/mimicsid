@@ -8,11 +8,11 @@ from dataclasses import dataclass, field
 from enum import Enum, auto
 import sys
 import logging
-from io import StringIO
+from io import StringIO, TextIOBase
 from pathlib import Path
 import pandas as pd
-from zensols.util import loglevel
-from zensols.persist import Stash
+from zensols.util import loglevel, stdout
+from zensols.persist import Stash, FileTextUtil
 from zensols.config import ConfigFactory
 from zensols.cli import ApplicationError
 from zensols.deeplearn.cli import FacadeApplication
@@ -24,13 +24,24 @@ from .pred import SectionPredictor
 logger = logging.getLogger(__name__)
 
 
-class OutputFormat(Enum):
+class _Format(Enum):
     """CLI note output formats."""
-    sections = auto()
+    text = auto()
     verbose = auto()
     raw = auto()
     markdown = auto()
     summary = auto()
+
+    @property
+    def ext(self) -> str:
+        ext: str
+        if self.name in {'text', 'verbose', 'raw', 'summary'}:
+            ext = 'txt'
+        else:
+            ext = {
+                'markdown': 'md',
+            }[self.name]
+        return ext
 
 
 @dataclass
@@ -61,61 +72,87 @@ class Application(FacadeApplication):
         with loglevel('zensols'):
             stash.clear()
 
-    def dump_ontology(self, output: Path = None):
+    def dump_ontology(self, out_file: Path = None):
         """Writes the ontology.
 
-        :param output: the output file
+        :param out_file: the output path
 
         """
-        output = Path('ontology.csv') if output is None else output
-        self.anon_resource.ontology.to_csv(output)
-        logger.info(f'wrote: {output}')
+        out_file = Path('ontology.csv') if out_file is None else out_file
+        self.anon_resource.ontology.to_csv(out_file)
+        logger.info(f'wrote: {out_file}')
 
-    def write_note(self, row_id: int,
-                   output_format: OutputFormat = OutputFormat.sections):
+    def _write_note(self, note: Note, out_file: Path = None,
+                    output_format: _Format = _Format.text):
+        def summary_format(writer: TextIOBase):
+            for s in note.sections.values():
+                print(s, s.header_spans, len(s))
+
+        with stdout(out_file) as f:
+            {_Format.text: lambda: note.write_human(writer=f),
+             _Format.verbose: lambda: note.write_sections(writer=f),
+             _Format.raw: lambda: print(note.text),
+             _Format.markdown: lambda: note.write_markdown(writer=f),
+             _Format.summary: lambda: summary_format(writer=f),
+             }[output_format]()
+        if out_file.name != stdout.STANDARD_OUT_PATH:
+            logger.info(f'wrote to {out_file}')
+
+    def write_note(self, row_id: int, out_file: Path = None,
+                   output_format: _Format = _Format.text):
         """Write an admission, note or section.
 
         :param row_id: the row ID of the note to write
 
+        :param out_file: the output path
+
+        :param output_format: the output format of the note
+
         """
-        def summary_format():
+        def summary_format(writer: TextIOBase):
             for s in note.sections.values():
                 print(s, s.header_spans, len(s))
 
-        row_id = str(row_id)
-        note: Note
-        if row_id in self.note_stash:
-            note = self.note_stash[row_id]
-        else:
-            hadm_id: int = self.corpus.note_event_persister.get_hadm_id(row_id)
-            if hadm_id is None:
-                raise ApplicationError(f'Note ID {row_id} does not exist')
-            else:
-                adm: HospitalAdmission = self.corpus.hospital_adm_stash[hadm_id]
-                note: Note = adm[int(row_id)]
-                logger.warning(
-                    f'note ID {row_id} is not in the annotation set--using raw')
-        {OutputFormat.sections: note.write_human,
-         OutputFormat.verbose: note.write_sections,
-         OutputFormat.raw: lambda: print(note.text),
-         OutputFormat.markdown: note.write_markdown,
-         OutputFormat.summary: summary_format,
-         }[output_format]()
+        if out_file is None:
+            out_file = Path(stdout.STANDARD_OUT_PATH)
+        note: Note = self.corpus.get_note_by_id(row_id)
+        self._write_note(note, out_file, output_format)
 
-    def admission_notes(self, hadm_id: str, output: Path = None,
+    def write_admission(self, hadm_id: str, out_dir: Path = Path('.'),
+                        output_format: _Format = _Format.text):
+        """Write all the notes of an admission.
+
+        :param hadm_id: the admission ID
+
+        :param out_dir: the output directory
+
+        :param output_format: the output format of the note
+
+        """
+        adm: HospitalAdmission = self.corpus.get_hospital_adm_by_id(hadm_id)
+        out_dir = out_dir / 'adm' / hadm_id
+        out_dir.mkdir(parents=True, exist_ok=True)
+        note: Note
+        for note in adm.notes:
+            name: str = FileTextUtil.normalize_text(
+                f'{note.category}-{note.description}')
+            path: Path = out_dir / f'{note.row_id}-{name}.{output_format.ext}'
+            self._write_note(note, path, output_format)
+
+    def admission_notes(self, hadm_id: str, out_file: Path = None,
                         keeps: str = None) -> pd.DataFrame:
         """Create a CSV of note information by admission.
 
         :param hadm_id: the admission ID
 
-        :param output: the output file
+        :param out_file: the output path
 
         :param keeps: a comma-delimited list of column to keep in the output;
                       defaults to all columns
 
         """
-        if output is None:
-            output: Path = Path(f'notes-{hadm_id}.csv')
+        if out_file is None:
+            out_file: Path = Path(f'notes-{hadm_id}.csv')
         adm: HospitalAdmission = self.corpus.hospital_adm_stash.get(hadm_id)
         rows: List[Dict[str, Any]] = []
         note: Note
@@ -131,20 +168,20 @@ class Application(FacadeApplication):
         df = pd.DataFrame(rows)
         if keeps is not None:
             df = df[keeps.split(',')]
-        df.to_csv(output)
-        logger.info(f'wrote: {output}')
+        df.to_csv(out_file)
+        logger.info(f'wrote: {out_file}')
         return df
 
-    def note_counts_by_admission(self, output: Path = None) -> pd.DataFrame:
+    def note_counts_by_admission(self, out_file: Path = None) -> pd.DataFrame:
         """Write the counts of each category and row IDs for each admission.
 
-        :param output: the output file
+        :param out_file: the output path
 
         """
-        output = Path('admissions.csv') if output is None else output
+        out_file = Path('admissions.csv') if out_file is None else out_file
         df: pd.DataFrame = self.anon_resource.note_counts_by_admission
-        df.to_csv(output, index=False)
-        logger.info(f'wrote: {output}')
+        df.to_csv(out_file, index=False)
+        logger.info(f'wrote: {out_file}')
         return df
 
 
