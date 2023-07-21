@@ -12,36 +12,16 @@ from io import StringIO, TextIOBase
 from pathlib import Path
 import pandas as pd
 from zensols.util import loglevel, stdout
-from zensols.persist import Stash, FileTextUtil
+from zensols.persist import Stash
 from zensols.config import ConfigFactory
 from zensols.cli import ApplicationError
 from zensols.deeplearn.cli import FacadeApplication
-from zensols.mimic import Note, Corpus, HospitalAdmission
+from zensols.mimic import NoteFormat, Note, Corpus, HospitalAdmission
 from . import AnnotatedNote, AnnotationResource, NoteStash, PredictedNote
 from .pred import SectionPredictor
 
 
 logger = logging.getLogger(__name__)
-
-
-class _Format(Enum):
-    """CLI note output formats."""
-    text = auto()
-    verbose = auto()
-    raw = auto()
-    markdown = auto()
-    summary = auto()
-
-    @property
-    def ext(self) -> str:
-        ext: str
-        if self.name in {'text', 'verbose', 'raw', 'summary'}:
-            ext = 'txt'
-        else:
-            ext = {
-                'markdown': 'md',
-            }[self.name]
-        return ext
 
 
 @dataclass
@@ -83,23 +63,14 @@ class Application(FacadeApplication):
         logger.info(f'wrote: {out_file}')
 
     def _write_note(self, note: Note, out_file: Path = None,
-                    output_format: _Format = _Format.text):
-        def summary_format(writer: TextIOBase):
-            for s in note.sections.values():
-                print(s, s.header_spans, len(s))
-
+                    output_format: NoteFormat = NoteFormat.text):
         with stdout(out_file) as f:
-            {_Format.text: lambda: note.write_human(writer=f),
-             _Format.verbose: lambda: note.write_sections(writer=f),
-             _Format.raw: lambda: print(note.text),
-             _Format.markdown: lambda: note.write_markdown(writer=f),
-             _Format.summary: lambda: summary_format(writer=f),
-             }[output_format]()
+            note.write_by_format(writer=f, note_format=output_format)
         if out_file.name != stdout.STANDARD_OUT_PATH:
             logger.info(f'wrote to {out_file}')
 
     def write_note(self, row_id: int, out_file: Path = None,
-                   output_format: _Format = _Format.text):
+                   output_format: NoteFormat = NoteFormat.text):
         """Write an admission, note or section.
 
         :param row_id: the row ID of the note to write
@@ -119,7 +90,7 @@ class Application(FacadeApplication):
         self._write_note(note, out_file, output_format)
 
     def write_admission(self, hadm_id: str, out_dir: Path = Path('.'),
-                        output_format: _Format = _Format.text):
+                        output_format: NoteFormat = NoteFormat.text):
         """Write all the notes of an admission.
 
         :param hadm_id: the admission ID
@@ -134,9 +105,7 @@ class Application(FacadeApplication):
         out_dir.mkdir(parents=True, exist_ok=True)
         note: Note
         for note in adm.notes:
-            name: str = FileTextUtil.normalize_text(
-                f'{note.category}-{note.description}')
-            path: Path = out_dir / f'{note.row_id}-{name}.{output_format.ext}'
+            path: Path = out_dir / f'{note.normal_name}.{output_format.ext}'
             self._write_note(note, path, output_format)
 
     def admission_notes(self, hadm_id: str, out_file: Path = None,
