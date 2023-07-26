@@ -197,22 +197,6 @@ class MimicPredictedNote(Note):
                 container=self,
                 header_spans=ps.header_spans,
                 body_span=ps.body_span)
-
-            # assert ps.doc == sec.doc
-            # if self.row_id == 53602:
-            #     print('_' * 30, 'ORG', '_' * 30)
-            #     for s in ps.doc:
-            #         print(f'S<{s.text}>')
-            #     print('_' * 30, 'COPY', '_' * 30)
-            #     for s in sec.doc:
-            #         print(f'S<{s.text}>')
-            #     print('_' * 120)
-
-            # for es, ns in zip(ps.doc.sents, sec.doc.sents):
-            #     print(es.lexspan, ns.lexspan)
-            #     #assert es.lexspan == ns.lexspan
-            #     #assert es.text == ns.text
-            #     #assert es.norm == ns.norm
             return sec
 
         for es, ns in zip(self._pred_note._doc.sents, self.doc.sents):
