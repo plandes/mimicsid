@@ -122,6 +122,7 @@ class PredictedNote(PersistableContainer, SectionContainer):
     def __post_init__(self, doc: FeatureDocument):
         self._doc = doc
         super().__init__()
+        assert self.text == doc.text
 
     @property
     def _predicted_sections(self) -> List[Section]:
@@ -183,17 +184,38 @@ class MimicPredictedNote(Note):
     def __init__(self, *args, predicted_note: PredictedNote, **kwargs):
         self._pred_note = predicted_note
         super().__init__(*args, **kwargs)
+        assert predicted_note.text == self.text
 
     def _get_section_annotator_type(self) -> SectionAnnotatorType:
         return SectionAnnotatorType.MODEL
 
     def _get_sections(self) -> Iterable[Section]:
         def map_sec(ps: Section) -> Section:
-            return Section(
+            sec = Section(
                 id=ps.id,
                 name=ps.name,
                 container=self,
                 header_spans=ps.header_spans,
                 body_span=ps.body_span)
+
+            # assert ps.doc == sec.doc
+            # if self.row_id == 53602:
+            #     print('_' * 30, 'ORG', '_' * 30)
+            #     for s in ps.doc:
+            #         print(f'S<{s.text}>')
+            #     print('_' * 30, 'COPY', '_' * 30)
+            #     for s in sec.doc:
+            #         print(f'S<{s.text}>')
+            #     print('_' * 120)
+
+            # for es, ns in zip(ps.doc.sents, sec.doc.sents):
+            #     print(es.lexspan, ns.lexspan)
+            #     #assert es.lexspan == ns.lexspan
+            #     #assert es.text == ns.text
+            #     #assert es.norm == ns.norm
+            return sec
+
+        for es, ns in zip(self._pred_note._doc.sents, self.doc.sents):
+            assert es.lexspan == ns.lexspan
 
         return map(map_sec, self._pred_note.predicted_sections)

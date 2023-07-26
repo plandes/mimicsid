@@ -3,7 +3,7 @@
 """
 from __future__ import annotations
 __author__ = 'Paul Landes'
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Union, Set
 from dataclasses import dataclass, field, InitVar
 import logging
 from pathlib import Path
@@ -68,10 +68,11 @@ class SectionPredictor(PersistableContainer):
         model_path: Path = self.section_id_model_packer.install_model()
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'section ID model path: {model_path}')
-        return FacadeApplication(
+        app = FacadeApplication(
             config=self.config_factory.config,
             model_path=model_path,
             cache_global_facade=False)
+        return app
 
     @persisted('_header_app')
     def _get_header_app(self) -> SectionFacade:
@@ -86,6 +87,16 @@ class SectionPredictor(PersistableContainer):
 
     def _merge_note(self, sn: PredictedNote, hn: PredictedNote):
         """Merge header tokens from ``hn`` to ``sn``."""
+        def ff_chars(s: str, start: int, end: int, avoid: Set[str]) -> \
+                Optional[int]:
+            p: int = None
+            for p in range(start, end + 1):
+                c: str = sn.text[p]
+                if c not in avoid:
+                    break
+            return p
+
+        avoid: Set[str] = set(': \n\t')
         ssec: Section
         for ssec in sn.sections.values():
             sspan: LexicalSpan = ssec.body_span
@@ -100,11 +111,12 @@ class SectionPredictor(PersistableContainer):
                         hspan = LexicalSpan(hspan.begin, hspan.end - 1)
                     hspans.append(hspan)
             if len(hspans) > 0:
-                p: int = None
-                for p in range(hspans[-1].end, sspan.end):
-                    c: str = sn.text[p]
-                    if c != ':' and c != ' ' and c != '\n' and c != '\t':
-                        break
+                p: int = ff_chars(sn.text, hspans[-1].end, sspan.end, avoid)
+                # p: int = None
+                # for p in range(hspans[-1].end, sspan.end + 1):
+                #     c: str = sn.text[p]
+                #     if c != ':' and c != ' ' and c != '\n' and c != '\t':
+                #         break
                 if p is None:
                     ssec.body_span = LexicalSpan(sspan.end, sspan.end)
                 else:
@@ -138,13 +150,9 @@ class SectionPredictor(PersistableContainer):
             note.predicted_sections = list(
                 filter(filter_sec, note.predicted_sections))
 
-    def _predict(self, doc_texts: List[str]) -> List[PredictedNote]:
-        sid_fac: SectionFacade = self._get_section_id_app().get_cached_facade()
-        self._validate_version('section_id_model_packer', sid_fac)
+    def _predict_from_docs(self, docs: Tuple[FeatureDocument],
+                           sid_fac: SectionFacade) -> List[PredictedNote]:
         head_app: FacadeApplication = self._get_header_app()
-        doc_parser: FeatureDocumentParser = \
-            sid_fac.doc_parser if self.doc_parser is None else self.doc_parser
-        docs: Tuple[FeatureDocument] = tuple(map(doc_parser, doc_texts))
         snotes: List[PredictedNote] = sid_fac.predict(docs)
         if head_app is not None:
             head_fac: SectionFacade = head_app.get_cached_facade()
@@ -154,10 +162,19 @@ class SectionPredictor(PersistableContainer):
         self._trim_notes(snotes)
         return snotes
 
-    def deallocate(self):
-        super().deallocate()
-        self._section_id_app.clear()
-        self._header_app.clear()
+    def predict_from_docs(self, docs: Tuple[FeatureDocument]) -> \
+            List[PredictedNote]:
+        sid_fac: SectionFacade = self._get_section_id_app().get_cached_facade()
+        self._validate_version('section_id_model_packer', sid_fac)
+        return self._predict_from_docs(docs, sid_fac)
+
+    def _predict(self, doc_texts: List[str]) -> List[PredictedNote]:
+        sid_fac: SectionFacade = self._get_section_id_app().get_cached_facade()
+        self._validate_version('section_id_model_packer', sid_fac)
+        doc_parser: FeatureDocumentParser = \
+            sid_fac.doc_parser if self.doc_parser is None else self.doc_parser
+        docs: Tuple[FeatureDocument] = tuple(map(doc_parser, doc_texts))
+        return self._predict_from_docs(docs, sid_fac)
 
     def predict(self, doc_texts: List[str]) -> List[PredictedNote]:
         """Collate the predictions of both the section ID (type) and header
@@ -177,14 +194,23 @@ class SectionPredictor(PersistableContainer):
         else:
             return self._predict(doc_texts)
 
-    def __call__(self, doc_texts: List[str]) -> List[PredictedNote]:
-        """See :meth:`predict`."""
-        return self.predict(doc_texts)
+    def deallocate(self):
+        super().deallocate()
+        self._section_id_app.clear()
+        self._header_app.clear()
+
+    def __call__(self, docs: List[Union[str, FeatureDocument]]) -> \
+            List[PredictedNote]:
+        """See :meth:`predict` and :meth:`predict_from_docs`."""
+        if len(docs) > 0 and isinstance(docs[0], FeatureDocument):
+            return self.predict_from_docs(docs)
+        else:
+            return self.predict(docs)
 
 
 @dataclass
 class PredictionNoteFactory(AnnotationNoteFactory):
-    """An note factory that predicts so that
+    """A note factory that predicts so that
     :class:`~zensols.mimic.adm.HospitalAdmissionDbStash` predicts missing
     sections.
 
@@ -222,8 +248,17 @@ class PredictionNoteFactory(AnnotationNoteFactory):
         sp: SectionPredictor = self.section_predictor
         note: Note = None
         try:
-            logger.info(f'predicting note: {note_event}')
-            pred_note: PredictedNote = sp.predict([note_event.text])[0]
+            # print('DP')
+            # self.config_factory.config['mimic_note_event_persister_parser_stash'].write()
+            # print(type(self.config_factory('mimic_note_event_persister_parser_stash').doc_parser))
+
+            # for t in note_event.doc.tokens:
+            #     print('T', t, hasattr(t, 'cui_'))
+
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.info(f'predicting note: {note_event}')
+            pred_note: PredictedNote = sp.predict_from_docs([note_event.doc])[0]
+
             if len(pred_note.sections) == 0:
                 note = None
             else:
@@ -231,6 +266,37 @@ class PredictionNoteFactory(AnnotationNoteFactory):
                     note_event,
                     section=self.mimic_pred_note_section,
                     params={'predicted_note': pred_note})
+
+            # if note_event.row_id == 53602:
+            #     if 0:
+            #         note.write_human()
+            #     if 1:
+            #         for s in note.doc.sents:
+            #             print(f'<{s.text}>')
+            #     print('_' * 120)
+            #     print('PRED', len(pred_note.sections))
+            #     for sent in pred_note.sections_ordered[4].doc.sents:
+            #         print(f'<{sent.text}>')
+            #     print('--')
+            #     for sent in note.sections_ordered[4].doc.sents:
+            #         print(f'<{sent.text}>')
+            #     print('_' * 120)
+
+            # if note_event.row_id == 53602:
+            #     for es, ns in zip(note_event.doc.sents, note.doc.sents):
+            #         assert es.lexspan == ns.lexspan
+            #         assert es.text == ns.text
+            #         assert es.norm == ns.norm
+
+            # if note_event.row_id == 53602 and False:
+            #     print(type(note_event.doc))
+            #     print(type(note.doc))
+            #     for es, ns in zip(note_event.doc.sents, note.doc.sents):
+            #         print(f'{es.lexspan}: <{es.text}>')
+            #         print('_' * 40)
+            #         print(f'{es.lexspan}: <{ns.text}>')
+            #         print('_' * 120)
+
         except Exception as e:
             logger.error(f'could not predict note: {note_event}: {e}', e)
         if note is None:

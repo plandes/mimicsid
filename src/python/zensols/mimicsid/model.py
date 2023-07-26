@@ -109,7 +109,7 @@ class SectionDataPoint(DataPoint):
             tt: TokenType
             norm: str = tok.norm
             ent: str = FeatureToken.NONE
-            cui: Optional[str] = tok.cui_
+            cui: Optional[str] = tok.cui_ if hasattr(tok, 'cui_') else None
             header_lab: str = 'y' if is_header else 'n'
             if cui == FeatureToken.NONE:
                 cui = None
@@ -163,7 +163,7 @@ class SectionDataPoint(DataPoint):
     @property
     def ttypes(self) -> Tuple[str]:
         """The token type feature, which is the string value of
-        :class:`.TokeType`.
+        :class:`.TokenType`.
 
         """
         return tuple(self.feature_dataframe['ttype'])
