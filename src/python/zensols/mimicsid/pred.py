@@ -91,7 +91,7 @@ class SectionPredictor(PersistableContainer):
                 Optional[int]:
             p: int = None
             for p in range(start, end + 1):
-                c: str = sn.text[p]
+                c: str = s[p]
                 if c not in avoid:
                     break
             return p
@@ -111,12 +111,8 @@ class SectionPredictor(PersistableContainer):
                         hspan = LexicalSpan(hspan.begin, hspan.end - 1)
                     hspans.append(hspan)
             if len(hspans) > 0:
+                # skip leading space/colon for a tighter begin section boundary
                 p: int = ff_chars(sn.text, hspans[-1].end, sspan.end, avoid)
-                # p: int = None
-                # for p in range(hspans[-1].end, sspan.end + 1):
-                #     c: str = sn.text[p]
-                #     if c != ':' and c != ' ' and c != '\n' and c != '\t':
-                #         break
                 if p is None:
                     ssec.body_span = LexicalSpan(sspan.end, sspan.end)
                 else:
@@ -248,17 +244,9 @@ class PredictionNoteFactory(AnnotationNoteFactory):
         sp: SectionPredictor = self.section_predictor
         note: Note = None
         try:
-            # print('DP')
-            # self.config_factory.config['mimic_note_event_persister_parser_stash'].write()
-            # print(type(self.config_factory('mimic_note_event_persister_parser_stash').doc_parser))
-
-            # for t in note_event.doc.tokens:
-            #     print('T', t, hasattr(t, 'cui_'))
-
             if logger.isEnabledFor(logging.DEBUG):
                 logger.info(f'predicting note: {note_event}')
             pred_note: PredictedNote = sp.predict_from_docs([note_event.doc])[0]
-
             if len(pred_note.sections) == 0:
                 note = None
             else:
@@ -266,37 +254,6 @@ class PredictionNoteFactory(AnnotationNoteFactory):
                     note_event,
                     section=self.mimic_pred_note_section,
                     params={'predicted_note': pred_note})
-
-            # if note_event.row_id == 53602:
-            #     if 0:
-            #         note.write_human()
-            #     if 1:
-            #         for s in note.doc.sents:
-            #             print(f'<{s.text}>')
-            #     print('_' * 120)
-            #     print('PRED', len(pred_note.sections))
-            #     for sent in pred_note.sections_ordered[4].doc.sents:
-            #         print(f'<{sent.text}>')
-            #     print('--')
-            #     for sent in note.sections_ordered[4].doc.sents:
-            #         print(f'<{sent.text}>')
-            #     print('_' * 120)
-
-            # if note_event.row_id == 53602:
-            #     for es, ns in zip(note_event.doc.sents, note.doc.sents):
-            #         assert es.lexspan == ns.lexspan
-            #         assert es.text == ns.text
-            #         assert es.norm == ns.norm
-
-            # if note_event.row_id == 53602 and False:
-            #     print(type(note_event.doc))
-            #     print(type(note.doc))
-            #     for es, ns in zip(note_event.doc.sents, note.doc.sents):
-            #         print(f'{es.lexspan}: <{es.text}>')
-            #         print('_' * 40)
-            #         print(f'{es.lexspan}: <{ns.text}>')
-            #         print('_' * 120)
-
         except Exception as e:
             logger.error(f'could not predict note: {note_event}: {e}', e)
         if note is None:
