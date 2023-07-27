@@ -255,7 +255,8 @@ class PredictionNoteFactory(AnnotationNoteFactory):
                     section=self.mimic_pred_note_section,
                     params={'predicted_note': pred_note})
         except Exception as e:
-            logger.error(f'could not predict note: {note_event}: {e}', e)
+            logger.error(f'could not predict note: {note_event}: {e}',
+                         exc_info=True)
         if note is None:
             note = NoteFactory.__call__(self, note_event)
         return note
