@@ -4,7 +4,8 @@ import shutil
 from pathlib import Path
 from zensols.config import ImportIniConfig, ImportConfigFactory
 from zensols.persist import Stash
-from zensols.mimic import HospitalAdmission, Note, RadiologyNote, EchoNote
+from zensols.mimic import HospitalAdmission, Note
+from zensols.mimic.regexnote import RadiologyNote, EchoNote
 from zensols.mimicsid import AnnotatedNote
 
 
