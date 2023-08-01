@@ -11,7 +11,7 @@ import pandas as pd
 from zensols.persist import persisted
 from zensols.nlp import FeatureToken, FeatureDocument, LexicalSpan
 from zensols.mednlp import MedicalFeatureToken
-from zensols.mimic import MimicTokenDecorator
+from zensols.mimic import MimicError, MimicTokenDecorator
 from zensols.deeplearn.batch import DataPoint
 from zensols.deeplearn.result import ResultsContainer
 from zensols.deepnlp.classify import (
@@ -21,6 +21,14 @@ from zensols.mimic import Section
 from . import AnnotatedNote, AnnotatedSection, PredictedNote
 
 logger = logging.getLogger(__name__)
+
+
+class EmptyPredictionError(MimicError):
+    """Raised when the model classifies all tokens as having no section.
+
+    """
+    def __init__(self):
+        super().__init__('Model classified all tokens as having no section')
 
 
 class TokenType(Enum):
@@ -126,6 +134,7 @@ class SectionDataPoint(DataPoint):
                 tt = TokenType.PUNCTUATION
             elif tok.is_space:
                 tt = {' ': TokenType.SPACE,
+                      '\r': TokenType.SPACE,
                       '\t': TokenType.SPACE,
                       '\n': TokenType.NEWLINE,
                       }[norm[0]]
@@ -227,8 +236,8 @@ class SectionPredictionMapper(ClassificationPredictionMapper):
         if tok_list is not None and len(tok_list) > 0:
             add_tok_list(last_lab, tok_list)
 
-    def _create_secions(self, tok_lists: Tuple[str, List[FeatureToken]],
-                        doc: FeatureDocument, secs: List[AnnotatedSection]):
+    def _create_sections(self, tok_lists: Tuple[str, List[FeatureToken]],
+                         doc: FeatureDocument, secs: List[AnnotatedSection]):
         """Create sections from token lists.
 
         :param tok_lists: the token lists created in :meth:`_create_tok_list`
@@ -243,7 +252,10 @@ class SectionPredictionMapper(ClassificationPredictionMapper):
             filter(lambda x: x[0] != FeatureToken.NONE, tok_lists))
         for sid, (label, toks) in enumerate(tok_lists):
             span: LexicalSpan = None
-            if len(toks) == 1:
+            if len(toks) == 0:
+                # bail past deep framework and handled higher in the stack
+                raise EmptyPredictionError()
+            elif len(toks) == 1:
                 span = toks[0].lexspan
             else:
                 begin = toks[0].lexspan.begin
@@ -279,7 +291,7 @@ class SectionPredictionMapper(ClassificationPredictionMapper):
         doc: FeatureDocument
         for doc, tok_lists in zip(docs, doc_tok_lists):
             secs: List[AnnotatedSection] = []
-            self._create_secions(tok_lists, doc, secs)
+            self._create_sections(tok_lists, doc, secs)
             pn = PredictedNote(
                 predicted_sections=secs,
                 doc=doc)
