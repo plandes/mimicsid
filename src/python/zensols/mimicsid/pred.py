@@ -26,12 +26,12 @@ class SectionPredictor(PersistableContainer):
     not set, then only section identifiers (types) and body spans are predicted.
     In this case, all header spans are left empty.
 
-    Implementation note: when :obj:`auto_deallocate` is ``False` you must wrap
+    Implementation note: when :obj:`auto_deallocate` is ``False`` you must wrap
     creations of this instance in :func:`~zensols.persist.dealloc` as this
     instance contains resources
-    (:class:`~zensols.deeplearn.cli.FacadeApplication) that need deallocation.
-    Their deallocation logic is invoked with this instance and deallocated by
-    :class:`~zensols.persist.PersistableContainer`.
+    (:class:`~zensols.deeplearn.cli.app.FacadeApplication`) that need
+    deallocation.  Their deallocation logic is invoked with this instance and
+    deallocated by :class:`~zensols.persist.annotation.PersistableContainer`.
 
     """
     name: str = field()
