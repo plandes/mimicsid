@@ -240,7 +240,8 @@ class PredictionNoteFactory(AnnotationNoteFactory):
         sp.auto_deallocate = False
         return sp
 
-    def _create_missing_anon_note(self, note_event: NoteEvent) -> Note:
+    def _create_missing_anon_note(self, note_event: NoteEvent,
+                                  section: str) -> Note:
         sp: SectionPredictor = self.section_predictor
         note: Note = None
         try:

@@ -133,22 +133,33 @@ class AnnotationNoteFactory(NoteFactory):
     found in the annotation set.
 
     """
-    def _create_missing_anon_note(self, note_event: NoteEvent) -> Note:
-        return super().__call__(note_event)
+    def _create_missing_anon_note(self, note_event: NoteEvent,
+                                  section: str) -> Note:
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'create missing anon note from: {note_event}')
+        return super().create(note_event, section)
 
-    def _create_note(self, note_event: NoteEvent, anon: Dict[str, Any]) -> Note:
+    def _create_note(self, note_event: NoteEvent, section: str,
+                     anon: Dict[str, Any]) -> Note:
         if anon is not None:
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug('creating from annotation')
             note = self._event_to_note(
                 note_event,
                 section=self.annotated_note_section,
                 params={'annotation': anon})
         else:
-            note = self._create_missing_anon_note(note_event)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug('annotation not found, creating ')
+            note = self._create_missing_anon_note(note_event, section)
         return note
 
-    def __call__(self, note_event: NoteEvent) -> Note:
+    def create(self, note_event: NoteEvent, section: str = None) -> Note:
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f'creating from note event: {note_event}, ' +
+                         f'section: {section}')
         anon: Dict[str, Any] = self.anon_resource.get_annotation(note_event)
-        return self._create_note(note_event, anon)
+        return self._create_note(note_event, section, anon)
 
 
 @dataclass
@@ -221,7 +232,7 @@ class AnnotatedNoteStash(ReadOnlyStash, PrimeableStash):
 
 @dataclass
 class NoteStash(DelegateStash):
-    """Creates notes of type :class:`~zensols.mimic.Note` or
+    """Creates notes of type :class:`~zensols.mimic.note.Note` or
     :class:`.AnnotatedNote` depending on if the note was annotated.
 
     """
