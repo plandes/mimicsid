@@ -124,7 +124,7 @@ class SectionDataPoint(DataPoint):
             if tok.ent_ != MedicalFeatureToken.CONCEPT_ENTITY_LABEL and \
                tok.ent_ != FeatureToken.NONE:
                 ent = tok.ent_
-            elif tok.mimic_ == MimicTokenDecorator.PSEUDO_TOKEN_FEATURE:
+            elif tok.mimic_ == MimicTokenDecorator.MASK_TOKEN_FEATURE:
                 ent = tok.onto_
             if tok.mimic_ == MimicTokenDecorator.SEPARATOR_TOKEN_FEATURE:
                 tt = TokenType.SEP
