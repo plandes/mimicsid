@@ -3,7 +3,7 @@
 """
 __author__ = 'Paul Landes'
 
-from typing import Tuple, List, Dict, Any
+from typing import Tuple, List, Dict, Any, Sequence
 from dataclasses import dataclass, field
 from enum import Enum, auto
 import sys
@@ -18,7 +18,7 @@ from zensols.cli import ApplicationError
 from zensols.deeplearn.cli import FacadeApplication
 from zensols.mimic import (
     NoteFormat, Note, Corpus, HospitalAdmission,
-    HospitalAdmissionDbFactoryStash,
+    NoteDocumentPreemptiveStash,
 )
 from . import AnnotatedNote, AnnotationResource, NoteStash, PredictedNote
 from .pred import SectionPredictor
@@ -46,7 +46,7 @@ class Application(FacadeApplication):
     unique ``row_id`` keys.
 
     """
-    adm_fac_stash: HospitalAdmissionDbFactoryStash = field(default=None)
+    preempt_stash: NoteDocumentPreemptiveStash = field(default=None)
     """A multi-processing stash used to preemptively parse notes."""
 
     def dump_ontology(self, out_file: Path = None):
@@ -153,8 +153,7 @@ class Application(FacadeApplication):
     def preempt_notes(self, input_file: Path = None, workers: int = 0):
         """Preemptively document parse notes across multiple threads.
 
-        :param input_file: a file of ``hadm_id``s for each admission's notes;
-                           defaults to the annotated admissions
+        :param input_file: a file of notes' unique ``row_id`` IDs
 
         :param workers: the number of processes to use to parse notes
 
@@ -162,18 +161,19 @@ class Application(FacadeApplication):
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'preemting admissions from {input_file} ' +
                         f'for {workers} workers')
-        hadm_ids: Tuple[str]
+        row_ids: Sequence[str]
         if input_file is None:
-            df: pd.DataFrame = self.anon_resource.note_counts_by_admission
-            hadm_ids = df['hadm_id'].to_list()
+            df: pd.DataFrame = self.anon_resource.note_ids
+            row_ids = df['row_id'].to_list()
         else:
             try:
                 with open(input_file) as f:
-                    hadm_ids = tuple(map(str.strip, f.readlines()))
+                    row_ids = tuple(map(str.strip, f.readlines()))
             except OSError as e:
                 raise ApplicationError(
-                    f'Could not preempt notes from file {input_file}: {e}') from e
-        self.adm_fac_stash.process_keys(hadm_ids)
+                    f'Could not preempt notes from file {input_file}: {e}') \
+                    from e
+        self.preempt_stash.process_keys(row_ids)
 
     def clear(self):
         """Remove all admission, note and section cached (parsed) data.
