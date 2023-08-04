@@ -16,7 +16,10 @@ from zensols.persist import Stash
 from zensols.config import ConfigFactory
 from zensols.cli import ApplicationError
 from zensols.deeplearn.cli import FacadeApplication
-from zensols.mimic import NoteFormat, Note, Corpus, HospitalAdmission
+from zensols.mimic import (
+    NoteFormat, Note, Corpus, HospitalAdmission,
+    HospitalAdmissionDbFactoryStash,
+)
 from . import AnnotatedNote, AnnotationResource, NoteStash, PredictedNote
 from .pred import SectionPredictor
 
@@ -43,14 +46,8 @@ class Application(FacadeApplication):
     unique ``row_id`` keys.
 
     """
-    def clear(self):
-        """Remove all admission, note and section cached (parsed) data.
-
-        """
-        stash: Stash = self.corpus.hospital_adm_stash
-        logger.info('clearing admission cache')
-        with loglevel('zensols'):
-            stash.clear()
+    adm_fac_stash: HospitalAdmissionDbFactoryStash = field(default=None)
+    """A multi-processing stash used to preemptively parse notes."""
 
     def dump_ontology(self, out_file: Path = None):
         """Writes the ontology.
@@ -152,6 +149,70 @@ class Application(FacadeApplication):
         df.to_csv(out_file, index=False)
         logger.info(f'wrote: {out_file}')
         return df
+
+    def preempt_notes(self, input_file: Path, workers: int = 0):
+        """Preemptively document parse notes across multiple threads.
+
+        :param input_file: a file of ``hadm_id``s for each admission's notes
+
+        :param workers: the number of processes to use to parse notes
+
+        """
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'preemting admissions from {input_file} ' +
+                        f'for {workers} workers')
+        try:
+            with open(input_file) as f:
+                hadm_ids = tuple(map(str.strip, f.readlines()))
+        except OSError as e:
+            raise ApplicationError(
+                f'Could not preempt notes from file {input_file}: {e}') from e
+        self.adm_fac_stash.process_keys(hadm_ids)
+
+    def clear(self):
+        """Remove all admission, note and section cached (parsed) data.
+
+        """
+        stash: Stash = self.corpus.hospital_adm_stash
+        logger.info('clearing admission cache')
+        with loglevel('zensols'):
+            stash.clear()
+
+    def proto(self):
+        if 0:
+            self.config_factory.config['mimic_default'].write()
+            print()
+            self.config_factory.config['mimic_note_dir_stash'].write()
+            print()
+            self.config_factory.config['mimic_note_factory'].write()
+            return
+        if 0:
+            self.config_factory.config.write()
+            return
+        if 0:
+            hadm_id = '111919'
+            adm: HospitalAdmission = self._get_adm(hadm_id)
+            for note in adm.notes:
+                note.write_fields()
+        if 0:
+            stash = self.config_factory('mimic_note_stash')
+            note = stash['59537']
+            note.doc.write()
+        if 0:
+            hadm_id = '111919'
+            adm: HospitalAdmission = self._get_adm(hadm_id)
+            note = adm['59537']
+            print(note, type(note), isinstance(note, Note))
+            note.doc.write()
+        if 1:
+            hadm_id = '145354'
+            adm = self.corpus.get_hospital_adm_by_id(hadm_id)
+            note = adm._note_stash['57848']
+            #note = adm._note_stash['1612650']
+            #print(tuple(adm.keys()))
+            print(note.text)
+            print()
+            note.write_human()
 
 
 class PredOutputType(Enum):
