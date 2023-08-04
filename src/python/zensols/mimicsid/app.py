@@ -150,10 +150,11 @@ class Application(FacadeApplication):
         logger.info(f'wrote: {out_file}')
         return df
 
-    def preempt_notes(self, input_file: Path, workers: int = 0):
+    def preempt_notes(self, input_file: Path = None, workers: int = 0):
         """Preemptively document parse notes across multiple threads.
 
-        :param input_file: a file of ``hadm_id``s for each admission's notes
+        :param input_file: a file of ``hadm_id``s for each admission's notes;
+                           defaults to the annotated admissions
 
         :param workers: the number of processes to use to parse notes
 
@@ -161,12 +162,17 @@ class Application(FacadeApplication):
         if logger.isEnabledFor(logging.INFO):
             logger.info(f'preemting admissions from {input_file} ' +
                         f'for {workers} workers')
-        try:
-            with open(input_file) as f:
-                hadm_ids = tuple(map(str.strip, f.readlines()))
-        except OSError as e:
-            raise ApplicationError(
-                f'Could not preempt notes from file {input_file}: {e}') from e
+        hadm_ids: Tuple[str]
+        if input_file is None:
+            df: pd.DataFrame = self.anon_resource.note_counts_by_admission
+            hadm_ids = df['hadm_id'].to_list()
+        else:
+            try:
+                with open(input_file) as f:
+                    hadm_ids = tuple(map(str.strip, f.readlines()))
+            except OSError as e:
+                raise ApplicationError(
+                    f'Could not preempt notes from file {input_file}: {e}') from e
         self.adm_fac_stash.process_keys(hadm_ids)
 
     def clear(self):
