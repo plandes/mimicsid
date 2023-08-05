@@ -1,7 +1,7 @@
 ## makefile automates the build and deployment for python projects
 
 PROJ_TYPE =		python
-PROJ_MODULES =		git python-resources python-cli python-doc python-doc-deploy
+PROJ_MODULES =		git python-resources python-cli python-doc python-doc-deploy markdown
 ADD_CLEAN +=		$(shell find example -type d -name __pycache__)
 CLEAN_ALL_DEPS +=	data-clean
 PIP_ARGS +=		--use-deprecated=legacy-resolver
