@@ -37,6 +37,8 @@ This package provides the following:
 - [Training Production Models](#training-production-models)
 - [Models](#models)
     - [Performance Metrics](#performance-metrics)
+        - [Version 0.0.2](#version-002)
+        - [Version 0.0.3](#version-003)
 - [Citation](#citation)
 - [Docker](#docker)
 - [Changelog](#changelog)
@@ -255,23 +257,21 @@ on Windows).
 
 The distributed models add in the test set to the training set to improve the
 performance for inferencing, which is why only the validation metrics are
-given.  Only version 0.0.2 results are given.  The validation set performance
-of the pretrained models are given below, where:
+given.  The validation set performance of the pretrained models are given
+below, where:
 
 * **wF1** is the weighted F1
 * **mF1** is the micro F1
 * **Mf1** is the macro F1
 * **acc** is the accuracy
 
-| Name                          | Type    | Id                                     | wF1   | mF1   | MF1   | acc   |
-|-------------------------------|---------|----------------------------------------|-------|-------|-------|-------|
-| `BiLSTM-CRF_tok (fastText)`   | Section | bilstm-crf-tok-fasttext-section-type   | 0.918 | 0.925 | 0.797 | 0.925 |
-| `BiLSTM-CRF_tok (GloVE 300D)` | Section | bilstm-crf-tok-glove-300d-section-type | 0.917 | 0.922 | 0.809 | 0.922 |
-| `BiLSTM-CRF_tok (fastText)`   | Header  | bilstm-crf-tok-fasttext-header         | 0.996 | 0.996 | 0.959 | 0.996 |
-| `BiLSTM-CRF_tok (GloVE 300D)` | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.962 | 0.996 |
+Fundamental API changes have necessitated subsequent versions of the model.
+Each version of this package is tied to a model version.  While some minor
+changes of each version might present language parsing differences such as
+sentence chunking, metrics are most likely statistically insignificant.
 
 
-The model version 0.0.3 validation results:
+#### Version 0.0.2
 
 | Name                          | Type    | Id                                     | wF1   | mF1   | MF1   | acc   |
 |-------------------------------|---------|----------------------------------------|-------|-------|-------|-------|
@@ -280,6 +280,15 @@ The model version 0.0.3 validation results:
 | `BiLSTM-CRF_tok (fastText)`   | Header  | bilstm-crf-tok-fasttext-header         | 0.996 | 0.996 | 0.959 | 0.996 |
 | `BiLSTM-CRF_tok (GloVE 300D)` | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.962 | 0.996 |
 
+
+#### Version 0.0.3
+
+| Name                          | Type    | Id                                     | wF1   | mF1   | MF1   | acc   |
+|-------------------------------|---------|----------------------------------------|-------|-------|-------|-------|
+| `BiLSTM-CRF_tok (fastText)`   | Section | bilstm-crf-tok-fasttext-section-type   | 0.911 | 0.917 | 0.792 | 0.917 |
+| `BiLSTM-CRF_tok (GloVE 300D)` | Section | bilstm-crf-tok-glove-300d-section-type | 0.929 | 0.933 | 0.810 | 0.933 |
+| `BiLSTM-CRF_tok (fastText)`   | Header  | bilstm-crf-tok-fasttext-header         | 0.996 | 0.996 | 0.965 | 0.996 |
+| `BiLSTM-CRF_tok (GloVE 300D)` | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.962 | 0.996 |
 
 
 ## Citation
