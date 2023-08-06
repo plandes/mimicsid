@@ -12,5 +12,8 @@ read
 echo "deleting any old models..."
 rm -rf target model data dist
 
+echo "parsing admissions, notes and docs"
+$BIN preempt -w 4
+
 echo "batching data"
 $BIN batch -c etc/batch.conf
