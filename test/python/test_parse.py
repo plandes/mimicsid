@@ -29,9 +29,10 @@ class TestParse(unittest.TestCase):
         self.assertEqual(len(should_secs), len(note.sections_by_name))
         name: str
         content: str
-        for (name, content), header in zip(should_secs.items(), should_heads):
-            self.assertTrue(name in note.sections_by_name)
+        headers: List[str]
+        for (name, content), headers in zip(should_secs.items(), should_heads):
+            self.assertTrue(name in note.sections_by_name, f'missing {name}')
             self.assertEqual(1, len(note.sections_by_name[name]))
             sec: Section = note.sections_by_name[name][0]
             self.assertEqual(sec.body, content.strip())
-            self.assertEqual(sec.headers, (header,))
+            self.assertEqual(sec.headers, tuple(headers))

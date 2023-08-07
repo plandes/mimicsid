@@ -1,4 +1,23 @@
+headers:
+  - []
+  - []
+  - ['HPI']
+  - ['Past Medical History']
+  - ['Social History']
 sections:
+  labs-imaging: |
+    Initial - CCC
+    Note Date: 10/28/2019
+    SSN: 589430543
+    Pulse: 78
+    Signed by (ORTHOPEDIC SURGEON), MD, PHD on 11/11/18 at 3:32 pm Affiliation: HOSPITAL
+    --------------- --------------- --------------- ---------------
+    Active Medication list as of 07/01/2019
+  medication-history: |
+    Medications - Prescription
+    FLUROSEMIDE – 91 mg daily
+    TYLENOL – OTC as needed
+    --------------- --------------- --------------- ---------------
   history-of-present-illness: |
     This is a first office visit to my clinic by Mrs. Jame Smith, a very pleasant
     59-year-old F patient, who sustained in 1983, as the result of 2 ski accidents,
@@ -10,4 +29,4 @@ sections:
   social-history: |
     Gaelic speaking only. Immigrated 25 years ago.  Does not speak
     to either at this time.
-headers: ['HPI', 'Past Medical History', 'Social History']
+
