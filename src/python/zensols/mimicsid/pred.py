@@ -14,7 +14,7 @@ from zensols.deeplearn.model import ModelPacker, ModelFacade
 from zensols.deeplearn.cli import FacadeApplication
 from zensols.mimic import Section, NoteEvent, Note, NoteFactory
 from . import PredictedNote, AnnotationNoteFactory, MimicPredictedNote
-from .model import EmptyPredictionError, SectionFacade
+from .model import PredictionError, EmptyPredictionError, SectionFacade
 
 logger = logging.getLogger(__name__)
 
@@ -273,9 +273,11 @@ class PredictionNoteFactory(AnnotationNoteFactory):
                     section=self.mimic_pred_note_section,
                     params={'predicted_note': pred_note})
         except EmptyPredictionError as e:
-            msg = f'could not predict note: {note_event}: {e}--using regexs'
+            msg = f'nothing predicted: {note_event}: {e}--using regexs'
             # skip the stack trace since no classified tokens somewhat often
             logger.error(msg)
+        except PredictionError as e:
+            raise e
         except Exception as e:
             msg = f'could not predict note: {note_event}: {e}--using regexs'
             logger.error(msg, exc_info=True)
@@ -285,5 +287,9 @@ class PredictionNoteFactory(AnnotationNoteFactory):
             if logger.isEnabledFor(logging.INFO):
                 logger.info(f'no sections predicted for {note_event.row_id}, ' +
                             'using regular expression prediction')
-            note = NoteFactory.__call__(self, note_event)
+            try:
+                note = self._create_from_note_event(note_event)
+            except Exception as e:
+                raise PredictionError('Failed twice to predict section: ' +
+                                      f'{note_event}: {e}') from e
         return note

@@ -23,7 +23,14 @@ from . import AnnotatedNote, AnnotatedSection, PredictedNote
 logger = logging.getLogger(__name__)
 
 
-class EmptyPredictionError(MimicError):
+class PredictionError(MimicError):
+    """Raised for any issue predicting sections.
+
+    """
+    pass
+
+
+class EmptyPredictionError(PredictionError):
     """Raised when the model classifies all tokens as having no section.
 
     """
@@ -226,8 +233,6 @@ class SectionPredictionMapper(ClassificationPredictionMapper):
         label: str
         tok: FeatureToken
         for label, tok in zip(labels, doc.token_iter()):
-            #print('L', label, tok, tok.norm == '\n')
-            #if len(tok.norm) == 0: tok.write()
             if tok.is_space:
                 continue
             if last_lab != label:
