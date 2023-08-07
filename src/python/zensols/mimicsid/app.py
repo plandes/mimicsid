@@ -150,7 +150,7 @@ class Application(FacadeApplication):
         logger.info(f'wrote: {out_file}')
         return df
 
-    def preempt_notes(self, input_file: Path = None, workers: int = 0):
+    def preempt_notes(self, input_file: Path = None, workers: int = None):
         """Preemptively document parse notes across multiple threads.
 
         :param input_file: a file of notes' unique ``row_id`` IDs
@@ -173,7 +173,7 @@ class Application(FacadeApplication):
                 raise ApplicationError(
                     f'Could not preempt notes from file {input_file}: {e}') \
                     from e
-        self.preempt_stash.process_keys(row_ids)
+        self.preempt_stash.process_keys(row_ids, workers)
 
     def clear(self):
         """Remove all admission, note and section cached (parsed) data.
