@@ -1,8 +1,8 @@
-from typing import Set
+from typing import Dict, Any, List
 import unittest
-from pathlib import Path
+import yaml
 import zensols.mimicsid
-from zensols.mimicsid import PredictedNote, ApplicationFactory
+from zensols.mimicsid import PredictedNote, ApplicationFactory, Section
 from zensols.mimicsid.pred import SectionPredictor
 
 
@@ -13,26 +13,25 @@ class TestParse(unittest.TestCase):
 
     def test_parse(self):
         write: bool = False
-        should_path: Path = Path('test-resources/should-section.txt')
-        note_path: Path = Path('test-resources/note.txt')
-        compare_section: str = 'history-of-present-illness'
         section_predictor: SectionPredictor = \
             ApplicationFactory.section_predictor()
-        with open(note_path) as f:
-            content = f.read()
+        with open('test-resources/should-section.yml') as f:
+            should: Dict[str, Any] = yaml.load(f, yaml.FullLoader)
+        with open('test-resources/note.txt') as f:
+            content: str = f.read()
         note: PredictedNote = section_predictor.predict([content])[0]
         if write:
             print()
             note.write_human()
         self.assertTrue(isinstance(note, PredictedNote))
-        sections: Set[str] = set(note.sections_by_name.keys())
-        self.assertTrue(len(sections) > 0)
-        if not write:
-            self.assertTrue(compare_section in sections)
-        body_text: str = note.sections_by_name[compare_section][0].body
-        if write:
-            with open(should_path, 'w') as f:
-                f.write(body_text)
-        with open(should_path) as f:
-            should: str = f.read().strip()
-        self.assertEqual(should, body_text)
+        should_secs: Dict[str, str] = should['sections']
+        should_heads: List[str] = should['headers']
+        self.assertEqual(len(should_secs), len(note.sections_by_name))
+        name: str
+        content: str
+        for (name, content), header in zip(should_secs.items(), should_heads):
+            self.assertTrue(name in note.sections_by_name)
+            self.assertEqual(1, len(note.sections_by_name[name]))
+            sec: Section = note.sections_by_name[name][0]
+            self.assertEqual(sec.body, content.strip())
+            self.assertEqual(sec.headers, (header,))

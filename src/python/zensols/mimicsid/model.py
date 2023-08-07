@@ -86,7 +86,7 @@ class SectionDataPoint(DataPoint):
 
     @property
     def doc(self) -> FeatureDocument:
-        """The document from where this data poign originates."""
+        """The document from where this data point originates."""
         return self.pred_doc if self.is_pred else self.note.doc
 
     @property
@@ -134,9 +134,9 @@ class SectionDataPoint(DataPoint):
                 tt = TokenType.PUNCTUATION
             elif tok.is_space:
                 tt = {' ': TokenType.SPACE,
-                      '\r': TokenType.SPACE,
                       '\t': TokenType.SPACE,
                       '\n': TokenType.NEWLINE,
+                      '\r': TokenType.NEWLINE,
                       }[norm[0]]
             else:
                 if norm.isupper():
@@ -226,6 +226,10 @@ class SectionPredictionMapper(ClassificationPredictionMapper):
         label: str
         tok: FeatureToken
         for label, tok in zip(labels, doc.token_iter()):
+            #print('L', label, tok, tok.norm == '\n')
+            #if len(tok.norm) == 0: tok.write()
+            if tok.is_space:
+                continue
             if last_lab != label:
                 if tok_list is not None:
                     add_tok_list(last_lab, tok_list)

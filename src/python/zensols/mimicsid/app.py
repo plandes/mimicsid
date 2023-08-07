@@ -184,42 +184,6 @@ class Application(FacadeApplication):
         with loglevel('zensols'):
             stash.clear()
 
-    def proto(self):
-        if 0:
-            self.config_factory.config['mimic_default'].write()
-            print()
-            self.config_factory.config['mimic_note_dir_stash'].write()
-            print()
-            self.config_factory.config['mimic_note_factory'].write()
-            return
-        if 0:
-            self.config_factory.config.write()
-            return
-        if 0:
-            hadm_id = '111919'
-            adm: HospitalAdmission = self._get_adm(hadm_id)
-            for note in adm.notes:
-                note.write_fields()
-        if 0:
-            stash = self.config_factory('mimic_note_stash')
-            note = stash['59537']
-            note.doc.write()
-        if 0:
-            hadm_id = '111919'
-            adm: HospitalAdmission = self._get_adm(hadm_id)
-            note = adm['59537']
-            print(note, type(note), isinstance(note, Note))
-            note.doc.write()
-        if 1:
-            hadm_id = '145354'
-            adm = self.corpus.get_hospital_adm_by_id(hadm_id)
-            note = adm._note_stash['57848']
-            #note = adm._note_stash['1612650']
-            #print(tuple(adm.keys()))
-            print(note.text)
-            print()
-            note.write_human()
-
 
 class PredOutputType(Enum):
     """The types of prediction output formats."""

@@ -28,7 +28,7 @@ class TestAnnotationAccess(unittest.TestCase):
         stash: Stash = corpus.hospital_adm_stash
         adm: HospitalAdmission = stash[self.hadm_id]
         rad_note: Note = adm.notes_by_category['Radiology'][0]
-        echo_note: Note = adm.notes_by_id[63188]
+        echo_note: Note = adm[63188]
         return rad_note, echo_note
 
     def test_without_anon(self):

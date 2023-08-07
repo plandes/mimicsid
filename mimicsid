@@ -28,4 +28,4 @@ if (__name__ == '__main__'):
         proto_factory_kwargs={
             'reload_pattern': r'^zensols.mimicsid.(?!domain)'},
     )
-    harness.run()
+    result = harness.run()

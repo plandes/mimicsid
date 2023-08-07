@@ -68,11 +68,10 @@ class SectionPredictor(PersistableContainer):
         model_path: Path = self.section_id_model_packer.install_model()
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'section ID model path: {model_path}')
-        app = FacadeApplication(
+        return FacadeApplication(
             config=self.config_factory.config,
             model_path=model_path,
             cache_global_facade=False)
-        return app
 
     @persisted('_header_app')
     def _get_header_app(self) -> SectionFacade:
@@ -96,27 +95,42 @@ class SectionPredictor(PersistableContainer):
                     break
             return p
 
-        avoid: Set[str] = set(': \n\t')
+        avoid: Set[str] = set(': \n\t\r')
         ssec: Section
         for ssec in sn.sections.values():
             sspan: LexicalSpan = ssec.body_span
             hspans: List[LexicalSpan] = []
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'sec span: {ssec}: {ssec.body_doc}, ' +
+                             f'lex: {ssec.lexspan}/{sspan}')
             hsec: Section
             for hsec in hn.sections.values():
                 hspan: LexicalSpan = hsec.body_span
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'header span: {hsec}: {hsec.body_doc}, ' +
+                                 f'overlap: {hspan.overlaps_with(sspan)}, ' +
+                                 f'begin: {hspan.begin == sspan.begin}')
                 if hspan.overlaps_with(sspan) and hspan.begin == sspan.begin:
                     # skip over the colon and space after
                     if len(hspan) > 1 and \
                        sn.text[hspan.end - 1:hspan.end] == ':':
                         hspan = LexicalSpan(hspan.begin, hspan.end - 1)
+                    if logger.isEnabledFor(logging.DEBUG):
+                        logger.debug(f'adding header span: {hspan}')
                     hspans.append(hspan)
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'found {len(hspans)} overlapping header spans')
             if len(hspans) > 0:
                 # skip leading space/colon for a tighter begin section boundary
                 p: int = ff_chars(sn.text, hspans[-1].end, sspan.end, avoid)
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'char skip: {p}')
                 if p is None:
                     ssec.body_span = LexicalSpan(sspan.end, sspan.end)
                 else:
                     ssec.body_span = LexicalSpan(p, sspan.end)
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'adding {hspans} to {ssec}')
                 ssec.header_spans = tuple(hspans)
 
     def _merge_notes(self, snotes: List[PredictedNote],
@@ -127,7 +141,8 @@ class SectionPredictor(PersistableContainer):
         for sn, hn in zip(snotes, hnotes):
             self._merge_note(sn, hn)
 
-    def _validate_version(self, packer_name: str, facade: ModelFacade):
+    @persisted('__validate_version', transient=True)
+    def _validate_version(self, packer_name: str, facade: ModelFacade) -> bool:
         packer: ModelPacker = getattr(self, packer_name)
         model_pred: SectionPredictor = facade.config_factory(self.name)
         model_packer = getattr(model_pred, packer_name)
@@ -136,6 +151,8 @@ class SectionPredictor(PersistableContainer):
             logger.warning(
                 f'API {model_name} version ({packer.version}) does not ' +
                 f'match the trained model version ({model_packer.version})')
+            return False
+        return True
 
     def _trim_notes(self, notes: List[PredictedNote]):
         def filter_sec(sec: Section) -> bool:

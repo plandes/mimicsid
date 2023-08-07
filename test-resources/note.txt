@@ -15,6 +15,10 @@ HPI: This is a first office visit to my clinic by Mrs. Jame Smith, a very pleasa
 a pelvic fracture with vertical shear that has healed in about an inch vertical
 shortening.
 
+Past Medical History:
+Past medical history is notable for aortic stenosis, coronary
+artery disease, hypertension, and Hyperlipidemia.
+
 Social History:
 Gaelic speaking only. Immigrated 25 years ago.  Does not speak
 to either at this time.

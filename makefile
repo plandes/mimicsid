@@ -18,9 +18,12 @@ include ./zenbuild/main.mk
 modeldeps:
 			$(PIP_BIN) install $(PIP_ARGS) -r $(PY_SRC)/requirements-model.txt --no-deps
 
-.PHONY:			testall
-testall:		test
+.PHONY:			testdb
+testdb:
 			make PY_SRC_TEST=test/db test
+
+.PHONY:			testall
+testall:		test testdb
 
 .PHONY:			traintest
 traintest:
