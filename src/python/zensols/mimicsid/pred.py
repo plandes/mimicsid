@@ -8,11 +8,13 @@ from dataclasses import dataclass, field, InitVar
 import logging
 from pathlib import Path
 from zensols.config import ConfigFactory
-from zensols.persist import PersistableContainer, persisted, PersistedWork
+from zensols.persist import (
+    PersistableContainer, persisted, PersistedWork, Primeable
+)
 from zensols.nlp import LexicalSpan, FeatureDocument, FeatureDocumentParser
 from zensols.deeplearn.model import ModelPacker, ModelFacade
 from zensols.deeplearn.cli import FacadeApplication
-from zensols.mimic import Section, NoteEvent, Note, NoteFactory
+from zensols.mimic import Section, NoteEvent, Note
 from . import PredictedNote, AnnotationNoteFactory, MimicPredictedNote
 from .model import PredictionError, EmptyPredictionError, SectionFacade
 
@@ -20,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class SectionPredictor(PersistableContainer):
+class SectionPredictor(PersistableContainer, Primeable):
     """Creates a complete prediction by collating the predictions of both the
     section ID (type) and header token models.  If :obj:`header_model_packer` is
     not set, then only section identifiers (types) and body spans are predicted.
@@ -207,6 +209,13 @@ class SectionPredictor(PersistableContainer):
         else:
             return self._predict(doc_texts)
 
+    def prime(self):
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'priming {type(self)}...')
+        self.section_id_model_packer.install_model()
+        self.header_model_packer.install_model()
+        super().prime()
+
     def deallocate(self):
         super().deallocate()
         self._section_id_app.clear()
@@ -256,6 +265,12 @@ class PredictionNoteFactory(AnnotationNoteFactory):
         # turn off deallocation to keep the same facade for all prediction calls
         sp.auto_deallocate = False
         return sp
+
+    def prime(self):
+        if logger.isEnabledFor(logging.INFO):
+            logger.info(f'priming {type(self)}...')
+        self.section_predictor.prime()
+        super().prime()
 
     def _create_missing_anon_note(self, note_event: NoteEvent,
                                   section: str) -> Note:
