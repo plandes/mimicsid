@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.4.0] - 2023-08-16
+### Added
+- Model training and packaging automation script for all models.
+
+### Changed
+- Model is downloaded and installed correctly using preemptive stash priming
+  from the [zensols.mimic] library.
+- Upgraded [zensols.mimic] 1.4.0 and [zensols.deepnlp] 1.8.0
+- Handle carriage returns (`\r`) as a feature in the model.
+- Fix headers and sections matching up by removing newline tokens on
+  prediction.
+- Retrain and default to highest performing models for model version 0.0.3.
+- Remove `pt.` to `patient` token replacements.
+
+
 ## [1.3.1] - 2023-06-28
 ### Changed
 - Dependencies to force correct versions of torch, numpy and scipy.
@@ -54,7 +69,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/mimicsid/compare/v1.3.1...HEAD
+[Unreleased]: https://github.com/plandes/mimicsid/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/plandes/mimicsid/compare/v1.3.1...v1.4.0
 [1.3.1]: https://github.com/plandes/mimicsid/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/plandes/mimicsid/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/plandes/mimicsid/compare/v1.1.0...v1.2.0
