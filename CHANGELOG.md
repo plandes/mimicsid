@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.4.2] - 2023-08-16
+### Changed
+- Inject model configuration to allow the SQLite connection manager with the
+  model without any PostgreSQL drivers installed.
+
+
 ## [1.4.1] - 2023-08-16
 ### Changed
 - Updated configuration to download model version 0.0.3.
@@ -74,7 +80,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/mimicsid/compare/v1.4.1...HEAD
+[Unreleased]: https://github.com/plandes/mimicsid/compare/v1.4.2...HEAD
+[1.4.2]: https://github.com/plandes/mimicsid/compare/v1.4.1...v1.4.2
 [1.4.1]: https://github.com/plandes/mimicsid/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/plandes/mimicsid/compare/v1.3.1...v1.4.0
 [1.3.1]: https://github.com/plandes/mimicsid/compare/v1.3.0...v1.3.1

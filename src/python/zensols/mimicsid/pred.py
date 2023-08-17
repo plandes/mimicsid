@@ -3,11 +3,11 @@
 """
 from __future__ import annotations
 __author__ = 'Paul Landes'
-from typing import List, Tuple, Optional, Union, Set
+from typing import List, Tuple, Optional, Union, Set, ClassVar
 from dataclasses import dataclass, field, InitVar
 import logging
 from pathlib import Path
-from zensols.config import ConfigFactory
+from zensols.config import ConfigFactory, Configurable, DictionaryConfig
 from zensols.persist import (
     PersistableContainer, persisted, PersistedWork, Primeable
 )
@@ -48,6 +48,9 @@ class SectionPredictor(PersistableContainer, Primeable):
     header_model_packer: Optional[ModelPacker] = field(default=None)
     """The packer used to create the header token identifier model."""
 
+    model_config: Configurable = field(default=None)
+    """Configuration that overwrites the packaged model configuration."""
+
     doc_parser: FeatureDocumentParser = field(default=None)
     """Used for parsing documents for predicton.  Default to using model's
     configured document parser.
@@ -73,7 +76,8 @@ class SectionPredictor(PersistableContainer, Primeable):
         return FacadeApplication(
             config=self.config_factory.config,
             model_path=model_path,
-            cache_global_facade=False)
+            cache_global_facade=False,
+            model_config_overwrites=self.model_config)
 
     @persisted('_header_app')
     def _get_header_app(self) -> SectionFacade:
@@ -84,7 +88,8 @@ class SectionPredictor(PersistableContainer, Primeable):
             return FacadeApplication(
                 config=self.config_factory.config,
                 model_path=model_path,
-                cache_global_facade=False)
+                cache_global_facade=False,
+                model_config_overwrites=self.model_config)
 
     def _merge_note(self, sn: PredictedNote, hn: PredictedNote):
         """Merge header tokens from ``hn`` to ``sn``."""
