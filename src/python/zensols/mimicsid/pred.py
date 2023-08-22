@@ -3,11 +3,11 @@
 """
 from __future__ import annotations
 __author__ = 'Paul Landes'
-from typing import List, Tuple, Optional, Union, Set, ClassVar
+from typing import List, Tuple, Optional, Union, Set
 from dataclasses import dataclass, field, InitVar
 import logging
 from pathlib import Path
-from zensols.config import ConfigFactory, Configurable, DictionaryConfig
+from zensols.config import ConfigFactory, Configurable
 from zensols.persist import (
     PersistableContainer, persisted, PersistedWork, Primeable
 )
