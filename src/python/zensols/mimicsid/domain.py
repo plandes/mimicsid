@@ -136,7 +136,7 @@ class PredictedNote(PersistableContainer, SectionContainer):
     def __post_init__(self, doc: FeatureDocument):
         self._doc = doc
         super().__init__()
-        if self.texSectiont != doc.text:
+        if self.text != doc.text:
             raise MimicSectionAssertError({self.text}, {doc.text})
 
     @property
