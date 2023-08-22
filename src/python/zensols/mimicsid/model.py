@@ -11,19 +11,19 @@ import pandas as pd
 from zensols.persist import persisted
 from zensols.nlp import FeatureToken, FeatureDocument, LexicalSpan
 from zensols.mednlp import MedicalFeatureToken
-from zensols.mimic import MimicError, MimicTokenDecorator
+from zensols.mimic import MimicTokenDecorator
 from zensols.deeplearn.batch import DataPoint
 from zensols.deeplearn.result import ResultsContainer
 from zensols.deepnlp.classify import (
     ClassificationPredictionMapper, TokenClassifyModelFacade
 )
 from zensols.mimic import Section
-from . import AnnotatedNote, AnnotatedSection, PredictedNote
+from . import MimicSectionError, AnnotatedNote, AnnotatedSection, PredictedNote
 
 logger = logging.getLogger(__name__)
 
 
-class PredictionError(MimicError):
+class PredictionError(MimicSectionError):
     """Raised for any issue predicting sections.
 
     """

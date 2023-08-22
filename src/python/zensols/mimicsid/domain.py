@@ -11,7 +11,18 @@ from io import TextIOBase
 import re
 from zensols.persist import persisted, PersistableContainer
 from zensols.nlp import LexicalSpan, FeatureDocument
-from zensols.mimic import Note, Section, SectionContainer, SectionAnnotatorType
+from zensols.mimic import (
+    MimicError, Note, Section, SectionContainer, SectionAnnotatorType
+)
+
+
+class MimicSectionError(MimicError):
+    pass
+
+
+class MimicSectionAssertError(MimicSectionError):
+    def __init__(self, a, b):
+        super().__init__(f'Assertion error: {a} != {b}')
 
 
 class AgeType(Enum):
@@ -88,10 +99,13 @@ class AnnotatedNote(Note):
             annotation=anon)
 
     def _get_sections(self) -> Iterable[Section]:
-        an = self.annotation
-        assert self.hadm_id == an['hadm_id']
-        assert self.row_id == an['row_id']
-        assert self.category == an['category']
+        an: Dict[str, Any] = self.annotation
+        if self.hadm_id != an['hadm_id']:
+            raise MimicSectionAssertError(self.hadm_id, an['hadm_id'])
+        if self.row_id != an['row_id']:
+            raise MimicSectionAssertError(self.row_id, an['row_id'])
+        if self.category != an['category']:
+            raise MimicSectionAssertError(self.category, an['category'])
         secs: List[Section] = []
         sec_anon: Dict[str, Any]
         for sid, sec_anon in enumerate(an['sections']):
@@ -122,7 +136,8 @@ class PredictedNote(PersistableContainer, SectionContainer):
     def __post_init__(self, doc: FeatureDocument):
         self._doc = doc
         super().__init__()
-        assert self.text == doc.text
+        if self.texSectiont != doc.text:
+            raise MimicSectionAssertError({self.text}, {doc.text})
 
     @property
     def _predicted_sections(self) -> List[Section]:
@@ -184,7 +199,8 @@ class MimicPredictedNote(Note):
     def __init__(self, *args, predicted_note: PredictedNote, **kwargs):
         self._pred_note = predicted_note
         super().__init__(*args, **kwargs)
-        assert predicted_note.text == self.text
+        if predicted_note.text != self.text:
+            raise MimicSectionAssertError(predicted_note.text, self.text)
 
     def _get_section_annotator_type(self) -> SectionAnnotatorType:
         return SectionAnnotatorType.MODEL
@@ -200,6 +216,7 @@ class MimicPredictedNote(Note):
             return sec
 
         for es, ns in zip(self._pred_note._doc.sents, self.doc.sents):
-            assert es.lexspan == ns.lexspan
+            if es.lexspan != ns.lexspan:
+                raise MimicSectionAssertError(es.lexspan, ns.lexspan)
 
         return map(map_sec, self._pred_note.predicted_sections)
