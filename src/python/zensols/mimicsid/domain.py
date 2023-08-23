@@ -100,10 +100,12 @@ class AnnotatedNote(Note):
 
     def _get_sections(self) -> Iterable[Section]:
         an: Dict[str, Any] = self.annotation
-        if self.hadm_id != an['hadm_id']:
-            raise MimicSectionAssertError(self.hadm_id, an['hadm_id'])
-        if self.row_id != an['row_id']:
-            raise MimicSectionAssertError(self.row_id, an['row_id'])
+        hadm_id: str = str(an['hadm_id'])
+        row_id: str = str(an['row_id'])
+        if self.hadm_id != hadm_id:
+            raise MimicSectionAssertError(self.hadm_id, hadm_id)
+        if self.row_id != row_id:
+            raise MimicSectionAssertError(self.row_id, row_id)
         if self.category != an['category']:
             raise MimicSectionAssertError(self.category, an['category'])
         secs: List[Section] = []
