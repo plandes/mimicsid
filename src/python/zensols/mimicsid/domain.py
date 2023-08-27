@@ -102,9 +102,9 @@ class AnnotatedNote(Note):
         an: Dict[str, Any] = self.annotation
         hadm_id: str = str(an['hadm_id'])
         row_id: str = str(an['row_id'])
-        if self.hadm_id != hadm_id:
+        if str(self.hadm_id) != hadm_id:
             raise MimicSectionAssertError(self.hadm_id, hadm_id)
-        if self.row_id != row_id:
+        if str(self.row_id) != row_id:
             raise MimicSectionAssertError(self.row_id, row_id)
         if self.category != an['category']:
             raise MimicSectionAssertError(self.category, an['category'])
