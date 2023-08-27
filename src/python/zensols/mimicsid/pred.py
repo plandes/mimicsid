@@ -312,4 +312,8 @@ class PredictionNoteFactory(AnnotationNoteFactory):
             except Exception as e:
                 raise PredictionError('Failed twice to predict section: ' +
                                       f'{note_event}: {e}') from e
+        else:
+            if logger.isEnabledFor(logging.INFO):
+                logger.info(f'predicted {len(note.sections)} ' +
+                            f'for note: {note.row_id}')
         return note
