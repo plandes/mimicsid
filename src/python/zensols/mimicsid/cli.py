@@ -29,7 +29,7 @@ class ApplicationFactory(CliApplicationFactory):
 
     @classmethod
     def corpus(cls) -> Corpus:
-        """Return the section predictor using the app context."""
+        """Return the MIMIC-III corpus data access object."""
         return cls.instance('mimic_corpus')
 
     @classmethod
