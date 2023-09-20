@@ -22,7 +22,7 @@ class ApplicationFactory(CliApplicationFactory):
 
     @classmethod
     def instance(cls, name: str) -> ConfigFactory:
-        """Return the section predictor using the app context."""
+        """Return the application context."""
         harness: CliHarness = cls.create_harness()
         fac: ConfigFactory = harness.get_config_factory()
         return fac(name)
