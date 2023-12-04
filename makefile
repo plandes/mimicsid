@@ -1,6 +1,7 @@
 ## makefile automates the build and deployment for python projects
 
-## Configuration
+
+## Build system
 #
 # build config
 PROJ_TYPE =		python
