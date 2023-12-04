@@ -137,7 +137,7 @@ class AnnotationNoteFactory(NoteFactory):
                                   section: str) -> Note:
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(f'create missing anon note from: {note_event}')
-        return super().create(note_event, section)
+        return super()._create_from_note_event(note_event, section)
 
     def _create_note(self, note_event: NoteEvent, section: str,
                      anon: Dict[str, Any]) -> Note:
