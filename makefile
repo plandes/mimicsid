@@ -10,7 +10,6 @@ PROJ_MODULES =		git python-resources python-cli python-doc python-doc-deploy mar
 # build
 ADD_CLEAN +=		$(shell find example -type d -name __pycache__)
 CLEAN_ALL_DEPS +=	data-clean
-PIP_ARGS +=		--use-deprecated=legacy-resolver
 PY_DEP_POST_DEPS +=	modeldeps
 
 # project specific
