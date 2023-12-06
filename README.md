@@ -3,7 +3,6 @@
 [![PyPI][pypi-badge]][pypi-link]
 [![Python 3.10][python310-badge]][python310-link]
 [![Python 3.11][python311-badge]][python311-link]
-[![Build Status][build-badge]][build-link]
 
 This repository contains the a Python package to automatically segment and
 identify sections of clinical notes, such as electronic health record (EHR)
