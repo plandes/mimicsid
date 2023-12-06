@@ -1,3 +1,3 @@
-zensols.deepnlp~=1.10.0
-zensols.deeplearn~=1.8.1
-zensols.mimic~=1.4.0
+zensols.deepnlp~=1.11.0
+zensols.deeplearn~=1.9.0
+zensols.mimic~=1.5.0
