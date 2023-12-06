@@ -316,14 +316,23 @@ If you use this project in your research please use the following BibTeX entry:
 Also please cite the [Zensols Framework]:
 
 ```bibtex
-@article{Landes_DiEugenio_Caragea_2021,
-  title={DeepZensols: Deep Natural Language Processing Framework},
-  url={http://arxiv.org/abs/2109.03383},
-  note={arXiv: 2109.03383},
-  journal={arXiv:2109.03383 [cs]},
-  author={Landes, Paul and Di Eugenio, Barbara and Caragea, Cornelia},
-  year={2021},
-  month={Sep}
+@inproceedings{landes-etal-2023-deepzensols,
+    title = "{D}eep{Z}ensols: A Deep Learning Natural Language Processing Framework for Experimentation and Reproducibility",
+    author = "Landes, Paul  and
+      Di Eugenio, Barbara  and
+      Caragea, Cornelia",
+    editor = "Tan, Liling  and
+      Milajevs, Dmitrijs  and
+      Chauhan, Geeticka  and
+      Gwinnup, Jeremy  and
+      Rippeth, Elijah",
+    booktitle = "Proceedings of the 3rd Workshop for Natural Language Processing Open Source Software (NLP-OSS 2023)",
+    month = dec,
+    year = "2023",
+    address = "Singapore, Singapore",
+    publisher = "Empirical Methods in Natural Language Processing",
+    url = "https://aclanthology.org/2023.nlposs-1.16",
+    pages = "141--146"
 }
 ```
 
