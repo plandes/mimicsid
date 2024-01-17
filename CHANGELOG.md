@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+### Changed
+- Fix [No section: 'medcat_status_move_update'] error.
+
+
 ## [1.5.0] - 2023-12-05
 ### Changed
 - Upgrade to [zensols.mimic] version 1.5.0.
@@ -111,3 +115,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [zensols.deepnlp]: https://github.com/plandes/deepnlp
 [zensols.mimic]: https://github.com/plandes/mimic
+[No section: 'medcat_status_move_update']: https://github.com/plandes/mimicsid/issues/2

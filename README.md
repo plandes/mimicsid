@@ -35,12 +35,14 @@ This package provides the following:
     - [Training and Testing](#training-and-testing)
 - [Training Production Models](#training-production-models)
 - [Models](#models)
+    - [MedCAT Models](#medcat-models)
     - [Performance Metrics](#performance-metrics)
         - [Version 0.0.2](#version-002)
         - [Version 0.0.3](#version-003)
 - [Citation](#citation)
 - [Docker](#docker)
 - [Changelog](#changelog)
+- [Community](#community)
 - [License](#license)
 
 <!-- markdown-toc end -->
@@ -252,6 +254,13 @@ time the program is used in the `~/.cache` directory (or similar home directory
 on Windows).
 
 
+### MedCAT Models
+
+The dependency [mednlp package] package uses the [default MedCAT
+model](https://github.com/plandes/mednlp#medcat-models).
+
+
+
 ### Performance Metrics
 
 The distributed models add in the test set to the training set to improve the
@@ -372,7 +381,7 @@ Contributions as pull requests, feedback and any input is welcome.
 
 [MIT License](LICENSE.md)
 
-Copyright (c) 2022 - 2023 Paul Landes
+Copyright (c) 2022 - 2024 Paul Landes
 
 
 <!-- links -->

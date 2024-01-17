@@ -9,6 +9,7 @@ PROJ_MODULES =		git python-resources python-cli python-doc python-doc-deploy mar
 
 # build
 ADD_CLEAN +=		$(shell find example -type d -name __pycache__)
+ADD_CLEAN +=		preds
 CLEAN_ALL_DEPS +=	data-clean
 PY_DEP_POST_DEPS +=	modeldeps
 
@@ -54,6 +55,20 @@ hardstop:
 			ps -eaf | grep python | grep $(ENTRY) | \
 				grep -v grep | awk '{print $$2}' | xargs kill
 
+# test parsing
+.PHONY:			testparse
+testparse:
+			$(ENTRY) predict \
+			 	--config models/glove300.conf \
+			 	test-resources/note.txt
+			$(eval OUT_LINES=$(shell wc -l preds/note-pred.txt | awk '{print $$1}'))
+			$(eval SHOULD_LINES=24)
+			@if [ "$(SHOULD_LINES)" != "$(OUT_LINES)" ] ; then \
+				echo "error: line length output of $(SHOULD_LINES) != $(OUT_LINES)" ; \
+				exit 1 ; \
+			fi
+			@echo "success: line count output: $(OUT_LINES)"
+
 # test the MIMIC-III database (unavilable database in GitHub workflows)
 .PHONY:			testdb
 testdb:
@@ -61,7 +76,7 @@ testdb:
 
 # test prediction and the DB access
 .PHONY:			testall
-testall:		test testdb
+testall:		test testparse testdb
 
 .PHONY:			data-clean
 data-clean:		clean
