@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.5.1] - 2024-01-17
 ### Changed
 - Fix [No section: 'medcat_status_move_update'] error.
 
@@ -100,7 +101,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/mimicsid/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/plandes/mimicsid/compare/v1.5.1...HEAD
+[1.5.1]: https://github.com/plandes/mimicsid/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/plandes/mimicsid/compare/v1.4.3...v1.5.0
 [1.4.3]: https://github.com/plandes/mimicsid/compare/v1.4.2...v1.4.3
 [1.4.2]: https://github.com/plandes/mimicsid/compare/v1.4.1...v1.4.2
