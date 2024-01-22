@@ -58,16 +58,13 @@ hardstop:
 # test parsing
 .PHONY:			testparse
 testparse:
-			$(ENTRY) predict \
-			 	--config models/glove300.conf \
-			 	test-resources/note.txt
-			$(eval OUT_LINES=$(shell wc -l preds/note-pred.txt | awk '{print $$1}'))
-			$(eval SHOULD_LINES=24)
-			@if [ "$(SHOULD_LINES)" != "$(OUT_LINES)" ] ; then \
-				echo "error: line length output of $(SHOULD_LINES) != $(OUT_LINES)" ; \
-				exit 1 ; \
-			fi
-			@echo "success: line count output: $(OUT_LINES)"
+			$(eval cor=25)
+			@$(ENTRY) predict \
+			  --config models/glove300.conf \
+			  --path - test-resources/note.txt | \
+			  wc -l | xargs -i{} bash -c \
+			  "if [ '{}' != '$(cor)' ] ; then echo {} != $(cor) ; exit 1 ; fi"
+			@echo "success: line count output: $(cor)"
 
 # test the MIMIC-III database (unavilable database in GitHub workflows)
 .PHONY:			testdb
