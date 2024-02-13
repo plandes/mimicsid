@@ -3,7 +3,7 @@
 """
 from __future__ import annotations
 __author__ = 'Paul Landes'
-from typing import List, Tuple, Optional, Union, Set
+from typing import List, Tuple, Optional, Iterable, Set, Union, Callable
 from dataclasses import dataclass, field, InitVar
 import logging
 from pathlib import Path
@@ -14,8 +14,12 @@ from zensols.persist import (
 from zensols.nlp import LexicalSpan, FeatureDocument, FeatureDocumentParser
 from zensols.deeplearn.model import ModelPacker, ModelFacade
 from zensols.deeplearn.cli import FacadeApplication
-from zensols.mimic import Section, NoteEvent, Note
-from . import PredictedNote, AnnotationNoteFactory, MimicPredictedNote
+from zensols.mimic import (
+    Section, NoteEvent, Note, SectionContainer, GapSectionContainer
+)
+from . import (
+    SectionFilterType, PredictedNote, AnnotationNoteFactory, MimicPredictedNote
+)
 from .model import PredictionError, EmptyPredictionError, SectionFacade
 
 logger = logging.getLogger(__name__)
@@ -58,6 +62,10 @@ class SectionPredictor(PersistableContainer, Primeable):
     """
     min_section_body_len: int = field(default=1)
     """The minimum length of the body needed to make a section."""
+
+    section_filter_type: SectionFilterType = field(
+        default=SectionFilterType.keep_classified)
+    """What sections to keep.  See :class:`.SectionFilterType`."""
 
     auto_deallocate: bool = field(default=True)
     """Whether or not to deallocate resources after every call to
@@ -196,7 +204,7 @@ class SectionPredictor(PersistableContainer, Primeable):
         docs: Tuple[FeatureDocument] = tuple(map(doc_parser, doc_texts))
         return self._predict_from_docs(docs, sid_fac)
 
-    def predict(self, doc_texts: List[str]) -> List[PredictedNote]:
+    def predict(self, doc_texts: List[str]) -> Tuple[SectionContainer]:
         """Collate the predictions of both the section ID (type) and header
         token models.
 
@@ -206,13 +214,25 @@ class SectionPredictor(PersistableContainer, Primeable):
                  ``doc_texts``
 
         """
+        secs: Iterable[SectionContainer]
         if self.auto_deallocate:
             try:
-                return self._predict(doc_texts)
+                secs = self._predict(doc_texts)
             finally:
                 self.deallocate()
         else:
-            return self._predict(doc_texts)
+            secs = self._predict(doc_texts)
+        filter_fn: Callable = {
+            SectionFilterType.keep_all:
+            lambda: map(lambda s: GapSectionContainer(s, False), secs),
+
+            SectionFilterType.keep_non_empty:
+            lambda: map(lambda s: GapSectionContainer(s, True), secs),
+
+            SectionFilterType.keep_classified:
+            lambda: secs,
+        }[self.section_filter_type]
+        return tuple(filter_fn())
 
     def prime(self):
         if logger.isEnabledFor(logging.INFO):

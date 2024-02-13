@@ -1,0 +1,23 @@
+headers:
+  - []
+  - ['HPI']
+  - ['Past Medical History']
+  - ['Social History']
+sections:
+  medication-history: |
+    Medications - Prescription
+    FLUROSEMIDE – 91 mg daily
+    TYLENOL – OTC as needed
+    --------------- --------------- --------------- ---------------
+  history-of-present-illness: |
+    This is a first office visit to my clinic by Mrs. Jame Smith, a very pleasant
+    59-year-old F patient, who sustained in 1983, as the result of 2 ski accidents,
+    a pelvic fracture with vertical shear that has healed in about an inch vertical
+    shortening.
+  past-medical-history: |
+    Past medical history is notable for aortic stenosis, coronary
+    artery disease, hypertension, and Hyperlipidemia.
+  social-history: |
+    Gaelic speaking only. Immigrated 25 years ago.  Does not speak
+    to either at this time.
+

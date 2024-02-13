@@ -141,12 +141,21 @@ class PredictedNote(PersistableContainer, SectionContainer):
         if self.text != doc.text:
             raise MimicSectionAssertError({self.text}, {doc.text})
 
+    def _make_section_cloneable(self, sec: Section):
+        for attr in Section._PERSITABLE_TRANSIENT_ATTRIBUTES:
+            setattr(sec, attr, None)
+            sec._row_id = -1
+        sec.container = self
+
     @property
     def _predicted_sections(self) -> List[Section]:
         return self._predicted_sections_val
 
     @_predicted_sections.setter
     def _predicted_sections(self, sections: List[Section]):
+        sec: Section
+        for sec in sections:
+            self._make_section_cloneable(sec)
         self._predicted_sections_val = sections
         if hasattr(self, '_sections'):
             self._sections.clear()
@@ -170,7 +179,7 @@ class PredictedNote(PersistableContainer, SectionContainer):
     def __setstate__(self, state: Dict[str, Any]):
         super().__setstate__(state)
         for sec in self.predicted_sections:
-            sec.container = self
+            self._make_section_cloneable(sec)
 
     def __str__(self):
         text = self.truncted_text
@@ -222,3 +231,17 @@ class MimicPredictedNote(Note):
                 raise MimicSectionAssertError(es.lexspan, ns.lexspan)
 
         return map(map_sec, self._pred_note.predicted_sections)
+
+
+class SectionFilterType(Enum):
+    """Indicates which sections to keep in :class:`.SectionPredictor`.
+
+    """
+    keep_all = auto()
+    """Do not filter any sections."""
+
+    keep_non_empty = auto()
+    """Keep sections that have headers, more than just whitespace, or both."""
+
+    keep_classified = auto()
+    """Keep sections that have a section classification."""

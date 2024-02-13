@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+### Added
+- Functionality to optionally add unclassified and/or non-empty sections in the
+  prediction results (from `SectionPredictor`).
+
+
 ## [1.5.1] - 2024-01-17
 ### Changed
 - Fix [No section: 'medcat_status_move_update'] error.

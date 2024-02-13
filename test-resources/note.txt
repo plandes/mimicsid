@@ -1,9 +1,12 @@
+Admission Date:  2024-02-13
+Discharge Date:   2024-01-13
+
 Initial - CCC
 Note Date: 10/28/2019
 SSN: 589430543
 Pulse: 78
 Signed by (ORTHOPEDIC SURGEON), MD, PHD on 11/11/18 at 3:32 pm Affiliation: HOSPITAL
---------------- --------------- --------------- ---------------
+
 Active Medication list as of 07/01/2019
 Medications - Prescription
 FLUROSEMIDE – 91 mg daily
