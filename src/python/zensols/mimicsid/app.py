@@ -23,7 +23,6 @@ from zensols.mimic import (
 from . import AnnotatedNote, AnnotationResource, NoteStash, PredictedNote
 from .pred import SectionPredictor
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -201,7 +200,7 @@ class PredictionApplication(object):
     """The config factory used to help find the packed model."""
 
     note_stash: NoteStash = field(default=None)
-    """A stash that returns :class:`~zensols.mimic.Note` instances by thier
+    """A stash that returns :class:`~zensols.mimic.note.Note` instances by their
     unique ``row_id`` keys.
 
     """
