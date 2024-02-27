@@ -128,8 +128,7 @@ class SectionDataPoint(DataPoint):
             header_lab: str = 'y' if is_header else 'n'
             if cui == FeatureToken.NONE:
                 cui = None
-            if tok.ent_ != MedicalFeatureToken.CONCEPT_ENTITY_LABEL and \
-               tok.ent_ != FeatureToken.NONE:
+            if tok.ent_ != FeatureToken.NONE:
                 ent = tok.ent_
             elif tok.mimic_ == MimicTokenDecorator.MASK_TOKEN_FEATURE:
                 ent = tok.onto_
