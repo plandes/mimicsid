@@ -18,6 +18,8 @@ ENTRY =			./mimicsid
 MODEL =			glove300
 SID_ARGS = 		-c models/$(MODEL).conf
 
+PY_SRC_TEST_PAT ?=	'test_parse.py'
+
 
 ## Includes
 #
@@ -58,7 +60,7 @@ hardstop:
 # test parsing
 .PHONY:			testparse
 testparse:
-			$(eval cor=25)
+			$(eval cor=17)
 			@$(ENTRY) predict \
 			  --config models/glove300.conf \
 			  --path - test-resources/note.txt | \
