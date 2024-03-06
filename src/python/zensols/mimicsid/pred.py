@@ -6,14 +6,12 @@ __author__ = 'Paul Landes'
 from typing import List, Tuple, Optional, Iterable, Set, Union, Callable
 from dataclasses import dataclass, field, InitVar
 import logging
-from pathlib import Path
 from zensols.config import ConfigFactory, Configurable
 from zensols.persist import (
     PersistableContainer, persisted, PersistedWork, Primeable
 )
 from zensols.nlp import LexicalSpan, FeatureDocument, FeatureDocumentParser
-from zensols.deeplearn.model import ModelPacker, ModelFacade
-from zensols.deeplearn.cli import FacadeApplication
+from zensols.deeplearn.model import ModelUnpacker, ModelFacade
 from zensols.mimic import (
     Section, NoteEvent, Note, SectionContainer, GapSectionContainer
 )
@@ -46,10 +44,10 @@ class SectionPredictor(PersistableContainer, Primeable):
     config_factory: ConfigFactory = field()
     """The config factory used to help find the packed model."""
 
-    section_id_model_packer: ModelPacker = field(default=None)
+    section_id_model_unpacker: ModelUnpacker = field(default=None)
     """The packer used to create the section identifier model."""
 
-    header_model_packer: Optional[ModelPacker] = field(default=None)
+    header_model_unpacker: Optional[ModelUnpacker] = field(default=None)
     """The packer used to create the header token identifier model."""
 
     model_config: Configurable = field(default=None)
@@ -76,28 +74,12 @@ class SectionPredictor(PersistableContainer, Primeable):
         self._section_id_app = PersistedWork('_section_id_app', self)
         self._header_app = PersistedWork('_header_app', self)
 
-    @persisted('_section_id_app')
-    def _get_section_id_app(self) -> SectionFacade:
-        model_path: Path = self.section_id_model_packer.install_model()
-        if logger.isEnabledFor(logging.DEBUG):
-            logger.debug(f'section ID model path: {model_path}')
-        return FacadeApplication(
-            config=self.config_factory.config,
-            model_path=model_path,
-            cache_global_facade=False,
-            model_config_overwrites=self.model_config)
+    def _get_section_id_fac(self) -> ModelFacade:
+        return self.section_id_model_unpacker.facade
 
-    @persisted('_header_app')
-    def _get_header_app(self) -> SectionFacade:
-        if self.header_model_packer is not None:
-            model_path: Path = self.header_model_packer.install_model()
-            if logger.isEnabledFor(logging.DEBUG):
-                logger.debug(f'header model path: {model_path}')
-            return FacadeApplication(
-                config=self.config_factory.config,
-                model_path=model_path,
-                cache_global_facade=False,
-                model_config_overwrites=self.model_config)
+    def _get_header_fac(self) -> ModelFacade:
+        if self.header_model_unpacker is not None:
+            return self.header_model_unpacker.facade
 
     def _merge_note(self, sn: PredictedNote, hn: PredictedNote):
         """Merge header tokens from ``hn`` to ``sn``."""
@@ -156,19 +138,6 @@ class SectionPredictor(PersistableContainer, Primeable):
         for sn, hn in zip(snotes, hnotes):
             self._merge_note(sn, hn)
 
-    @persisted('__validate_version', transient=True)
-    def _validate_version(self, packer_name: str, facade: ModelFacade) -> bool:
-        packer: ModelPacker = getattr(self, packer_name)
-        model_pred: SectionPredictor = facade.config_factory(self.name)
-        model_packer = getattr(model_pred, packer_name)
-        if packer.version != model_packer.version:
-            model_name: str = facade.model_settings.model_name
-            logger.warning(
-                f'API {model_name} version ({packer.version}) does not ' +
-                f'match the trained model version ({model_packer.version})')
-            return False
-        return True
-
     def _trim_notes(self, notes: List[PredictedNote]):
         def filter_sec(sec: Section) -> bool:
             return len(sec.body_span) > self.min_section_body_len
@@ -180,11 +149,9 @@ class SectionPredictor(PersistableContainer, Primeable):
 
     def _predict_from_docs(self, docs: Tuple[FeatureDocument],
                            sid_fac: SectionFacade) -> List[PredictedNote]:
-        head_app: FacadeApplication = self._get_header_app()
         snotes: List[PredictedNote] = sid_fac.predict(docs)
-        if head_app is not None:
-            head_fac: SectionFacade = head_app.get_cached_facade()
-            self._validate_version('header_model_packer', head_fac)
+        head_fac: SectionFacade = self._get_header_fac()
+        if head_fac is not None:
             hnotes: List[PredictedNote] = head_fac.predict(docs)
             self._merge_notes(snotes, hnotes)
         self._trim_notes(snotes)
@@ -192,13 +159,11 @@ class SectionPredictor(PersistableContainer, Primeable):
 
     def predict_from_docs(self, docs: Tuple[FeatureDocument]) -> \
             List[PredictedNote]:
-        sid_fac: SectionFacade = self._get_section_id_app().get_cached_facade()
-        self._validate_version('section_id_model_packer', sid_fac)
+        sid_fac: SectionFacade = self._get_section_id_fac()
         return self._predict_from_docs(docs, sid_fac)
 
     def _predict(self, doc_texts: List[str]) -> List[PredictedNote]:
-        sid_fac: SectionFacade = self._get_section_id_app().get_cached_facade()
-        self._validate_version('section_id_model_packer', sid_fac)
+        sid_fac: SectionFacade = self._get_section_id_fac()
         doc_parser: FeatureDocumentParser = \
             sid_fac.doc_parser if self.doc_parser is None else self.doc_parser
         docs: Tuple[FeatureDocument] = tuple(map(doc_parser, doc_texts))
