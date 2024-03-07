@@ -1,0 +1,23 @@
+<map id="inheritancedd9cadac5e" name="inheritancedd9cadac5e">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="246,5,318,36"/>
+<area shape="rect" id="node8" title="An interface for classes that have multi&#45;line debuging capability." alt="" coords="171,84,259,115"/>
+<area shape="rect" id="node9" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="283,84,414,115"/>
+<area shape="rect" id="node2" title="Base exception from which almost all library raised errors extend." alt="" coords="613,5,703,36"/>
+<area shape="rect" id="node14" title="Raised for any application level error." alt="" coords="603,84,713,115"/>
+<area shape="rect" id="node3" title="A prediction mapper for text classification. &#160;This mapper works at any" alt="" coords="293,320,564,351"/>
+<area shape="rect" id="node20" href="#zensols.mimicsid.model.SectionPredictionMapper" target="_top" title="Predict sections from a :class:`~zensols.nlp.FeatureDocument` as a list" alt="" coords="317,399,541,429"/>
+<area shape="rect" id="node4" title="Used by a top level client to create features used to create instances of" alt="" coords="347,241,511,272"/>
+<area shape="rect" id="node5" title="A facade for the text classification. &#160;See super classes for more" alt="" coords="66,399,261,429"/>
+<area shape="rect" id="node19" title="A token level classification model facade." alt="" coords="42,477,285,508"/>
+<area shape="rect" id="node6" title="A facade that supports natural language model feature updating through a" alt="" coords="57,320,269,351"/>
+<area shape="rect" id="node7" title="Abstract class that makes up a container class for features created from" alt="" coords="55,163,157,193"/>
+<area shape="rect" id="node17" href="#zensols.mimicsid.model.SectionDataPoint" target="_top" title="A data point for the section ID model." alt="" coords="5,241,167,272"/>
+<area shape="rect" id="node13" title="This class provides easy to use client entry points to the model" alt="" coords="191,241,323,272"/>
+<area shape="rect" id="node16" title="Classes can extend this that want to persist :class:`.PersistedWork`" alt="" coords="254,163,443,193"/>
+<area shape="rect" id="node10" href="#zensols.mimicsid.model.EmptyPredictionError" target="_top" title="Raised when the model classifies all tokens as having no section." alt="" coords="589,320,783,351"/>
+<area shape="rect" id="node11" href="#zensols.mimicsid.model.PredictionError" target="_top" title="Raised for any issue predicting sections." alt="" coords="608,241,751,272"/>
+<area shape="rect" id="node12" title="Create a collection of name/value pairs." alt="" coords="757,5,829,36"/>
+<area shape="rect" id="node21" href="#zensols.mimicsid.model.TokenType" target="_top" title="A custom token type feature that identifies specifies whether the token" alt="" coords="738,84,847,115"/>
+<area shape="rect" id="node15" href="#zensols.mimicsid.domain.MimicSectionError" target="_top" title="MimicSectionError" alt="" coords="581,163,751,193"/>
+<area shape="rect" id="node18" href="#zensols.mimicsid.model.SectionFacade" target="_top" title="The application model facade. &#160;This only adds the ``zensols.install``" alt="" coords="92,556,235,587"/>
+</map>

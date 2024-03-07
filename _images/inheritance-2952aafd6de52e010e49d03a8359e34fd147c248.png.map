@@ -1,0 +1,10 @@
+<map id="inheritance572855f923" name="inheritance572855f923">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="135,5,207,36"/>
+<area shape="rect" id="node4" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="35,84,165,115"/>
+<area shape="rect" id="node5" title="Any subclass that has the ability (and need) to do preprocessing. &#160;For" alt="" coords="189,84,293,115"/>
+<area shape="rect" id="node2" href="#zensols.mimicsid.anon.AnnotationNoteFactory" target="_top" title="Override to replace section with MedSecId annotations if they exist." alt="" coords="226,241,433,272"/>
+<area shape="rect" id="node7" href="#zensols.mimicsid.pred.PredictionNoteFactory" target="_top" title="A note factory that predicts so that" alt="" coords="229,320,429,351"/>
+<area shape="rect" id="node3" title="Creates an instance of :class:`.Note` from :class:`.NoteEvent`." alt="" coords="269,163,389,193"/>
+<area shape="rect" id="node6" title="Classes can extend this that want to persist :class:`.PersistedWork`" alt="" coords="5,163,195,193"/>
+<area shape="rect" id="node8" href="#zensols.mimicsid.pred.SectionPredictor" target="_top" title="Creates a complete prediction by collating the predictions of both the" alt="" coords="35,241,189,272"/>
+</map>
