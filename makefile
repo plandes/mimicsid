@@ -31,7 +31,8 @@ include ./zenbuild/main.mk
 # install dependencies need by the the models (both training and inference)
 .PHONY:			modeldeps
 modeldeps:
-			$(PIP_BIN) install $(PIP_ARGS) -r $(PY_SRC)/requirements-model.txt --no-deps
+			$(PIP_BIN) install $(PIP_ARGS) \
+				-r $(PY_SRC)/requirements-model.txt --no-deps
 
 # test for successful training per the code by limiting epochs and batch size
 .PHONY:			trainfast
