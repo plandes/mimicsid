@@ -35,10 +35,9 @@ modeldeps:
 				-r $(PY_SRC)/requirements-model.txt --no-deps
 
 # test batching
-.PHONY:			batchfast
-batchfast:
-			$(DIST_BIN) batch $(SID_ARGS) --override \
-			  'batch_stash.batch_limit=3'
+.PHONY:			preemptfast
+preemptfast:
+			$(DIST_BIN) preempt $(SID_ARGS) -w 1 --maxadm 5
 
 
 # test for successful training per the code by limiting epochs and batch size
@@ -46,12 +45,6 @@ batchfast:
 trainfast:
 			$(DIST_BIN) traintest $(SID_ARGS) -p --override \
 			  'model_settings.epochs=2,batch_stash.batch_limit=3'
-
-# recreate batches
-.PHONY:			recreatebatch
-recreatebatch:
-			rm -rf target model data
-			$(DIST_BIN) batch -c etc/batch.conf
 
 # stop any training
 .PHONY:			stop

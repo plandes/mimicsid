@@ -9,7 +9,8 @@ from zensols.config import ConfigFactory
 from zensols.mimic import Corpus
 from zensols.cli import ActionResult, CliHarness
 from zensols.cli import ApplicationFactory as CliApplicationFactory
-from . import SectionPredictor, NoteStash, AnnotationResource
+from .anon import NoteStash, AnnotationResource
+from .pred import SectionPredictor
 
 
 class ApplicationFactory(CliApplicationFactory):

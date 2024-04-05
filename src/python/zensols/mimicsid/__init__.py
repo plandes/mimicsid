@@ -15,6 +15,5 @@ _silence_zennlp_parser_warnings()
 
 
 from .domain import *
-from .anon import *
 from .app import *
 from .cli import *

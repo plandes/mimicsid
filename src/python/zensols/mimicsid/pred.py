@@ -15,9 +15,8 @@ from zensols.deeplearn.model import ModelUnpacker, ModelFacade
 from zensols.mimic import (
     Section, NoteEvent, Note, SectionContainer, GapSectionContainer
 )
-from . import (
-    SectionFilterType, PredictedNote, AnnotationNoteFactory, MimicPredictedNote
-)
+from . import SectionFilterType, PredictedNote, MimicPredictedNote
+from .anon import AnnotationNoteFactory
 from .model import PredictionError, EmptyPredictionError, SectionFacade
 
 logger = logging.getLogger(__name__)
