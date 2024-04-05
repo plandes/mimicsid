@@ -34,6 +34,13 @@ modeldeps:
 			$(PIP_BIN) install $(PIP_ARGS) \
 				-r $(PY_SRC)/requirements-model.txt --no-deps
 
+# test batching
+.PHONY:			batchfast
+batchfast:
+			$(DIST_BIN) batch $(SID_ARGS) --override \
+			  'batch_stash.batch_limit=3'
+
+
 # test for successful training per the code by limiting epochs and batch size
 .PHONY:			trainfast
 trainfast:
