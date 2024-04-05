@@ -14,7 +14,7 @@ CLEAN_ALL_DEPS +=	data-clean
 PY_DEP_POST_DEPS +=	modeldeps
 
 # project specific
-ENTRY =			./mimicsid
+DIST_BIN =		./dist
 MODEL =			glove300
 SID_ARGS = 		-c models/$(MODEL).conf
 
@@ -37,14 +37,14 @@ modeldeps:
 # test for successful training per the code by limiting epochs and batch size
 .PHONY:			trainfast
 trainfast:
-			$(ENTRY) traintest $(SID_ARGS) -p --override \
+			$(DIST_BIN) traintest $(SID_ARGS) -p --override \
 			  'model_settings.epochs=2,batch_stash.batch_limit=3'
 
 # recreate batches
 .PHONY:			recreatebatch
 recreatebatch:
 			rm -rf target model data
-			$(ENTRY) batch -c etc/batch.conf
+			$(DIST_BIN) batch -c etc/batch.conf
 
 # stop any training
 .PHONY:			stop
@@ -55,14 +55,14 @@ stop:
 # stop training by killing processes
 .PHONY:			hardstop
 hardstop:
-			ps -eaf | grep python | grep $(ENTRY) | \
+			ps -eaf | grep python | grep $(DIST_BIN) | \
 				grep -v grep | awk '{print $$2}' | xargs kill
 
 # test parsing
 .PHONY:			testparse
 testparse:
 			$(eval cor=17)
-			@$(ENTRY) predict \
+			@$(DIST_BIN) predict \
 			  --config models/glove300.conf \
 			  --path - test-resources/note.txt | \
 			  wc -l | xargs -i{} bash -c \
