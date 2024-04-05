@@ -19,10 +19,10 @@ for model in fasttext glove300 ; do
     $BIN pack -c models/${model}.conf
 
     echo "training header model ${model}..."
-    $BIN trainprod -c models/${model}.conf --override mimicsid_default.model_type=header
+    $BIN trainprod -c models/${model}.conf --override msidd_default.model_type=header
 
     echo "pacakging section model ${model}..."
-    $BIN pack -c models/${model}.conf --override mimicsid_default.model_type=header
+    $BIN pack -c models/${model}.conf --override msidd_default.model_type=header
 done
 
 mkdir -p dist

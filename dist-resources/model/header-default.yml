@@ -2,22 +2,22 @@
 
 deepnlp_default:
   0.condition:
-    if: "eval: '${mimicsid_default:model_type}' == 'header'"
+    if: "eval: '${msidd_default:model_type}' == 'header'"
     then:
-      num_labels: ${mimicsid_header:num_labels}
+      num_labels: ${msidd_header:num_labels}
     else:
       num_labels: ${deepnlp_default:num_labels}
   1.condition:
-    if: "eval: '${mimicsid_default:model_type}' == 'header'"
+    if: "eval: '${msidd_default:model_type}' == 'header'"
     then:
-      labels: '${mimicsid_header:labels}'
+      labels: '${msidd_header:labels}'
     else:
       labels: '${deepnlp_default:labels}'
 
 deeplearn_default:
   condition:
-    if: "eval: '${mimicsid_default:model_type}' == 'header'"
+    if: "eval: '${msidd_default:model_type}' == 'header'"
     then:
-      model_name: '${mimicsid_default:name} Header'
+      model_name: '${msidd_default:name} Header'
     else:
-      model_name: '${mimicsid_default:name} Section Type'
+      model_name: '${msidd_default:name} Section Type'

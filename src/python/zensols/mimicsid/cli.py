@@ -35,12 +35,12 @@ class ApplicationFactory(CliApplicationFactory):
     @classmethod
     def section_predictor(cls) -> SectionPredictor:
         """Return the section predictor using the app context."""
-        return cls.instance('mimicsid_section_predictor')
+        return cls.instance('msid_section_predictor')
 
     @classmethod
     def annotation_resource(cls) -> AnnotationResource:
         """Contains resources to acces the MIMIC-III MedSecId annotations."""
-        return cls.instance('mimicsid_anon_resource')
+        return cls.instance('msid_anon_resource')
 
     @classmethod
     def note_stash(cls, host: str, port: str, db_name: str,

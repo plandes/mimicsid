@@ -6,21 +6,21 @@
 # train, validation, test dataset key splits
 note_feature_split_key_container:
   class_name: zensols.dataset.StratifiedStashSplitKeyContainer
-  stash: 'instance: mimicsid_annotated_note_stash'
+  stash: 'instance: msidd_annotated_note_stash'
   distribution:
     train: 0.8
     test: 0.1
     validation: 0.1
   pattern: '{name}.txt'
-  key_path: 'path: ${mimicsid_default:corpus_dir}/dataset-row-ids'
-  split_labels_path: 'path: ${mimicsid_default:temporary_dir}/feature-dataframe.dat'
+  key_path: 'path: ${msidd_default:corpus_dir}/dataset-row-ids'
+  split_labels_path: 'path: ${msidd_default:temporary_dir}/feature-dataframe.dat'
   partition_attr: category
   stratified_write: false
 
 # train, validation, test dataset splits
 note_split_feature_stash:
   class_name: zensols.dataset.DatasetSplitStash
-  delegate: 'instance: mimicsid_annotated_note_stash'
+  delegate: 'instance: msidd_annotated_note_stash'
   split_container: 'instance: note_feature_split_key_container'
 
 
@@ -38,15 +38,15 @@ batch_dir_stash:
 # map feature attributes (sections) to feature IDs to connect features to vectorizers
 batch_stash:
   split_stash_container: 'instance: note_split_feature_stash'
-  batch_feature_mappings: 'dataclass(zensols.deeplearn.batch.ConfigBatchFeatureMapping): mimicsid_batch_mappings'
+  batch_feature_mappings: 'dataclass(zensols.deeplearn.batch.ConfigBatchFeatureMapping): msidd_batch_mappings'
   condition:
-    if: "eval: '${mimicsid_default:model_type}' == 'header'"
+    if: "eval: '${msidd_default:model_type}' == 'header'"
     then:
-      decoded_attributes: '${mimicsid_default:decoded_attributes}, headers'
+      decoded_attributes: '${msidd_default:decoded_attributes}, headers'
     else:
-      decoded_attributes: '${mimicsid_default:decoded_attributes}, section_names'
+      decoded_attributes: '${msidd_default:decoded_attributes}, section_names'
   data_point_type: "eval({'import': ['zensols.mimicsid.model as m']}): m.SectionDataPoint"
-  batch_size: ${mimicsid_default:batch_size}
+  batch_size: ${msidd_default:batch_size}
   # rebatching using 2 workers for memory limitations
   workers: 2
 
@@ -84,9 +84,9 @@ section_feature_batch_mappings:
           is_agg: true
 
 # batch mappings from attribute to feature IDs and which to use from resource libs
-mimicsid_batch_mappings:
+msidd_batch_mappings:
   condition:
-    if: "eval: '${mimicsid_default:model_type}' == 'header'"
+    if: "eval: '${msidd_default:model_type}' == 'header'"
     then:
       label_attribute_name: headers
     else:

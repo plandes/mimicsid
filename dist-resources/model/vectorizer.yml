@@ -5,13 +5,13 @@
 #
 # override
 tok_label_1_vectorizer:
-  categories: ${mimicsid_section_id_metadata:labels}
+  categories: ${msidd_section_id_metadata:labels}
 
 # add headers
 tok_header_label_1_vectorizer:
   class_name: zensols.deeplearn.vectorize.NominalEncodedEncodableFeatureVectorizer
   feature_id: tcheader1
-  categories: ${mimicsid_header:labels}
+  categories: ${msidd_header:labels}
 
 tok_header_label_vectorizer:
   class_name: zensols.deeplearn.vectorize.AggregateEncodableFeatureVectorizer
