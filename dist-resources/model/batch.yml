@@ -6,7 +6,7 @@
 # train, validation, test dataset key splits
 note_feature_split_key_container:
   class_name: zensols.dataset.StratifiedStashSplitKeyContainer
-  stash: 'instance: msidd_annotated_note_stash'
+  stash: 'instance: msid_annotated_note_stash'
   distribution:
     train: 0.8
     test: 0.1
@@ -20,7 +20,7 @@ note_feature_split_key_container:
 # train, validation, test dataset splits
 note_split_feature_stash:
   class_name: zensols.dataset.DatasetSplitStash
-  delegate: 'instance: msidd_annotated_note_stash'
+  delegate: 'instance: msid_annotated_note_stash'
   split_container: 'instance: note_feature_split_key_container'
 
 

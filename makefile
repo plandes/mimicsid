@@ -34,15 +34,12 @@ modeldeps:
 			$(PIP_BIN) install $(PIP_ARGS) \
 				-r $(PY_SRC)/requirements-model.txt --no-deps
 
-# test batching
-.PHONY:			preemptfast
-preemptfast:
-			$(DIST_BIN) preempt $(SID_ARGS) -w 1 --maxadm 5
-
-
 # test for successful training per the code by limiting epochs and batch size
 .PHONY:			trainfast
 trainfast:
+			if [ ! -d data/adm ] ; then \
+				$(DIST_BIN) preempt $(SID_ARGS) -w 1 ; \
+			fi
 			$(DIST_BIN) traintest $(SID_ARGS) -p --override \
 			  'model_settings.epochs=2,batch_stash.batch_limit=3'
 
@@ -81,4 +78,5 @@ testall:		test testparse testdb
 .PHONY:			data-clean
 data-clean:		clean
 			rm -f *.log
+			rm -fr data
 			make -C docker/app cleanall
