@@ -232,10 +232,11 @@ test sets.  This still leaves the validation set to inform when to save for
 epochs where the loss decreases:
 
 1. Update the `deeplearn_model_packer:version` in `resources/app.conf`.
-2. Preprocess (see the [preprocessing](#preprocessing-step)) section.
-3. Run the script that trains the models and packages them: `src/bin/package.sh`.
-4. Check for errors and verify models: `$ ./src/bin/verify-model.py`.
-5. Don't forget to revert files `etc/batch.conf` and `resources/app.conf`.
+1. Preprocess (see the [preprocessing](#preprocessing-step)) section.
+1. Remove the passwords and database configuration in `config/system.conf`.
+1. Run the script that trains the models and packages them: `src/bin/package.sh`.
+1. Check for errors and verify models: `./src/bin/verify-model.py`.
+1. Don't forget to revert files `etc/batch.conf` and `resources/app.conf`.
 
 
 ## Models

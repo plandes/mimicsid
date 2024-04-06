@@ -14,17 +14,19 @@ def check_config(config: Configurable):
     assert config['mimic_db']['password'] == 'PASSWORD_NOT_SET'
 
 
-def verify_model(mdir: Path):
+def verify_model(mdir: Path, show_keys: bool = False,
+                 show_config: bool = False):
     data: Dict[str, Any] = torch.load(mdir / 'state.pt')
-    if 0:
+    if show_keys:
         for k, v in data.items():
             print(k, type(v))
     config_factory: ConfigFactory = data['config_factory']
+    if show_config:
+        config_factory.config.write()
     config: Configurable = config_factory.config
-    res: ModelResult = data['model_result']
-    res_config: Configurable = res.config
+    # production model will not have results, only a report
+    assert data['model_result'] is None
     check_config(config)
-    check_config(res_config)
     if 0:
         data: Dict[str, Any] = torch.load(mdir / 'weight.pt')
         print(type(data))

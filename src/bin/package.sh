@@ -6,6 +6,7 @@ USAGE="usage: $PROG <python home>"
 BIN=./dist
 CONF_DIR=config
 STAGE_DIR=stage
+# TODO: uncomment next line
 #MODELS="fasttext glove300"
 MODELS="glove300"
 
@@ -65,8 +66,8 @@ function package() {
 # do all
 function main() {
     check_data
-    train
-    #package
+    #train
+    package
 }
 
 main
