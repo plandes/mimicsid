@@ -61,7 +61,7 @@ class SectionPredictor(PersistableContainer, Primeable):
     """The minimum length of the body needed to make a section."""
 
     section_filter_type: SectionFilterType = field(
-        default=SectionFilterType.keep_classified)
+        default=SectionFilterType.keep_non_empty)
     """What sections to keep.  See :class:`.SectionFilterType`."""
 
     auto_deallocate: bool = field(default=True)

@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+### Changed
+- Separated model training and inference configuration and process.
+- Removed model report for smaller model distribution files.
+- Retrained models with ScispaCy biological NER model `en_ner_bionlp13cg_md`.
+- Changed default to including non-empty sections that have no section type.
+
+
 ## [1.7.0] - 2024-03-07
 ### Changed
 - Upgrade to [zensols.deepnlp] 1.13.0 and switch to its new model packing API.
