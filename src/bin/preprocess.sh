@@ -14,7 +14,8 @@ echo "deleting old build artifacts and models..."
 rm -rf target model data stage
 
 echo "parsing admissions, notes and docs"
-$BIN preempt -w 4 -c ${CONFIG}
+# TODO: remove maxadms
+$BIN preempt -w 4 -c ${CONFIG} --maxadm 10
 
 echo "batching data"
-#$BIN batch -c ${CONIFG}
+$BIN batch -c ${CONFIG}

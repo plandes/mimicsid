@@ -16,7 +16,7 @@ PY_DEP_POST_DEPS +=	modeldeps
 # project specific
 DIST_BIN =		./dist
 MODEL =			glove300
-SID_ARGS = 		-c models/$(MODEL).conf
+SID_ARGS = 		-c config/$(MODEL).conf
 
 PY_SRC_TEST_PAT ?=	'test_parse.py'
 
@@ -37,7 +37,7 @@ modeldeps:
 # test for successful training per the code by limiting epochs and batch size
 .PHONY:			trainfast
 trainfast:
-			if [ ! -d data/adm ] ; then \
+			if [ ! -d data/shared/adm ] ; then \
 				$(DIST_BIN) preempt $(SID_ARGS) -w 1 ; \
 			fi
 			$(DIST_BIN) traintest $(SID_ARGS) -p --override \
@@ -60,7 +60,7 @@ hardstop:
 testparse:
 			$(eval cor=17)
 			@$(DIST_BIN) predict \
-			  --config models/glove300.conf \
+			  --config config/glove300.conf \
 			  --path - test-resources/note.txt | \
 			  wc -l | xargs -i{} bash -c \
 			  "if [ '{}' != '$(cor)' ] ; then echo {} != $(cor) ; exit 1 ; fi"
