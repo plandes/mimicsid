@@ -202,12 +202,14 @@ This document explains how to create and package models for distribution.
 
 1. To train the model, first install the MIMIC-III Postgres database per the [mimic
    package] instructions in the *Installation* section.
-2. Add the MIMIC-III Postgres credentials and database configuration to
-   `etc/batch.conf`.
-3. Comment out the line `resource(zensols.mimicsid): resources/model/adm.conf`
-   in `resources/app.conf`.
-4. Vectorize the batches using the preprocessing script:
-   `$ ./src/bin/preprocess.sh`.  This also creates cached hospital admission and
+1. Copy the system configuration file:
+   ```bash
+   cp models/system-template.conf models/system.conf
+   ```
+1. Add the MIMIC-III Postgres credentials and database configuration to
+   `models/system.conf`.
+1. Vectorize the batches using the preprocessing script:
+   `./src/bin/preprocess.sh`.  This also creates cached hospital admission and
    spaCy data parse files.
 
 

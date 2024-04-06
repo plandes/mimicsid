@@ -38,8 +38,7 @@ class DistApplication(object):
 
         """
         if logger.isEnabledFor(logging.INFO):
-            logger.info(f'preemting admissions from {input_file} ' +
-                        f'for {workers} workers')
+            logger.info(f'preemting admissions with {workers} workers')
         row_ids: Sequence[str]
         if input_file is None:
             df: pd.DataFrame = self.anon_resource.note_ids
