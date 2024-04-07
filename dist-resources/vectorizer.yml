@@ -35,7 +35,7 @@ tok_label_vectorizer_manager:
 token_idx_1_vectorizer:
   class_name: zensols.deeplearn.vectorize.AttributeEncodableFeatureVectorizer
   feature_id: tcidx1
-  
+
 token_idx_vectorizer:
   class_name: zensols.deepnlp.vectorize.TokenEmbeddingFeatureVectorizer
   feature_id: tcidx
