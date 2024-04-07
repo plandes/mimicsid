@@ -20,6 +20,8 @@ if (__name__ == '__main__'):
             4: 'debug',
             5: 'repredict',
             }[0]
+    # TODO:
+    args += ' -c config/glove300.conf '
     harness = CliHarness(
         src_dir_name='src/python',
         app_factory_class='zensols.mimicsid.cli.ApplicationFactory',

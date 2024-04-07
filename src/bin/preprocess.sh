@@ -2,8 +2,7 @@
 
 BIN=./dist
 CONFIG=config/system.conf
-# TODO: reset to 0
-FAST=1
+FAST=0
 # don't allow config leak
 export MIMICRC=
 export MIMICSIDRC=
