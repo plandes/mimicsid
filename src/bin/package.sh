@@ -47,6 +47,14 @@ function train() {
     done
 }
 
+# verify the models
+function verify() {
+    ./src/bin/verify-model.py
+    if [ $? -ne 0 ] ; then
+	fail "model verifiction failed"
+    fi
+}
+
 # package models
 function package() {
     mkdir -p $STAGE_DIR
@@ -70,6 +78,7 @@ function create_checksums() {
 function main() {
     check_data
     train
+    verify
     package
     create_checksums
 }
