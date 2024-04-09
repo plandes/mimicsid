@@ -86,6 +86,8 @@ class SectionPredictor(PersistableContainer, Primeable):
                 Optional[int]:
             p: int = None
             for p in range(start, end + 1):
+                if p >= len(s):
+                    break
                 c: str = s[p]
                 if c not in avoid:
                     break
