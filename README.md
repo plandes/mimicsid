@@ -115,7 +115,7 @@ if (__name__ == '__main__'):
         print(sec.id, sec.name)
 
     # concepts or special MIMIC tokens from the addendum section
-    sec = note.sections_by_name['addendum'][0]
+    sec = note.sections_by_name['history-of-present-illness'][0]
     tok: FeatureToken
     for tok in sec.body_doc.token_iter():
         print(tok, tok.mimic_, tok.cui_)
