@@ -10,21 +10,10 @@ deepnlp.init()
 # command line entry point
 if (__name__ == '__main__'):
     from zensols.cli import CliHarness
-    overrides = {0: '',
-                 1: '--override mimicsid_default.model_type=header',
-                 }[1]
-    args = {0: 'proto',
-            1: 'batch --ctype batch',
-            2: 'info -i batch',
-            3: 'info -i config',
-            4: 'debug',
-            5: 'repredict',
-            }[0]
     harness = CliHarness(
         src_dir_name='src/python',
         app_factory_class='zensols.mimicsid.ApplicationFactory',
-        # prototyping arguments
-        proto_args=args + ' ' + overrides,
+        proto_args='proto -c config/glove300.conf',
         proto_factory_kwargs={
             'reload_pattern': r'^zensols.mimicsid.(?!domain)'},
     )
