@@ -204,10 +204,10 @@ This document explains how to create and package models for distribution.
    package] instructions in the *Installation* section.
 1. Copy the system configuration file:
    ```bash
-   cp models/system-template.conf models/system.conf
+   cp config/system-template.conf config/system.conf
    ```
 1. Add the MIMIC-III Postgres credentials and database configuration to
-   `models/system.conf`.
+   `config/system.conf`.
 1. Vectorize the batches using the preprocessing script:
    `./src/bin/preprocess.sh`.  This also creates cached hospital admission and
    spaCy data parse files.
@@ -233,7 +233,8 @@ epochs where the loss decreases:
 
 1. Update the `deeplearn_model_packer:version` in `resources/app.conf`.
 1. Preprocess (see the [preprocessing](#preprocessing-step)) section.
-1. Remove the passwords and database configuration in `config/system.conf`.
+1. **Important**: Remove the passwords and database configuration in
+   `config/system.conf`.
 1. Run the script that trains the models and packages them: `src/bin/package.sh`.
 1. Check for errors and verify models: `./src/bin/verify-model.py`.
 1. Don't forget to revert files `etc/batch.conf` and `resources/app.conf`.
