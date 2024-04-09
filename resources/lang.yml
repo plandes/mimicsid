@@ -1,16 +1,9 @@
 #@meta {desc: 'language model configuration', date: '2024-04-06'}
 
-# add mimic_ and onto_ features
-mednlp_combine_biomed_doc_parser:
-  yield_features: >-
-    eval({'import': ['zensols.nlp as n', 'zensols.mednlp as m']}):
-      list(m.MedicalFeatureToken.FEATURE_IDS |
-      {'ent_', 'ent', 'ent_iob', 'ent_iob_', 'mimic_', 'onto_'})
-
-# use scispacy NER model
-mednlp_biomed_parser:
+# use the biomedical NER
+mednlp_biomed_doc_parser:
   model_name: en_ner_bionlp13cg_md
 
 medcat_resource:
   auto_install_models:
-    - ${mednlp_biomed_parser:model_name}
+    - ${mednlp_biomed_doc_parser:model_name}
