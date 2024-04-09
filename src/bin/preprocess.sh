@@ -8,6 +8,10 @@ export MIMICRC=
 export MIMICSIDRC=
 
 function confirm() {
+    if [ ! -f $CONFIG ] ; then
+	echo "No configuration found: $CONFIG"
+	exit 1
+    fi
     echo "about to delete previous models, contune? (CTRL-C to quit)"
     read
 }
