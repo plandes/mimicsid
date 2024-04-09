@@ -43,6 +43,19 @@ trainfast:
 			$(DIST_BIN) traintest $(SID_ARGS) -p --override \
 			  'model_settings.epochs=2,batch_stash.batch_limit=3'
 
+# train production models
+.PHONY:			preprocess
+preprocess:
+			@echo "expecting passwords set in config/system.conf..."
+			nohup ./src/bin/preprocess.sh 2>&1 &
+			@echo "remember to remove passwords in config/system.conf after complete"
+
+# train production models and then package them in a staging directory
+.PHONY:			packageprod
+packageprod:
+			@echo "remember to remove passwords in config/system.conf"
+			nohup ./src/bin/.sh 2>&1 &
+
 # stop any training
 .PHONY:			stop
 stop:

@@ -1,5 +1,5 @@
 #!/bin/bash
-# @meta {desc: 'model training and packaging', date: '2024-04-06'}
+#@meta {desc: 'model training and packaging', date: '2024-04-06'}
 
 PROG=$(basename $0)
 USAGE="usage: $PROG <python home>"
@@ -61,11 +61,17 @@ function package() {
     cp ${HOME}/.cache/zensols/mimicsid/section-id-annotations.zip ${STAGE_DIR}
 }
 
+# create sha sums
+function create_checksums() {
+    ( cd $STAGE_DIR ; sha256sum * > sha256sum.txt )
+}
+
 # do all
 function main() {
     check_data
     train
     package
+    create_checksums
 }
 
 main
