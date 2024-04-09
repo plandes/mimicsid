@@ -4,7 +4,6 @@ from typing import Dict, Any
 import torch
 from pathlib import Path
 from zensols.config import ConfigFactory, Configurable
-from zensols.deeplearn.result import ModelResult
 
 
 def check_config(config: Configurable):
