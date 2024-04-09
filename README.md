@@ -231,7 +231,7 @@ To train models used in your projects, train the model on both the training and
 test sets.  This still leaves the validation set to inform when to save for
 epochs where the loss decreases:
 
-1. Update the `deeplearn_model_packer:version` in `resources/app.conf`.
+1. Update the `msid_model_packer:version` in `resources/pack.conf`.
 1. Preprocess (see the [preprocessing](#preprocessing-step)) section.
 1. **Important**: Remove the passwords and database configuration in
    `config/system.conf`.
