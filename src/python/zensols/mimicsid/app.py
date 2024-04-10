@@ -153,6 +153,22 @@ class Application(FacadeApplication):
         with loglevel('zensols'):
             stash.clear()
 
+    def proto(self):
+        h = '159748'
+        adm: HospitalAdmission = self.corpus.hospital_adm_stash.get(h)
+        if 0:
+            for n in adm.notes: print(n)
+            return
+        if 1:
+            n = adm['25831']
+            n.write()
+            with open('/d/a.txt', 'w') as f:
+                f.write(n.text)
+        #n = adm['532438']
+        #print(n.text)
+        #n = adm['5297']
+        #n.write()
+
 
 class PredOutputType(Enum):
     """The types of prediction output formats."""
