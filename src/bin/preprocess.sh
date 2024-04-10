@@ -33,8 +33,7 @@ function preempt() {
 function batch() {
     echo "batching data"
     if [ $FAST -eq 1 ] ; then
-	$BIN batch -c ${CONFIG} --override \
-	     'model_settings.epochs=2,batch_stash.batch_limit=3'
+	$BIN batch -c ${CONFIG} --override 'batch_stash.batch_limit=3'
     else
 	$BIN batch -c ${CONFIG}
     fi
