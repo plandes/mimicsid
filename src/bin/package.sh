@@ -74,6 +74,12 @@ function create_checksums() {
     ( cd $STAGE_DIR ; sha256sum * > sha256sum.txt )
 }
 
+# output the models' performance metrics
+function dump_results() {
+    $BIN summary -c ${CONF_DIR}/${model}.conf \
+	 --validation -o stage/model-performance.csv
+}
+
 # do all
 function main() {
     check_data
@@ -81,6 +87,7 @@ function main() {
     verify
     package
     create_checksums
+    dump_results
 }
 
 main

@@ -29,16 +29,18 @@ This package provides the following:
 - [Usage](#usage)
     - [Prediction Usage](#prediction-usage)
     - [Annotation Access](#annotation-access)
-- [Differences from the Paper Repository](#differences-from-the-paper-repository)
-- [Training](#training)
-    - [Preprocessing Step](#preprocessing-step)
-    - [Training and Testing](#training-and-testing)
-- [Training Production Models](#training-production-models)
 - [Models](#models)
     - [MedCAT Models](#medcat-models)
     - [Performance Metrics](#performance-metrics)
         - [Version 0.0.2](#version-002)
         - [Version 0.0.3](#version-003)
+        - [Version 0.1.0](#version-010)
+- [Differences from the Paper Repository](#differences-from-the-paper-repository)
+    - [Model Differences](#model-differences)
+- [Training](#training)
+    - [Preprocessing Step](#preprocessing-step)
+    - [Training and Testing](#training-and-testing)
+- [Training Production Models](#training-production-models)
 - [Citation](#citation)
 - [Docker](#docker)
 - [Changelog](#changelog)
@@ -46,19 +48,6 @@ This package provides the following:
 - [License](#license)
 
 <!-- markdown-toc end -->
-
-
-
-## Obtaining
-
-The easiest way to install the command line program is via the `pip` installer:
-```bash
-pip3 install zensols.mimicsid
-```
-
-Binaries are also available on [pypi].
-
-A [docker](#docker) image is now available as well.
 
 
 ## Documentation
@@ -69,6 +58,13 @@ available.
 
 
 ## Installation
+
+The library can be installed with pip from the [pypi] repository:
+```bash
+pip3 install zensols.mimicsid
+```
+
+The models used by the package are automatically downloaded on the first use.
 
 If you only want to predict sections using the pretrained model, you need only
 to [install](#obtaining) the package.  However, if you want to access the
@@ -154,92 +150,6 @@ if (__name__ == '__main__'):
 ```
 
 
-## Differences from the Paper Repository
-
-The paper [medsecid repository] has quite a few differences, mostly around
-reproducibility.  However, this repository is designed to be a package used for
-research that applies the model.  To reproduce the results of the paper, please
-refer to the [medsicid repository].  To use the best performing model
-(BiLSTM-CRF token model) from that paper, then use this repository.
-
-Perhaps the largest difference is that this repository has a pretrained model
-and code for header tokens.  This is a separate model whose header token
-predictions are "merged" with the section ID/type predictions.
-
-The differences in performance between the section ID/type models and metrics
-reported involve several factors.  The primary difference being that released
-models were trained on the test data with only validation performance metrics
-reported to increase the pretrained model performance.  Other changes include:
-
-* Uses the [mednlp package], which uses [MedCAT] to parse clinical medical
-  text.  This includes changes such as fixing misspellings and expanding
-  acronyms.
-* Uses the [mimic package], which builds on the [mednlp package] and parses
-  [MIMIC-III] text by configuring the [spaCy] tokenizer to deal with pseudo
-  tokens (i.e. `[**First Name**]`).  This is a significant change given how
-  these tokens are treated between the models and term mapping (`Pt.` becomes
-  `patient`).  This was changed so the model will work well on non-MIMIC data.
-* Feature sets differences such as provided by the [Zensols Deep NLP package].
-* Model changes include LSTM hidden layer parameter size and activation
-  function.
-* White space tokens are removed in [medsecid repository] and added back in
-  this package to give additional cues to the model on when to break a
-  section.  However, this might have had the opposite effect.
-
-There are also changes in the libraries used:
-
-* PyTorch was upgraded from 1.9.1 to 1.12.1
-* [spaCy] was upgraded from 3.0.7 to 3.2.4
-* Python version 3.9 to 3.10.
-
-
-## Training
-
-This document explains how to create and package models for distribution.
-
-
-### Preprocessing Step
-
-1. To train the model, first install the MIMIC-III Postgres database per the [mimic
-   package] instructions in the *Installation* section.
-1. Copy the system configuration file:
-   ```bash
-   cp config/system-template.conf config/system.conf
-   ```
-1. Add the MIMIC-III Postgres credentials and database configuration to
-   `config/system.conf`.
-1. Vectorize the batches using the preprocessing script:
-   `./src/bin/preprocess.sh`.  This also creates cached hospital admission and
-   spaCy data parse files.
-
-
-### Training and Testing
-
-To get performance metrics on the test set by training on the training, use the
-command: `./mimicsid traintest -c models/glove300.conf` for the section ID
-model.  The configuration file can be any of those in the `models` directory.
-For the header model use:
-
-```bash
-./mimicsid traintest -c models/glove300.conf --override mimicsid_default.model_type=header
-```
-
-
-## Training Production Models
-
-To train models used in your projects, train the model on both the training and
-test sets.  This still leaves the validation set to inform when to save for
-epochs where the loss decreases:
-
-1. Update the `msid_model_packer:version` in `resources/pack.conf`.
-1. Preprocess (see the [preprocessing](#preprocessing-step)) section.
-1. **Important**: Remove the passwords and database configuration in
-   `config/system.conf`.
-1. Run the script that trains the models and packages them: `src/bin/package.sh`.
-1. Check for errors and verify models: `./src/bin/verify-model.py`.
-1. Don't forget to revert files `etc/batch.conf` and `resources/app.conf`.
-
-
 ## Models
 
 You can mix and match models across section vs. header models (see [Performance
@@ -301,6 +211,117 @@ sentence chunking, metrics are most likely statistically insignificant.
 | `BiLSTM-CRF_tok (GloVE 300D)` | Section | bilstm-crf-tok-glove-300d-section-type | 0.929 | 0.933 | 0.810 | 0.933 |
 | `BiLSTM-CRF_tok (fastText)`   | Header  | bilstm-crf-tok-fasttext-header         | 0.996 | 0.996 | 0.965 | 0.996 |
 | `BiLSTM-CRF_tok (GloVE 300D)` | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.962 | 0.996 |
+
+
+#### Version 0.1.0
+
+| Name                          | Type    | Id                                     | wF1 | mF1 | MF1 | acc |
+|-------------------------------|---------|----------------------------------------|-----|-----|-----|-----|
+| `BiLSTM-CRF_tok (fastText)`   | Section | bilstm-crf-tok-fasttext-section-type   |     |     |     |     |
+| `BiLSTM-CRF_tok (GloVE 300D)` | Section | bilstm-crf-tok-glove-300d-section-type |     |     |     |     |
+| `BiLSTM-CRF_tok (fastText)`   | Header  | bilstm-crf-tok-fasttext-header         |     |     |     |     |
+| `BiLSTM-CRF_tok (GloVE 300D)` | Header  | bilstm-crf-tok-glove-300d-header       |     |     |     |     |
+
+
+## Differences from the Paper Repository
+
+The paper [medsecid repository] has quite a few differences, mostly around
+reproducibility.  However, this repository is designed to be a package used for
+research that applies the model.  To reproduce the results of the paper, please
+refer to the [medsicid repository].  To use the best performing model
+(BiLSTM-CRF token model) from that paper, then use this repository.
+
+Perhaps the largest difference is that this repository has a pretrained model
+and code for header tokens.  This is a separate model whose header token
+predictions are "merged" with the section ID/type predictions.
+
+The differences in performance between the section ID/type models and metrics
+reported involve several factors.  The primary difference being that released
+models were trained on the test data with only validation performance metrics
+reported to increase the pretrained model performance.  Other changes include:
+
+* Uses the [mednlp package], which uses [MedCAT] to parse clinical medical
+  text.  This includes changes such as fixing misspellings and expanding
+  acronyms.
+* Uses the [mimic package], which builds on the [mednlp package] and parses
+  [MIMIC-III] text by configuring the [spaCy] tokenizer to deal with pseudo
+  tokens (i.e. `[**First Name**]`).  This is a significant change given how
+  these tokens are treated between the models and term mapping (`Pt.` becomes
+  `patient`).  This was changed so the model will work well on non-MIMIC data.
+* Feature sets differences such as provided by the [Zensols Deep NLP package].
+* Model changes include LSTM hidden layer parameter size and activation
+  function.
+* White space tokens are removed in [medsecid repository] and added back in
+  this package to give additional cues to the model on when to break a
+  section.  However, this might have had the opposite effect.
+
+There are also changes in the Python interpreter and libraries used:
+
+* Python version 3.9 to 3.11.
+* PyTorch was upgraded from 1.9.1 to 2.1.2
+* [spaCy] was upgraded from 3.0.7 to 3.6.1
+* HuggingFace Transformers 4.11.3 to 4.35.2
+* scispaCy 0.4.0 to 0.5.3
+
+
+### Model Differences
+
+Starting with [Version 0.1.0](#version-010), named entities include those
+predicted from the scispaCy biomedical NER (`en_ner_bionlp13cg_md`) trained
+model.
+
+
+## Training
+
+This document explains how to create and package models for distribution.
+
+
+### Preprocessing Step
+
+1. To train the model, first install the MIMIC-III Postgres database per the [mimic
+   package] instructions in the *Installation* section.
+1. Copy the system configuration file:
+   ```bash
+   cp config/system-template.conf config/system.conf
+   ```
+1. Add the MIMIC-III Postgres credentials and database configuration to
+   `config/system.conf`.
+1. Vectorize the batches using the preprocessing script:
+   `./src/bin/preprocess.sh`.  This also creates cached hospital admission and
+   spaCy data parse files.
+
+
+### Training and Testing
+
+To get performance metrics on the test set by training on the training, use the
+command: `./mimicsid traintest -c models/glove300.conf` for the section ID
+model.  The configuration file can be any of those in the `models` directory.
+For the header model use:
+
+```bash
+./mimicsid traintest -c models/glove300.conf --override mimicsid_default.model_type=header
+```
+
+
+## Training Production Models
+
+To train models used in your projects, train the model on both the training and
+test sets.  This still leaves the validation set to inform when to save for
+epochs where the loss decreases:
+
+1. Update the version in the `deeplearn_model_packer` section in file
+   `dist-resources/app.conf`.
+1. Update the same version in the `msid_model` section in file
+   `resources/default.conf`.
+1. Preprocess (see the [preprocessing](#preprocessing-step)) section.
+1. **Important**: Remove the passwords and database configuration in
+   `config/system.conf`:
+   ```bash
+   cp config/system.conf config/system-sensitive-data.conf
+   cat /dev/null > config/system.conf
+   ```
+1. Run the script that trains the models and packages them: `src/bin/package.sh`.
+1. Revert files `config/system.conf` and `resources/app.conf`.
 
 
 ## Citation

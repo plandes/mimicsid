@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BIN=./dist
-CONFIG=config/system.conf
+CONFIG=config/glove300.conf
 FAST=0
 # don't allow config leak
 export MIMICRC=
