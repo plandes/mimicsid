@@ -4,14 +4,16 @@
 __author__ = 'Paul Landes'
 
 
-def _silence_zennlp_parser_warnings():
+def suppress_warnings():
     """The pretrained model uses a deprecated API."""
     import warnings
+    import zensols.mednlp
     warnings.filterwarnings(
         'ignore', message='remove_empty_sentences is deprecated.*')
+    zensols.mednlp.surpress_warnings()
 
 
-_silence_zennlp_parser_warnings()
+suppress_warnings()
 
 
 from .domain import *

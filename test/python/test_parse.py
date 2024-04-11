@@ -14,7 +14,7 @@ from zensols.mimicsid.pred import SectionPredictor
 
 class TestParse(unittest.TestCase):
     def setUp(self):
-        zensols.mimicsid._silence_zennlp_parser_warnings()
+        zensols.mimicsid.suppress_warnings()
         self.maxDiff = 999999
         if 'MIMICSIDRC' in os.environ:
             del os.environ['MIMICSIDRC']
