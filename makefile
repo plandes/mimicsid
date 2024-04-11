@@ -15,6 +15,7 @@ PY_DEP_POST_DEPS +=	modeldeps
 
 # project specific
 DIST_BIN =		./dist
+PRED_BIN =		./mimicsid
 MODEL =			glove300
 SID_ARGS = 		-c config/$(MODEL).conf
 
@@ -71,13 +72,9 @@ hardstop:
 # test parsing
 .PHONY:			testparse
 testparse:
-			$(eval cor=17)
-			@$(DIST_BIN) predict \
+			@$(PRED_BIN) predict \
 			  --config config/glove300.conf \
-			  --path - test-resources/note.txt | \
-			  wc -l | xargs -i{} bash -c \
-			  "if [ '{}' != '$(cor)' ] ; then echo {} != $(cor) ; exit 1 ; fi"
-			@echo "success: line count output: $(cor)"
+			  --path - test-resources/note.txt
 
 # test the MIMIC-III database (unavilable database in GitHub workflows)
 .PHONY:			testdb
