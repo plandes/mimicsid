@@ -2,7 +2,6 @@
 #@meta {desc: 'model training and packaging', date: '2024-04-06'}
 
 PROG=$(basename $0)
-USAGE="usage: $PROG <python home>"
 BIN=./dist
 CONF_DIR=config
 STAGE_DIR=stage
@@ -60,10 +59,10 @@ function package() {
     mkdir -p $STAGE_DIR
     for model in $MODELS ; do
 	log "pacakging section model ${model}..."
-	$BIN pack -c ${CONF_DIR}/${model}.conf --modeldir $STAGE_DIR
+	$BIN pack -c ${CONF_DIR}/${model}.conf --archdir $STAGE_DIR
 
 	log "pacakging section model ${model}..."
-	$BIN pack -c ${CONF_DIR}/${model}.conf --modeldir $STAGE_DIR \
+	$BIN pack -c ${CONF_DIR}/${model}.conf --archdir $STAGE_DIR \
 	     --override msidd_default.model_type=header
     done
     cp ${HOME}/.cache/zensols/mimicsid/section-id-annotations.zip ${STAGE_DIR}
@@ -82,6 +81,7 @@ function dump_results() {
 
 # do all
 function main() {
+    # comment out check_data and train when using updateconfigs.sh
     check_data
     train
     verify
