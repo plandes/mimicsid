@@ -13,7 +13,7 @@ if (__name__ == '__main__'):
     overrides = {0: '',
                  1: '--override mimicsid_default.model_type=header',
                  }[1]
-    args = {0: 'proto',
+    args = {0: 'proto -c config/glove300.conf',
             1: 'batch --ctype batch',
             2: 'info -i batch',
             3: 'info -i config',
