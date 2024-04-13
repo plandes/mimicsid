@@ -5,5 +5,5 @@
     cp config/system.conf config/system-sensitive-data.conf && \
     cat /dev/null > config/system.conf && \
     ./src/bin/package.sh && \
-    ./dist summary --validation -o stage/model-performance.csv && \
+    ./dist summary -c config/glove300.conf --validation -o stage/model-performance.csv && \
     mv config/system-sensitive-data.conf config/system.conf
