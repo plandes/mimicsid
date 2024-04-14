@@ -23,7 +23,6 @@ This package provides the following:
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 ## Table of Contents
 
-- [Obtaining](#obtaining)
 - [Documentation](#documentation)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -32,9 +31,9 @@ This package provides the following:
 - [Models](#models)
     - [MedCAT Models](#medcat-models)
     - [Performance Metrics](#performance-metrics)
-        - [Version 0.0.2](#version-002)
-        - [Version 0.0.3](#version-003)
         - [Version 0.1.0](#version-010)
+        - [Version 0.0.3](#version-003)
+        - [Version 0.0.2](#version-002)
 - [Differences from the Paper Repository](#differences-from-the-paper-repository)
     - [Model Differences](#model-differences)
 - [Training](#training)
@@ -193,14 +192,16 @@ changes of each version might present language parsing differences such as
 sentence chunking, metrics are most likely statistically insignificant.
 
 
-#### Version 0.0.2
+#### Version 0.1.0
+
+Adding biomedical NER improved the `0.1.0` models (see [Model Differences](#model-differences)).
 
 | Name                          | Type    | Id                                     | wF1   | mF1   | MF1   | acc   |
 |-------------------------------|---------|----------------------------------------|-------|-------|-------|-------|
-| `BiLSTM-CRF_tok (fastText)`   | Section | bilstm-crf-tok-fasttext-section-type   | 0.918 | 0.925 | 0.797 | 0.925 |
-| `BiLSTM-CRF_tok (GloVE 300D)` | Section | bilstm-crf-tok-glove-300d-section-type | 0.917 | 0.922 | 0.809 | 0.922 |
-| `BiLSTM-CRF_tok (fastText)`   | Header  | bilstm-crf-tok-fasttext-header         | 0.996 | 0.996 | 0.959 | 0.996 |
-| `BiLSTM-CRF_tok (GloVE 300D)` | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.962 | 0.996 |
+| `BiLSTM-CRF_tok (fastText)`   | Section | bilstm-crf-tok-fasttext-section-type   | 0.923 | 0.933 | 0.764 | 0.933 |
+| `BiLSTM-CRF_tok (GloVE 300D)` | Section | bilstm-crf-tok-glove-300d-section-type | 0.936 | 0.941 | 0.810 | 0.941 |
+| `BiLSTM-CRF_tok (fastText)`   | Header  | bilstm-crf-tok-fasttext-header         | 0.996 | 0.996 | 0.961 | 0.996 |
+| `BiLSTM-CRF_tok (GloVE 300D)` | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.964 | 0.996 |
 
 
 #### Version 0.0.3
@@ -213,14 +214,14 @@ sentence chunking, metrics are most likely statistically insignificant.
 | `BiLSTM-CRF_tok (GloVE 300D)` | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.962 | 0.996 |
 
 
-#### Version 0.1.0
+#### Version 0.0.2
 
-| Name                          | Type    | Id                                     | wF1 | mF1 | MF1 | acc |
-|-------------------------------|---------|----------------------------------------|-----|-----|-----|-----|
-| `BiLSTM-CRF_tok (fastText)`   | Section | bilstm-crf-tok-fasttext-section-type   |     |     |     |     |
-| `BiLSTM-CRF_tok (GloVE 300D)` | Section | bilstm-crf-tok-glove-300d-section-type |     |     |     |     |
-| `BiLSTM-CRF_tok (fastText)`   | Header  | bilstm-crf-tok-fasttext-header         |     |     |     |     |
-| `BiLSTM-CRF_tok (GloVE 300D)` | Header  | bilstm-crf-tok-glove-300d-header       |     |     |     |     |
+| Name                          | Type    | Id                                     | wF1   | mF1   | MF1   | acc   |
+|-------------------------------|---------|----------------------------------------|-------|-------|-------|-------|
+| `BiLSTM-CRF_tok (fastText)`   | Section | bilstm-crf-tok-fasttext-section-type   | 0.918 | 0.925 | 0.797 | 0.925 |
+| `BiLSTM-CRF_tok (GloVE 300D)` | Section | bilstm-crf-tok-glove-300d-section-type | 0.917 | 0.922 | 0.809 | 0.922 |
+| `BiLSTM-CRF_tok (fastText)`   | Header  | bilstm-crf-tok-fasttext-header         | 0.996 | 0.996 | 0.959 | 0.996 |
+| `BiLSTM-CRF_tok (GloVE 300D)` | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.962 | 0.996 |
 
 
 ## Differences from the Paper Repository
@@ -268,7 +269,7 @@ There are also changes in the Python interpreter and libraries used:
 
 Starting with [Version 0.1.0](#version-010), named entities include those
 predicted from the scispaCy biomedical NER (`en_ner_bionlp13cg_md`) trained
-model.
+model.  Compressed model files are also smaller in size.
 
 
 ## Training
@@ -430,7 +431,7 @@ Copyright (c) 2022 - 2024 Paul Landes
 
 [annotation example]: example/anon/anon.py
 [A New Public Corpus for Clinical Section Identification: MedSecId]: https://aclanthology.org/2022.coling-1.326.pdf
-[Zenodo]: https://zenodo.org/record/7150451#.Yz30BS2B3Bs
+[Zenodo]: https://zenodo.org/records/10971167
 
 [Postgres docker image]: https://github.com/plandes/mimicdb#installation
 [mimicdb]: https://github.com/plandes/mimicdb
