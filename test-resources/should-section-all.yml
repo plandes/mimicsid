@@ -1,6 +1,5 @@
 headers:
   - []
-  - []
   - ['HPI']
   - ['Past Medical History']
   - ['Social History']
@@ -16,7 +15,6 @@ sections:
     Signed by (ORTHOPEDIC SURGEON), MD, PHD on 11/11/18 at 3:32 pm Affiliation: HOSPITAL
 
     Active Medication list as of 07/01/2019
-  medication-history: |
     Medications - Prescription
     FLUROSEMIDE – 91 mg daily
     TYLENOL – OTC as needed
@@ -32,4 +30,3 @@ sections:
   social-history: |
     Gaelic speaking only. Immigrated 25 years ago.  Does not speak
     to either at this time.
-

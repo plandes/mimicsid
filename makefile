@@ -19,8 +19,6 @@ PRED_BIN =		./mimicsid
 MODEL =			glove300
 SID_ARGS = 		-c config/$(MODEL).conf
 
-PY_SRC_TEST_PAT ?=	'test_parse.py'
-
 
 ## Includes
 #
@@ -74,16 +72,13 @@ hardstop:
 testparse:
 			@$(PRED_BIN) predict \
 			  --config config/glove300.conf \
-			  --path - test-resources/note.txt
-
-# test the MIMIC-III database (unavilable database in GitHub workflows)
-.PHONY:			testdb
-testdb:
-			make PY_SRC_TEST=test/db test
+			  --path - test-resources/note.txt | \
+			diff - test-resources/should-predict.txt || \
+			  exit 1
 
 # test prediction and the DB access
 .PHONY:			testall
-testall:		test testparse testdb
+testall:		test testparse
 
 .PHONY:			data-clean
 data-clean:		clean
