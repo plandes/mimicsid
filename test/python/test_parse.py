@@ -48,8 +48,8 @@ class TestParse(unittest.TestCase):
             if name != 'unknown':
                 self.assertEqual(1, len(note.sections_by_name[name]))
             sec: Section = note.sections_by_name[name][0]
-            self.assertEqual(sec.body.strip(), content.strip())
-            self.assertEqual(sec.headers, tuple(headers))
+            self.assertEqual(content.strip(), sec.body.strip())
+            self.assertEqual(tuple(headers), sec.headers)
 
     def _test_pred(self, filter_type: SectionFilterType,
                    res: str, write: bool = False):
