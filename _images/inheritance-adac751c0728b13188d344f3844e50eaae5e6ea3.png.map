@@ -1,0 +1,9 @@
+<map id="inheritanced2dea9008e" name="inheritanced2dea9008e">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="55,5,127,36"/>
+<area shape="rect" id="node4" title="All subclasses have the ability to deallocate any resources. &#160;This is" alt="" coords="25,84,156,115"/>
+<area shape="rect" id="node2" href="#zensols.mimicsid.app.Application" target="_top" title="Use the MedSecId section annotations with MIMIC&#45;III corpus parsing." alt="" coords="35,241,146,272"/>
+<area shape="rect" id="node3" title="Base class for applications that use :class:`.ModelFacade`." alt="" coords="5,163,176,193"/>
+<area shape="rect" id="node5" title="Create a collection of name/value pairs." alt="" coords="305,5,377,36"/>
+<area shape="rect" id="node6" href="#zensols.mimicsid.app.PredOutputType" target="_top" title="The types of prediction output formats." alt="" coords="264,84,419,115"/>
+<area shape="rect" id="node7" href="#zensols.mimicsid.app.PredictionApplication" target="_top" title="An application that predicts sections in file(s) on the file system, then" alt="" coords="571,5,762,36"/>
+</map>

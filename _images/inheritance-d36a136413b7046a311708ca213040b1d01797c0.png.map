@@ -1,0 +1,16 @@
+<map id="inheritancec7871eba7d" name="inheritancec7871eba7d">
+<area shape="rect" id="node1" title="Helper class that provides a standard way to create an ABC using" alt="" coords="438,5,510,36"/>
+<area shape="rect" id="node10" title="A dictionary&#45;like pure virtual class for CRUDing data, most of which read" alt="" coords="295,84,367,115"/>
+<area shape="rect" id="node12" title="An interface for classes that have multi&#45;line debuging capability." alt="" coords="634,84,722,115"/>
+<area shape="rect" id="node13" title="Any subclass that has the ability (and need) to do preprocessing. &#160;For" alt="" coords="422,84,526,115"/>
+<area shape="rect" id="node2" href="#zensols.mimicsid.anon.AnnotatedNoteStash" target="_top" title="A stash that returns :class:`~zensols.mimic.Note` instances by thier" alt="" coords="187,241,375,272"/>
+<area shape="rect" id="node3" title="An abstract base class for subclasses that do not support write methods" alt="" coords="178,163,327,193"/>
+<area shape="rect" id="node4" title="Any subclass that has the ability to do processing before any CRUD method" alt="" coords="352,163,503,193"/>
+<area shape="rect" id="node5" href="#zensols.mimicsid.anon.AnnotationNoteFactory" target="_top" title="Override to replace section with MedSecId annotations if they exist." alt="" coords="407,241,613,272"/>
+<area shape="rect" id="node6" title="Creates an instance of :class:`.Note` from :class:`.NoteEvent`." alt="" coords="527,163,647,193"/>
+<area shape="rect" id="node7" href="#zensols.mimicsid.anon.AnnotationResource" target="_top" title="This class providess access to the ``.zip`` file that contains the JSON" alt="" coords="637,241,823,272"/>
+<area shape="rect" id="node8" title="A class that that generates a dictionary recursively from data classes" alt="" coords="681,163,768,193"/>
+<area shape="rect" id="node9" title="Any stash that has a resource that needs to be closed." alt="" coords="5,163,153,193"/>
+<area shape="rect" id="node11" title="Delegate pattern. &#160;It can also be used as a no&#45;op if no delegate is" alt="" coords="9,241,149,272"/>
+<area shape="rect" id="node14" href="#zensols.mimicsid.anon.NoteStash" target="_top" title="Creates notes of type :class:`~zensols.mimic.note.Note` or" alt="" coords="26,320,133,351"/>
+</map>
