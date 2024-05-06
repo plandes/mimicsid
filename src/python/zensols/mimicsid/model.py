@@ -10,7 +10,6 @@ import logging
 import pandas as pd
 from zensols.persist import persisted
 from zensols.nlp import FeatureToken, FeatureDocument, LexicalSpan
-from zensols.mednlp import MedicalFeatureToken
 from zensols.mimic import MimicTokenDecorator
 from zensols.deeplearn.batch import DataPoint
 from zensols.deeplearn.result import ResultsContainer
