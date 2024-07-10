@@ -295,12 +295,12 @@ This document explains how to create and package models for distribution.
 ### Training and Testing
 
 To get performance metrics on the test set by training on the training, use the
-command: `./mimicsid traintest -c models/glove300.conf` for the section ID
+command: `./dist traintest -c config/glove300.conf` for the section ID
 model.  The configuration file can be any of those in the `models` directory.
 For the header model use:
 
 ```bash
-./mimicsid traintest -c models/glove300.conf --override mimicsid_default.model_type=header
+./dist traintest -c config/glove300.conf --override mimicsid_default.model_type=header
 ```
 
 
@@ -314,15 +314,18 @@ epochs where the loss decreases:
    `dist-resources/app.conf`.
 1. Update the same version in the `msid_model` section in file
    `resources/default.conf`.
-1. Preprocess (see the [preprocessing](#preprocessing-step)) section.
-1. **Important**: Remove the passwords and database configuration in
-   `config/system.conf`:
+1. Preprocess the data (see the [preprocessing](#preprocessing-step) section).
+1. **Important**: Remember to remove the passwords and database configuration
+   in `config/system.conf`:
    ```bash
    cp config/system.conf config/system-sensitive-data.conf
    cat /dev/null > config/system.conf
    ```
 1. Run the script that trains the models and packages them: `src/bin/package.sh`.
-1. Revert files `config/system.conf` and `resources/app.conf`.
+1. Revert the configuration files:
+   ```bash
+   git checkout -- dist-resources/app.conf resources/default.conf
+   ```
 
 
 ## Citation
