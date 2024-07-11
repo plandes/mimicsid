@@ -194,7 +194,11 @@ sentence chunking, metrics are most likely statistically insignificant.
 
 #### Version 0.1.0
 
-Adding biomedical NER improved the `0.1.0` models (see [Model Differences](#model-differences)).
+Adding biomedical NER improved the `0.1.0` models (see [Model
+Differences](#model-differences)).  In addition to the reported validation
+scores of the production models below, the `BiLSTM-CRF_tok (GloVE 300D)`
+section model achieved an improved weighted F1 of 0.9572, micro F1 of 0.959,
+macro F1 of 0.8163.
 
 | Name                          | Type    | Id                                     | wF1   | mF1   | MF1   | acc   |
 |-------------------------------|---------|----------------------------------------|-------|-------|-------|-------|
