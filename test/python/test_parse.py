@@ -16,8 +16,7 @@ class TestParse(unittest.TestCase):
     def setUp(self):
         zensols.mimicsid.suppress_warnings()
         self.maxDiff = 999999
-        if 'MIMICSIDRC' in os.environ:
-            del os.environ['MIMICSIDRC']
+        os.environ['MIMICSIDRC'] = 'test-resources/parse-test.conf'
 
     def _predict(self, filter_type: SectionFilterType,
                  res: str, write: bool = False):
