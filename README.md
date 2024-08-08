@@ -3,6 +3,7 @@
 [![PyPI][pypi-badge]][pypi-link]
 [![Python 3.10][python310-badge]][python310-link]
 [![Python 3.11][python311-badge]][python311-link]
+[![Build Status][build-badge]][build-link]
 
 This repository contains the a Python package to automatically segment and
 identify sections of clinical notes, such as electronic health record (EHR)
@@ -425,6 +426,8 @@ Copyright (c) 2022 - 2024 Paul Landes
 [python310-link]: https://www.python.org/downloads/release/python-3100
 [python311-badge]: https://img.shields.io/badge/python-3.11-blue.svg
 [python311-link]: https://www.python.org/downloads/release/python-3110
+[build-badge]: https://github.com/plandes/mimicsid/workflows/CI/badge.svg
+[build-link]: https://github.com/plandes/mimicsid/actions
 
 [MedCat]: https://github.com/CogStack/MedCAT
 [spaCy]: https://spacy.io
