@@ -35,6 +35,7 @@ modeldeps:
 
 # the DeepNLP package is neeed to run the tests
 .PHONY:			testdeps deps
+testdeps:
 			$(PIP_BIN) install -r $(PY_SRC)/requirements-test.txt
 
 
