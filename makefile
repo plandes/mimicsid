@@ -33,6 +33,11 @@ modeldeps:
 			$(PIP_BIN) install $(PIP_ARGS) \
 				-r $(PY_SRC)/requirements-model.txt --no-deps
 
+# the DeepNLP package is neeed to run the tests
+.PHONY:			testdeps deps
+			$(PIP_BIN) install -r $(PY_SRC)/requirements-test.txt
+
+
 # test for successful training per the code by limiting epochs and batch size
 .PHONY:			trainfast
 trainfast:
