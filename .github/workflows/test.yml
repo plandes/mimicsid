@@ -35,6 +35,12 @@ jobs:
           [ $(python --version | sed -E 's/Python ([0-9]+\.[0-9]+)\.[0-9]+.*/\1/') == '3.11' ] && \
             pip install https://raw.githubusercontent.com/plandes/mednlp/master/test-resources/github-workflow-lib/nmslib-2.1.2-cp311-cp311-linux_x86_64.whl || true
 
+      # avoid out of space errors
+      # https://github.com/orgs/community/discussions/25678
+      - name: Cleanup space
+        run: >-
+          rm -fr /opt/hostedtoolcache && rm -fr ~/.cache/pip
+
       - name: Prepare tests
         run: 'make info testdeps'
 
