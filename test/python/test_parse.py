@@ -34,7 +34,7 @@ class TestParse(unittest.TestCase):
             note.write_human()
         return should, note
 
-    def _assert(self, should, note: SectionContainer):
+    def _assert(self, should, note: SectionContainer, write: bool = False):
         self.assertTrue(isinstance(note, SectionContainer))
         should_secs: Dict[str, str] = should['sections']
         should_heads: List[str] = should['headers']
@@ -47,13 +47,16 @@ class TestParse(unittest.TestCase):
             if name != 'unknown':
                 self.assertEqual(1, len(note.sections_by_name[name]))
             sec: Section = note.sections_by_name[name][0]
+            if write:
+                print(f'should:\n<{content.strip()}>\n----')
+                print(f'predict:\n<{sec.body.strip()}>')
             self.assertEqual(content.strip(), sec.body.strip())
             self.assertEqual(tuple(headers), sec.headers)
 
     def _test_pred(self, filter_type: SectionFilterType,
                    res: str, write: bool = False):
         should, note = self._predict(filter_type, res, write)
-        self._assert(should, note)
+        self._assert(should, note, write)
 
     def test_predict_classified(self):
         self._test_pred(SectionFilterType.keep_classified, 'section-classified')
