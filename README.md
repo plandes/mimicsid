@@ -58,6 +58,14 @@ available.
 
 ## Installation
 
+Because the this library has many dependencies and many moving parts, it is
+best to create a new environment using [conda]:
+
+```bsh
+conda env create -f src/python/environment.yml
+conda activate mimicsid
+```
+
 The library can be installed with pip from the [pypi] repository:
 ```bash
 pip3 install zensols.mimicsid
@@ -192,6 +200,19 @@ changes of each version might present language parsing differences such as
 sentence chunking, metrics are most likely statistically insignificant.
 
 
+#### Version 0.1.1
+
+The version was released to accommodate for Zensols framework upgrades.
+
+| Name                          | Type    | Id                                     |   wF1 |   mF1 |   MF1 |   acc |
+|-------------------------------|---------|----------------------------------------|-------|-------|-------|-------|
+| `BiLSTM-CRF_tok (fastText)`   | Section | bilstm-crf-tok-fasttext-section-type   | 0.921 | 0.929 | 0.787 | 0.929 |
+| `BiLSTM-CRF_tok (GloVE 300D)` | Section | bilstm-crf-tok-glove-300d-section-type | 0.939 | 0.944 | 0.841 | 0.944 |
+| `BiLSTM-CRF_tok (fastText)`   | Header  | bilstm-crf-tok-fasttext-header         | 0.996 | 0.996 | 0.961 | 0.996 |
+| `BiLSTM-CRF_tok (GloVE 300D)` | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.962 | 0.996 |
+
+
+
 #### Version 0.1.0
 
 Adding biomedical NER improved the `0.1.0` models (see [Model
@@ -210,6 +231,8 @@ macro F1 of 0.8163.
 
 #### Version 0.0.3
 
+The version was released to accommodate for Zensols framework upgrades.
+
 | Name                          | Type    | Id                                     | wF1   | mF1   | MF1   | acc   |
 |-------------------------------|---------|----------------------------------------|-------|-------|-------|-------|
 | `BiLSTM-CRF_tok (fastText)`   | Section | bilstm-crf-tok-fasttext-section-type   | 0.911 | 0.917 | 0.792 | 0.917 |
@@ -219,6 +242,8 @@ macro F1 of 0.8163.
 
 
 #### Version 0.0.2
+
+The version was released to accommodate for Zensols framework upgrades.
 
 | Name                          | Type    | Id                                     | wF1   | mF1   | MF1   | acc   |
 |-------------------------------|---------|----------------------------------------|-------|-------|-------|-------|
@@ -309,6 +334,20 @@ For the header model use:
 
 
 ## Training Production Models
+
+TL;DR: if you're feeling lucky:
+
+1. Create a Conda environment with `src/python/environment.yml`
+1. Update the new *model* version in:
+   * [resources/default.conf](resources/default.conf) for property
+     `msid_model:version`.
+   * [dist-resources/app.conf][dist-resources/app.conf] for properth
+     `deeplearn_model_packer:version`
+1. Run detached from the console since it will take about a day to train all
+   four models: `nohup src/bin/all.sh > train.log 2>&1 &`
+
+However, there are many moving parts and libraries with many things that can go
+wrong.  More in-depth training instructions follow.
 
 To train models used in your projects, train the model on both the training and
 test sets.  This still leaves the validation set to inform when to save for
@@ -428,6 +467,7 @@ Copyright (c) 2022 - 2025 Paul Landes
 
 [MedCat]: https://github.com/CogStack/MedCAT
 [spaCy]: https://spacy.io
+[conda]: https://docs.anaconda.com/miniconda/
 
 [mednlp package]: https://github.com/plandes/mednlp
 [mimic package]: https://github.com/plandes/mimic

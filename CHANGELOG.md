@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+### Removed
+- Support for Python 3.10.
+
+### Added
+- Conda environment file (`src/python/environment.yml`) to reduce start up
+  latency and improve reproducibility.
+
+### Changed
+- Upgrade to [zensols.mimic] version 1.8.0 and [zensols.deeplearn] version
+  1.13.3.  The latter includes dependencies for PyTorch 2.1.2 and HuggingFace
+  transformers 4.48.1.
+- Retrained models (0.1.1) using new dependencies and uploaded to Zenodo, which
+  are downloaded automatically on first use.
+
+
 ## [1.8.0] - 2024-04-14
 ### Changed
 - Release newly trained models with better performance and smaller file size

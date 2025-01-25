@@ -1,0 +1,27 @@
+name: mimicsid
+channels:
+  - defaults
+dependencies:
+  - python==3.11.11
+  - numpy==1.25.2
+  - nmslib==2.1.1
+  - pip
+  - pip:
+      ## third party
+      - torch==2.1.2
+      - transformers~=4.48.1
+      ## framework
+      - zensols.util==1.15.1
+      - zensols.nlp==1.12.1
+      - zensols.dbpg==1.4.0
+      # deep learning
+      - zensols.deeplearn==1.13.3
+      - zensols.deepnlp==1.17.1
+      # clinical
+      - zensols.mednlp~=1.8.0
+      - zensols.mimic==1.8.0
+      ## models
+      - https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.6.0/en_core_web_sm-3.6.0-py3-none-any.whl
+      - https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.6.0/en_core_web_md-3.6.0-py3-none-any.whl
+      - https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.3/en_core_sci_md-0.5.3.tar.gz
+      - https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.3/en_ner_bionlp13cg_md-0.5.3.tar.gz

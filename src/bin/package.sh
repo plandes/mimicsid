@@ -74,9 +74,14 @@ function create_checksums() {
 }
 
 # output the models' performance metrics
-function dump_results() {
-    $BIN summary -c ${CONF_DIR}/${model}.conf \
+function write_results() {
+    log "writing performance metrics..."
+    model="${MODELS%% *}"
+    $BIN ressum -c ${CONF_DIR}/${model}.conf \
 	 --validation -o stage/model-performance.csv
+    if [ $? -ne 0 ] ; then
+	fail "model training failed"
+    fi
 }
 
 # do all
@@ -87,7 +92,7 @@ function main() {
     verify
     package
     create_checksums
-    dump_results
+    write_results
 }
 
 main
