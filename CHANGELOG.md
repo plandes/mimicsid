@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.9.0] - 2025-01-24
 ### Removed
 - Support for Python 3.10.
 
@@ -140,7 +141,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/mimicsid/compare/v1.8.0...HEAD
+[Unreleased]: https://github.com/plandes/mimicsid/compare/v1.9.0...HEAD
+[1.9.0]: https://github.com/plandes/mimicsid/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/plandes/mimicsid/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/plandes/mimicsid/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/plandes/mimicsid/compare/v1.5.1...v1.6.0
