@@ -12,9 +12,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.11']
+    defaults:
+      run:
+        shell: bash -l {0}
     steps:
       - name: Checkout reposistory
         uses: actions/checkout@v3
@@ -25,6 +25,11 @@ jobs:
           environment-file: src/python/environment.yml
           activate-environment: mimicsid
           auto-activate-base: false
+
+      - name: Display Conda info
+        run: |
+          conda info
+          conda list
 
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
