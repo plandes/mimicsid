@@ -22,14 +22,9 @@ jobs:
           submodules: recursive
       - uses: conda-incubator/setup-miniconda@v3
         with:
-          miniconda-version: 'latest'
-          channels: conda-forge
-          mamba-version: "*"
-          channel-priority: true
-          auto-update-conda: false
-          auto-activate-base: false
           environment-file: src/python/environment.yml
-          activate-environment: earth-analytics-python
+          activate-environment: mimicsid
+          auto-activate-base: false
 
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
