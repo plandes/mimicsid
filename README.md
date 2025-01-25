@@ -31,6 +31,7 @@ This package provides the following:
 - [Models](#models)
     - [MedCAT Models](#medcat-models)
     - [Performance Metrics](#performance-metrics)
+        - [Version 0.1.1](#version-011)
         - [Version 0.1.0](#version-010)
         - [Version 0.0.3](#version-003)
         - [Version 0.0.2](#version-002)
@@ -66,7 +67,7 @@ conda env create -f src/python/environment.yml
 conda activate mimicsid
 ```
 
-The library can be installed with pip from the [pypi] repository:
+The library is then installed with pip from the [pypi] repository:
 ```bash
 pip3 install zensols.mimicsid
 ```
