@@ -62,12 +62,13 @@ available.
 Because the this library has many dependencies and many moving parts, it is
 best to create a new environment using [conda]:
 
-```bsh
-conda env create -f src/python/environment.yml
+```bash
+wget https://github.com/plandes/mimicsid/raw/refs/heads/master/environment.yml
+conda env create -f environment.yml
 conda activate mimicsid
 ```
 
-The library is then installed with pip from the [pypi] repository:
+The library can also installed with pip from the [pypi] repository:
 ```bash
 pip3 install zensols.mimicsid
 ```
