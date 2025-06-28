@@ -1,0 +1,20 @@
+MedSecId annotations with MIMIC-III corpus parsing
+==================================================
+This repository contains the a Python package to automatically segment and identify sections of clinical notes, such as electronic health record (EHR) medical documents.
+
+.. toctree::
+   :maxdepth: 3
+   :glob:
+
+   Overview <index.md>
+   doc/*
+   API Reference <api.rst>
+   Contributing <CONTRIBUTING.md>
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

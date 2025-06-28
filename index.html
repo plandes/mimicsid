@@ -1,0 +1,793 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="API Reference" href="api.html" /><link rel="prev" title="MedSecId annotations with MIMIC-III corpus parsing" href="top.html" />
+
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
+        <title>MIMIC-III corpus parsing and section prediction with MedSecId - MedSecId annotations with MIMIC-III corpus parsing 1.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="top.html"><div class="brand">MedSecId annotations with MIMIC-III corpus parsing 1.10.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="top.html">
+  
+  
+  <span class="sidebar-brand-text">MedSecId annotations with MIMIC-III corpus parsing 1.10.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Overview</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/zensols.mimicsid.html">zensols.mimicsid package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/index.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="mimic-iii-corpus-parsing-and-section-prediction-with-medsecid">
+<h1>MIMIC-III corpus parsing and section prediction with MedSecId<a class="headerlink" href="#mimic-iii-corpus-parsing-and-section-prediction-with-medsecid" title="Link to this heading">¶</a></h1>
+<p><a class="reference external" href="https://pypi.python.org/pypi/zensols.mimicsid"><img alt="PyPI" src="https://img.shields.io/pypi/v/zensols.mimicsid.svg" /></a>
+<a class="reference external" href="https://www.python.org/downloads/release/python-3110"><img alt="Python 3.11" src="https://img.shields.io/badge/python-3.11-blue.svg" /></a>
+<a class="reference external" href="https://github.com/plandes/mimicsid/actions"><img alt="Build Status" src="https://github.com/plandes/mimicsid/workflows/CI/badge.svg" /></a></p>
+<p>This repository contains the a Python package to automatically segment and
+identify sections of clinical notes, such as electronic health record (EHR)
+medical documents.  It also provides access to the MedSecId section annotations
+with MIMIC-III corpus parsing from the paper <a class="reference external" href="https://aclanthology.org/2022.coling-1.326.pdf">A New Public Corpus for Clinical
+Section Identification: MedSecId</a>.  See the <a class="reference external" href="https://github.com/uic-nlp-lab/medsecid">medsecid repository</a> to reproduce
+the results from the paper.</p>
+<p>This package provides the following:</p>
+<ul class="simple">
+<li><p>The same access to MIMIC-III data as provided in the <a class="reference external" href="https://github.com/plandes/mimic">mimic package</a>.</p></li>
+<li><p>Access to the annotated MedSecId notes as an easy to use Python object graph.</p></li>
+<li><p>The pretrained model inferencing, which produces a similar Python object
+graph to the annotations (provides the class <code class="docutils literal notranslate"><span class="pre">PredictedNote</span></code> instead of an
+<code class="docutils literal notranslate"><span class="pre">AnnotatedNote</span></code> class.</p></li>
+</ul>
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc --><section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="#documentation">Documentation</a></p></li>
+<li><p><a class="reference external" href="#installation">Installation</a></p></li>
+<li><p><a class="reference external" href="#usage">Usage</a></p>
+<ul>
+<li><p><a class="reference external" href="#prediction-usage">Prediction Usage</a></p></li>
+<li><p><a class="reference external" href="#annotation-access">Annotation Access</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#models">Models</a></p>
+<ul>
+<li><p><a class="reference external" href="#medcat-models">MedCAT Models</a></p></li>
+<li><p><a class="reference external" href="#performance-metrics">Performance Metrics</a></p>
+<ul>
+<li><p><a class="reference external" href="#version-011">Version 0.1.1</a></p></li>
+<li><p><a class="reference external" href="#version-010">Version 0.1.0</a></p></li>
+<li><p><a class="reference external" href="#version-003">Version 0.0.3</a></p></li>
+<li><p><a class="reference external" href="#version-002">Version 0.0.2</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#differences-from-the-paper-repository">Differences from the Paper Repository</a></p>
+<ul>
+<li><p><a class="reference external" href="#model-differences">Model Differences</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#training">Training</a></p>
+<ul>
+<li><p><a class="reference external" href="#preprocessing-step">Preprocessing Step</a></p></li>
+<li><p><a class="reference external" href="#training-and-testing">Training and Testing</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#training-production-models">Training Production Models</a></p></li>
+<li><p><a class="reference external" href="#citation">Citation</a></p></li>
+<li><p><a class="reference external" href="#docker">Docker</a></p></li>
+<li><p><a class="reference external" href="#changelog">Changelog</a></p></li>
+<li><p><a class="reference external" href="#community">Community</a></p></li>
+<li><p><a class="reference external" href="#license">License</a></p></li>
+</ul>
+<!-- markdown-toc end --></section>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">¶</a></h2>
+<p>See the <a class="reference external" href="https://plandes.github.io/mimicsid/index.html">full documentation</a>.
+The <a class="reference external" href="https://plandes.github.io/mimicsid/api.html">API reference</a> is also
+available.</p>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
+<p>Because the this library has many dependencies and many moving parts, it is
+best to create a new environment using <a class="reference external" href="https://docs.anaconda.com/miniconda/">conda</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://github.com/plandes/mimicsid/raw/refs/heads/master/environment.yml
+conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>environment.yml
+conda<span class="w"> </span>activate<span class="w"> </span>mimicsid
+</pre></div>
+</div>
+<p>The library can also installed with pip from the <a class="reference external" href="https://pypi.org/project/zensols.mimicsid/">pypi</a> repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3<span class="w"> </span>install<span class="w"> </span>zensols.mimicsid
+</pre></div>
+</div>
+<p>The models used by the package are automatically downloaded on the first use.</p>
+<p>If you only want to predict sections using the pretrained model, you need only
+to <a class="reference external" href="#obtaining">install</a> the package.  However, if you want to access the
+annotated notes, you must install a Postgres MIMIC-III database as <a class="reference external" href="https://github.com/plandes/mimic#installation">mimic
+package install section</a>.</p>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<p>This package provides models to predict sections of a medical note and access
+to the MIMIC-III section annotations available on <a class="reference external" href="https://zenodo.org/records/10971167">Zenodo</a>.  The first time it
+is run it will take a while to download the annotation set and the pretrained
+models.</p>
+<p>See the <a class="reference external" href="example">examples</a> for the complete code and additional documentation.</p>
+<section id="prediction-usage">
+<h3>Prediction Usage<a class="headerlink" href="#prediction-usage" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">SectionPredictor</span></code> class creates section annotation span IDs/types and
+header token spans.  See the example below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">zensols.nlp</span><span class="w"> </span><span class="kn">import</span> <span class="n">FeatureToken</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zensols.mimic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Section</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zensols.mimicsid</span><span class="w"> </span><span class="kn">import</span> <span class="n">PredictedNote</span><span class="p">,</span> <span class="n">ApplicationFactory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zensols.mimicsid.pred</span><span class="w"> </span><span class="kn">import</span> <span class="n">SectionPredictor</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">):</span>
+    <span class="c1"># get the section predictor from the application context in the app</span>
+    <span class="n">section_predictor</span><span class="p">:</span> <span class="n">SectionPredictor</span> <span class="o">=</span> <span class="n">ApplicationFactory</span><span class="o">.</span><span class="n">section_predictor</span><span class="p">()</span>
+
+    <span class="c1"># read in a test note to predict</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;../../test-resources/note.txt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="c1"># predict the sections of read in note and print it</span>
+    <span class="n">note</span><span class="p">:</span> <span class="n">PredictedNote</span> <span class="o">=</span> <span class="n">section_predictor</span><span class="o">.</span><span class="n">predict</span><span class="p">([</span><span class="n">content</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">note</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+
+    <span class="c1"># iterate through the note object graph</span>
+    <span class="n">sec</span><span class="p">:</span> <span class="n">Section</span>
+    <span class="k">for</span> <span class="n">sec</span> <span class="ow">in</span> <span class="n">note</span><span class="o">.</span><span class="n">sections</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">sec</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">sec</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="c1"># concepts or special MIMIC tokens from the addendum section</span>
+    <span class="n">sec</span> <span class="o">=</span> <span class="n">note</span><span class="o">.</span><span class="n">sections_by_name</span><span class="p">[</span><span class="s1">&#39;history-of-present-illness&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">tok</span><span class="p">:</span> <span class="n">FeatureToken</span>
+    <span class="k">for</span> <span class="n">tok</span> <span class="ow">in</span> <span class="n">sec</span><span class="o">.</span><span class="n">body_doc</span><span class="o">.</span><span class="n">token_iter</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">tok</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">mimic_</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">cui_</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="annotation-access">
+<h3>Annotation Access<a class="headerlink" href="#annotation-access" title="Link to this heading">¶</a></h3>
+<p>Annotated notes are provided as a Python <a class="reference external" href="https://plandes.github.io/mimic/api/zensols.mimic.html#zensols.mimic.note.Note">Note class</a>, which contains most of
+the MIMIC-III data from the <code class="docutils literal notranslate"><span class="pre">NOTEEVENTS</span></code> table.  This includes not only the
+text, but parsed <code class="docutils literal notranslate"><span class="pre">FeatureDocument</span></code> instances.  However, you must build a
+Postgres database and provide a login to it in the application as detailed
+below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">zensols.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">IniConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zensols.mimic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Section</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zensols.mimicsid</span><span class="w"> </span><span class="kn">import</span> <span class="n">ApplicationFactory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zensols.mimic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Note</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zensols.mimicsid</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnnotatedNote</span><span class="p">,</span> <span class="n">NoteStash</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">):</span>
+    <span class="c1"># create a configuration with the Postgres database login</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">IniConfig</span><span class="p">(</span><span class="s1">&#39;db.conf&#39;</span><span class="p">)</span>
+    <span class="c1"># get the `dict` like data structure that has notes by `row_id`</span>
+    <span class="n">note_stash</span><span class="p">:</span> <span class="n">NoteStash</span> <span class="o">=</span> <span class="n">ApplicationFactory</span><span class="o">.</span><span class="n">note_stash</span><span class="p">(</span>
+        <span class="o">**</span><span class="n">config</span><span class="o">.</span><span class="n">get_options</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="s1">&#39;mimic_postgres_conn_manager&#39;</span><span class="p">))</span>
+
+    <span class="c1"># get a note by `row_id`</span>
+    <span class="n">note</span><span class="p">:</span> <span class="n">Note</span> <span class="o">=</span> <span class="n">note_stash</span><span class="p">[</span><span class="mi">14793</span><span class="p">]</span>
+
+    <span class="c1"># iterate through the note object graph</span>
+    <span class="n">sec</span><span class="p">:</span> <span class="n">Section</span>
+    <span class="k">for</span> <span class="n">sec</span> <span class="ow">in</span> <span class="n">note</span><span class="o">.</span><span class="n">sections</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">sec</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">sec</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="models">
+<h2>Models<a class="headerlink" href="#models" title="Link to this heading">¶</a></h2>
+<p>You can mix and match models across section vs. header models (see <a class="reference external" href="#performance-metrics">Performance
+Metrics</a>).  By default the package uses the best
+performing models but you can select the model you want by adding a
+configuration file and specifying it on the command line with <code class="docutils literal notranslate"><span class="pre">-c</span></code>:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[mimicsid_default]</span>
+<span class="na">section_prediction_model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">bilstm-crf-tok-fasttext</span>
+<span class="na">header_prediction_model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">bilstm-crf-tok-glove-300d</span>
+</pre></div>
+</div>
+<p>The resources live on <a class="reference external" href="https://zenodo.org/records/10971167">Zenodo</a> and are automatically downloaded on the first
+time the program is used in the <code class="docutils literal notranslate"><span class="pre">~/.cache</span></code> directory (or similar home directory
+on Windows).</p>
+<section id="medcat-models">
+<h3>MedCAT Models<a class="headerlink" href="#medcat-models" title="Link to this heading">¶</a></h3>
+<p>The dependency <a class="reference external" href="https://github.com/plandes/mednlp">mednlp package</a> package uses the <a class="reference external" href="https://github.com/plandes/mednlp#medcat-models">default MedCAT
+model</a>.</p>
+</section>
+<section id="performance-metrics">
+<h3>Performance Metrics<a class="headerlink" href="#performance-metrics" title="Link to this heading">¶</a></h3>
+<p>The distributed models add in the test set to the training set to improve the
+performance for inferencing, which is why only the validation metrics are
+given.  The validation set performance of the pretrained models are given
+below, where:</p>
+<ul class="simple">
+<li><p><strong>wF1</strong> is the weighted F1</p></li>
+<li><p><strong>mF1</strong> is the micro F1</p></li>
+<li><p><strong>Mf1</strong> is the macro F1</p></li>
+<li><p><strong>acc</strong> is the accuracy</p></li>
+</ul>
+<p>Fundamental API changes have necessitated subsequent versions of the model.
+Each version of this package is tied to a model version.  While some minor
+changes of each version might present language parsing differences such as
+sentence chunking, metrics are most likely statistically insignificant.</p>
+<section id="version-0-1-1">
+<h4>Version 0.1.1<a class="headerlink" href="#version-0-1-1" title="Link to this heading">¶</a></h4>
+<p>The version was released to accommodate for Zensols framework upgrades.</p>
+<p>| Name                          | Type    | Id                                     |   wF1 |   mF1 |   MF1 |   acc |
+|——————————-|———|—————————————-|——-|——-|——-|——-|
+| <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(fastText)</span></code>   | Section | bilstm-crf-tok-fasttext-section-type   | 0.921 | 0.929 | 0.787 | 0.929 |
+| <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(GloVE</span> <span class="pre">300D)</span></code> | Section | bilstm-crf-tok-glove-300d-section-type | 0.939 | 0.944 | 0.841 | 0.944 |
+| <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(fastText)</span></code>   | Header  | bilstm-crf-tok-fasttext-header         | 0.996 | 0.996 | 0.961 | 0.996 |
+| <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(GloVE</span> <span class="pre">300D)</span></code> | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.962 | 0.996 |</p>
+</section>
+<section id="version-0-1-0">
+<h4>Version 0.1.0<a class="headerlink" href="#version-0-1-0" title="Link to this heading">¶</a></h4>
+<p>Adding biomedical NER improved the <code class="docutils literal notranslate"><span class="pre">0.1.0</span></code> models (see <a class="reference external" href="#model-differences">Model
+Differences</a>).  In addition to the reported validation
+scores of the production models below, the <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(GloVE</span> <span class="pre">300D)</span></code>
+section model achieved an improved weighted F1 of 0.9572, micro F1 of 0.959,
+macro F1 of 0.8163.</p>
+<p>| Name                          | Type    | Id                                     | wF1   | mF1   | MF1   | acc   |
+|——————————-|———|—————————————-|——-|——-|——-|——-|
+| <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(fastText)</span></code>   | Section | bilstm-crf-tok-fasttext-section-type   | 0.923 | 0.933 | 0.764 | 0.933 |
+| <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(GloVE</span> <span class="pre">300D)</span></code> | Section | bilstm-crf-tok-glove-300d-section-type | 0.936 | 0.941 | 0.810 | 0.941 |
+| <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(fastText)</span></code>   | Header  | bilstm-crf-tok-fasttext-header         | 0.996 | 0.996 | 0.961 | 0.996 |
+| <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(GloVE</span> <span class="pre">300D)</span></code> | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.964 | 0.996 |</p>
+</section>
+<section id="version-0-0-3">
+<h4>Version 0.0.3<a class="headerlink" href="#version-0-0-3" title="Link to this heading">¶</a></h4>
+<p>The version was released to accommodate for Zensols framework upgrades.</p>
+<p>| Name                          | Type    | Id                                     | wF1   | mF1   | MF1   | acc   |
+|——————————-|———|—————————————-|——-|——-|——-|——-|
+| <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(fastText)</span></code>   | Section | bilstm-crf-tok-fasttext-section-type   | 0.911 | 0.917 | 0.792 | 0.917 |
+| <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(GloVE</span> <span class="pre">300D)</span></code> | Section | bilstm-crf-tok-glove-300d-section-type | 0.929 | 0.933 | 0.810 | 0.933 |
+| <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(fastText)</span></code>   | Header  | bilstm-crf-tok-fasttext-header         | 0.996 | 0.996 | 0.965 | 0.996 |
+| <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(GloVE</span> <span class="pre">300D)</span></code> | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.962 | 0.996 |</p>
+</section>
+<section id="version-0-0-2">
+<h4>Version 0.0.2<a class="headerlink" href="#version-0-0-2" title="Link to this heading">¶</a></h4>
+<p>The version was released to accommodate for Zensols framework upgrades.</p>
+<p>| Name                          | Type    | Id                                     | wF1   | mF1   | MF1   | acc   |
+|——————————-|———|—————————————-|——-|——-|——-|——-|
+| <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(fastText)</span></code>   | Section | bilstm-crf-tok-fasttext-section-type   | 0.918 | 0.925 | 0.797 | 0.925 |
+| <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(GloVE</span> <span class="pre">300D)</span></code> | Section | bilstm-crf-tok-glove-300d-section-type | 0.917 | 0.922 | 0.809 | 0.922 |
+| <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(fastText)</span></code>   | Header  | bilstm-crf-tok-fasttext-header         | 0.996 | 0.996 | 0.959 | 0.996 |
+| <code class="docutils literal notranslate"><span class="pre">BiLSTM-CRF_tok</span> <span class="pre">(GloVE</span> <span class="pre">300D)</span></code> | Header  | bilstm-crf-tok-glove-300d-header       | 0.996 | 0.996 | 0.962 | 0.996 |</p>
+</section>
+</section>
+</section>
+<section id="differences-from-the-paper-repository">
+<h2>Differences from the Paper Repository<a class="headerlink" href="#differences-from-the-paper-repository" title="Link to this heading">¶</a></h2>
+<p>The paper <a class="reference external" href="https://github.com/uic-nlp-lab/medsecid">medsecid repository</a> has quite a few differences, mostly around
+reproducibility.  However, this repository is designed to be a package used for
+research that applies the model.  To reproduce the results of the paper, please
+refer to the [medsicid repository].  To use the best performing model
+(BiLSTM-CRF token model) from that paper, then use this repository.</p>
+<p>Perhaps the largest difference is that this repository has a pretrained model
+and code for header tokens.  This is a separate model whose header token
+predictions are “merged” with the section ID/type predictions.</p>
+<p>The differences in performance between the section ID/type models and metrics
+reported involve several factors.  The primary difference being that released
+models were trained on the test data with only validation performance metrics
+reported to increase the pretrained model performance.  Other changes include:</p>
+<ul class="simple">
+<li><p>Uses the <a class="reference external" href="https://github.com/plandes/mednlp">mednlp package</a>, which uses <a class="reference external" href="https://github.com/CogStack/MedCAT">MedCAT</a> to parse clinical medical
+text.  This includes changes such as fixing misspellings and expanding
+acronyms.</p></li>
+<li><p>Uses the <a class="reference external" href="https://github.com/plandes/mimic">mimic package</a>, which builds on the <a class="reference external" href="https://github.com/plandes/mednlp">mednlp package</a> and parses
+[MIMIC-III] text by configuring the <a class="reference external" href="https://spacy.io">spaCy</a> tokenizer to deal with pseudo
+tokens (i.e. <code class="docutils literal notranslate"><span class="pre">[**First</span> <span class="pre">Name**]</span></code>).  This is a significant change given how
+these tokens are treated between the models and term mapping (<code class="docutils literal notranslate"><span class="pre">Pt.</span></code> becomes
+<code class="docutils literal notranslate"><span class="pre">patient</span></code>).  This was changed so the model will work well on non-MIMIC data.</p></li>
+<li><p>Feature sets differences such as provided by the <a class="reference external" href="https://github.com/plandes/deepnlp">Zensols Deep NLP package</a>.</p></li>
+<li><p>Model changes include LSTM hidden layer parameter size and activation
+function.</p></li>
+<li><p>White space tokens are removed in <a class="reference external" href="https://github.com/uic-nlp-lab/medsecid">medsecid repository</a> and added back in
+this package to give additional cues to the model on when to break a
+section.  However, this might have had the opposite effect.</p></li>
+</ul>
+<p>There are also changes in the Python interpreter and libraries used:</p>
+<ul class="simple">
+<li><p>Python version 3.9 to 3.11.</p></li>
+<li><p>PyTorch was upgraded from 1.9.1 to 2.1.2</p></li>
+<li><p><a class="reference external" href="https://spacy.io">spaCy</a> was upgraded from 3.0.7 to 3.6.1</p></li>
+<li><p>HuggingFace Transformers 4.11.3 to 4.35.2</p></li>
+<li><p>scispaCy 0.4.0 to 0.5.3</p></li>
+</ul>
+<section id="model-differences">
+<h3>Model Differences<a class="headerlink" href="#model-differences" title="Link to this heading">¶</a></h3>
+<p>Starting with <a class="reference external" href="#version-010">Version 0.1.0</a>, named entities include those
+predicted from the scispaCy biomedical NER (<code class="docutils literal notranslate"><span class="pre">en_ner_bionlp13cg_md</span></code>) trained
+model.  Compressed model files are also smaller in size.</p>
+</section>
+</section>
+<section id="training">
+<h2>Training<a class="headerlink" href="#training" title="Link to this heading">¶</a></h2>
+<p>This document explains how to create and package models for distribution.</p>
+<section id="preprocessing-step">
+<h3>Preprocessing Step<a class="headerlink" href="#preprocessing-step" title="Link to this heading">¶</a></h3>
+<ol>
+<li><p>To train the model, first install the MIMIC-III Postgres database per the <a class="reference external" href="https://github.com/plandes/mimic">mimic
+package</a> instructions in the <em>Installation</em> section.</p></li>
+<li><p>Copy the system configuration file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>config/system-template.conf<span class="w"> </span>config/system.conf
+</pre></div>
+</div>
+</li>
+<li><p>Add the MIMIC-III Postgres credentials and database configuration to
+<code class="docutils literal notranslate"><span class="pre">config/system.conf</span></code>.</p></li>
+<li><p>Vectorize the batches using the preprocessing script:
+<code class="docutils literal notranslate"><span class="pre">./src/bin/preprocess.sh</span></code>.  This also creates cached hospital admission and
+spaCy data parse files.</p></li>
+</ol>
+</section>
+<section id="training-and-testing">
+<h3>Training and Testing<a class="headerlink" href="#training-and-testing" title="Link to this heading">¶</a></h3>
+<p>To get performance metrics on the test set by training on the training, use the
+command: <code class="docutils literal notranslate"><span class="pre">./dist</span> <span class="pre">traintest</span> <span class="pre">-c</span> <span class="pre">config/glove300.conf</span></code> for the section ID
+model.  The configuration file can be any of those in the <code class="docutils literal notranslate"><span class="pre">models</span></code> directory.
+For the header model use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./dist<span class="w"> </span>traintest<span class="w"> </span>-c<span class="w"> </span>config/glove300.conf<span class="w"> </span>--override<span class="w"> </span>mimicsid_default.model_type<span class="o">=</span>header
+</pre></div>
+</div>
+</section>
+</section>
+<section id="training-production-models">
+<h2>Training Production Models<a class="headerlink" href="#training-production-models" title="Link to this heading">¶</a></h2>
+<p>TL;DR: if you’re feeling lucky:</p>
+<ol class="simple">
+<li><p>Update the new <em>model</em> version in:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="resources/default.conf">resources/default.conf</a> for property
+<code class="docutils literal notranslate"><span class="pre">msid_model:version</span></code>.</p></li>
+<li><p>[dist-resources/app.conf][dist-resources/app.conf] for property
+<code class="docutils literal notranslate"><span class="pre">deeplearn_model_packer:version</span></code></p></li>
+</ul>
+</li>
+<li><p>Run detached from the console since it will take about a day to train all
+four models: <code class="docutils literal notranslate"><span class="pre">nohup</span> <span class="pre">src/bin/all.sh</span> <span class="pre">&gt;</span> <span class="pre">train.log</span> <span class="pre">2&gt;&amp;1</span> <span class="pre">&amp;</span></code></p></li>
+<li><p>Recreate the environment file: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">envfile</span></code></p></li>
+</ol>
+<p>However, there are many moving parts and libraries with many things that can go
+wrong.  More in-depth training instructions follow.</p>
+<p>To train models used in your projects, train the model on both the training and
+test sets.  This still leaves the validation set to inform when to save for
+epochs where the loss decreases:</p>
+<ol>
+<li><p>Update the version in the <code class="docutils literal notranslate"><span class="pre">deeplearn_model_packer</span></code> section in file
+<code class="docutils literal notranslate"><span class="pre">dist-resources/app.conf</span></code>.</p></li>
+<li><p>Update the same version in the <code class="docutils literal notranslate"><span class="pre">msid_model</span></code> section in file
+<code class="docutils literal notranslate"><span class="pre">resources/default.conf</span></code>.</p></li>
+<li><p>Preprocess the data (see the <a class="reference external" href="#preprocessing-step">preprocessing</a> section).</p></li>
+<li><p><strong>Important</strong>: Remember to remove the passwords and database configuration
+in <code class="docutils literal notranslate"><span class="pre">config/system.conf</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>config/system.conf<span class="w"> </span>config/system-sensitive-data.conf
+cat<span class="w"> </span>/dev/null<span class="w"> </span>&gt;<span class="w"> </span>config/system.conf
+</pre></div>
+</div>
+</li>
+<li><p>Run the script that trains the models and packages them: <code class="docutils literal notranslate"><span class="pre">src/bin/package.sh</span></code>.</p></li>
+<li><p>Revert the configuration files:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>--<span class="w"> </span>dist-resources/app.conf<span class="w"> </span>resources/default.conf
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="citation">
+<h2>Citation<a class="headerlink" href="#citation" title="Link to this heading">¶</a></h2>
+<p>If you use this project in your research please use the following BibTeX entry:</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@inproceedings</span><span class="p">{</span><span class="nl">landes-etal-2022-new</span><span class="p">,</span>
+<span class="w">    </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;A New Public Corpus for Clinical Section Identification: {M}ed{S}ec{I}d&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;Landes, Paul  and</span>
+<span class="s">      Patel, Kunal  and</span>
+<span class="s">      Huang, Sean S.  and</span>
+<span class="s">      Webb, Adam  and</span>
+<span class="s">      Di Eugenio, Barbara  and</span>
+<span class="s">      Caragea, Cornelia&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">booktitle</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;Proceedings of the 29th International Conference on Computational Linguistics&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">month</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">oct</span><span class="p">,</span>
+<span class="w">    </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;2022&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">address</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;Gyeongju, Republic of Korea&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">publisher</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;International Committee on Computational Linguistics&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">url</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;https://aclanthology.org/2022.coling-1.326&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">pages</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;3709--3721&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Also please cite the <a class="reference external" href="https://github.com/plandes/deepnlp">Zensols Framework</a>:</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@inproceedings</span><span class="p">{</span><span class="nl">landes-etal-2023-deepzensols</span><span class="p">,</span>
+<span class="w">    </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;{D}eep{Z}ensols: A Deep Learning Natural Language Processing Framework for Experimentation and Reproducibility&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;Landes, Paul  and</span>
+<span class="s">      Di Eugenio, Barbara  and</span>
+<span class="s">      Caragea, Cornelia&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">editor</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;Tan, Liling  and</span>
+<span class="s">      Milajevs, Dmitrijs  and</span>
+<span class="s">      Chauhan, Geeticka  and</span>
+<span class="s">      Gwinnup, Jeremy  and</span>
+<span class="s">      Rippeth, Elijah&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">booktitle</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;Proceedings of the 3rd Workshop for Natural Language Processing Open Source Software (NLP-OSS 2023)&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">month</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">dec</span><span class="p">,</span>
+<span class="w">    </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;2023&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">address</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;Singapore, Singapore&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">publisher</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;Association for Computational Linguistics&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">url</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;https://aclanthology.org/2023.nlposs-1.16&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">pages</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;141--146&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="docker">
+<h2>Docker<a class="headerlink" href="#docker" title="Link to this heading">¶</a></h2>
+<p>A <a class="reference external" href="docker/app/README">docker</a> image is now available as well.</p>
+<p>To use the docker image, do the following:</p>
+<ol class="simple">
+<li><p>Create (or obtain) the <a class="reference external" href="https://github.com/plandes/mimicdb#installation">Postgres docker image</a></p></li>
+<li><p>Clone this repository <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">--recurse-submodules</span> <span class="pre">https://github.com/plandes/mimicsid</span></code></p></li>
+<li><p>Set the working directory to the repo: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">mimicsid</span></code></p></li>
+<li><p>Copy the configuration from the installed <a class="reference external" href="https://github.com/plandes/mimicdb">mimicdb</a> image configuration:
+<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">-C</span> <span class="pre">docker/mimicdb</span> <span class="pre">SRC_DIR=&lt;cloned</span> <span class="pre">mimicdb</span> <span class="pre">directory&gt;</span> <span class="pre">cpconfig</span></code></p></li>
+<li><p>Start the container: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">-C</span> <span class="pre">docker/app</span> <span class="pre">up</span></code></p></li>
+<li><p>Test sectioning a document: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">-C</span> <span class="pre">docker/app</span> <span class="pre">testdumpsec</span></code></p></li>
+<li><p>Log in to the container: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">-C</span> <span class="pre">docker/app</span> <span class="pre">devlogin</span></code></p></li>
+<li><p>Output a note to a temporary file: <code class="docutils literal notranslate"><span class="pre">mimic</span> <span class="pre">note</span> <span class="pre">1118471</span> <span class="pre">&gt;</span> <span class="pre">note.txt</span></code></p></li>
+<li><p>Predict the sections on the note: <code class="docutils literal notranslate"><span class="pre">mimicsid</span> <span class="pre">predict</span> <span class="pre">note.txt</span></code></p></li>
+<li><p>Look at the section predictions: <code class="docutils literal notranslate"><span class="pre">cat</span> <span class="pre">preds/note-pred.txt</span></code></p></li>
+</ol>
+</section>
+<section id="changelog">
+<h2>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h2>
+<p>An extensive changelog is available <a class="reference internal" href="CHANGELOG.html"><span class="doc">here</span></a>.</p>
+</section>
+<section id="community">
+<h2>Community<a class="headerlink" href="#community" title="Link to this heading">¶</a></h2>
+<p>Please star this repository and let me know how and where you use this API.
+Contributions as pull requests, feedback and any input is welcome.</p>
+</section>
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="LICENSE.html"><span class="doc">MIT License</span></a></p>
+<p>Copyright (c) 2022 - 2025 Paul Landes</p>
+<!-- links --></section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="api.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">API Reference</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="top.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Home</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025 Paul Landes
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">MIMIC-III corpus parsing and section prediction with MedSecId</a><ul>
+<li><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#prediction-usage">Prediction Usage</a></li>
+<li><a class="reference internal" href="#annotation-access">Annotation Access</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#models">Models</a><ul>
+<li><a class="reference internal" href="#medcat-models">MedCAT Models</a></li>
+<li><a class="reference internal" href="#performance-metrics">Performance Metrics</a><ul>
+<li><a class="reference internal" href="#version-0-1-1">Version 0.1.1</a></li>
+<li><a class="reference internal" href="#version-0-1-0">Version 0.1.0</a></li>
+<li><a class="reference internal" href="#version-0-0-3">Version 0.0.3</a></li>
+<li><a class="reference internal" href="#version-0-0-2">Version 0.0.2</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#differences-from-the-paper-repository">Differences from the Paper Repository</a><ul>
+<li><a class="reference internal" href="#model-differences">Model Differences</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#training">Training</a><ul>
+<li><a class="reference internal" href="#preprocessing-step">Preprocessing Step</a></li>
+<li><a class="reference internal" href="#training-and-testing">Training and Testing</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#training-production-models">Training Production Models</a></li>
+<li><a class="reference internal" href="#citation">Citation</a></li>
+<li><a class="reference internal" href="#docker">Docker</a></li>
+<li><a class="reference internal" href="#changelog">Changelog</a></li>
+<li><a class="reference internal" href="#community">Community</a></li>
+<li><a class="reference internal" href="#license">License</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=1d24b1d9"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    </body>
+</html>
