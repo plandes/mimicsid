@@ -1,6 +1,6 @@
 #!/bin/bash
-#@meta {desc: 'update model configs', date: '2024-04-12'}
-#@meta {doc: 'update configurations in already trained models'}
+#@meta {desc: "update model configs", date: "2024-04-12"}
+#@meta {doc: "update configurations in already trained models"}
 
 PROG=$(basename $0)
 BIN=./dist

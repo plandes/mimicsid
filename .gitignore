@@ -6,3 +6,6 @@
 /*.log
 /preds
 /stage
+# pixi environments
+.pixi
+/pyproject.toml

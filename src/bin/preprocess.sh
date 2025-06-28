@@ -21,11 +21,6 @@ function clean() {
     rm -rf target model data stage
 }
 
-function deps() {
-    echo "installing additional dependencies needed for training"
-    pip install -r src/python/requirements-train.txt
-}
-
 function preempt() {
     echo "parsing admissions, notes and docs"
     if [ $FAST -eq 1 ] ; then
@@ -45,6 +40,7 @@ function batch() {
 }
 
 function main() {
+    PATH="./.pixi/envs/build-pypi:${PATH}"
     confirm
     clean
     deps

@@ -1,2 +1,0 @@
-zensols.deeplearn==1.13.3
-zensols.mimic==1.8.0

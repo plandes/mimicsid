@@ -1,4 +1,0 @@
-{"includes": {"named": ["numpy", "pandas", "torch", "zensols.nlp", "zensols.util"],
-	      "mapped": [["zensols.deeplearn", "{url}/deeplearn/"],
-			 ["zensols.deepnlp", "{url}/deepnlp/"],
-			 ["zensols.mimic", "{url}/mimic/"]]}}

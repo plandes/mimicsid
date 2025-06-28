@@ -1,2 +1,0 @@
-zensols.dbpg~=1.4.0
-zensols.deepnlp~=1.17.0

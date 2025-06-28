@@ -17,5 +17,6 @@ suppress_warnings()
 
 
 from .domain import *
+from .compat import *
 from .app import *
 from .cli import *

@@ -21,7 +21,7 @@ if (__name__ == '__main__'):
             5: 'repredict',
             }[0]
     harness = CliHarness(
-        src_dir_name='src/python',
+        src_dir_name='src',
         app_factory_class='zensols.mimicsid.cli.ApplicationFactory',
         app_config_resource='dist-resources/app.conf',
         # prototyping arguments

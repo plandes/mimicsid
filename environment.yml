@@ -1,24 +1,12 @@
-channels:
-  - defaults
-dependencies:
-  - python==3.11.11
-  - numpy==1.25.2
-  - nmslib==2.1.1
-  - pip
-  - pip:
-      - torch==2.1.2
-      - transformers~=4.48.1
-      - zensols.util==1.15.1
-      - zensols.nlp==1.12.1
-      - zensols.dbpg==1.4.0
-      - zensols.deeplearn==1.13.3
-      - zensols.deepnlp==1.17.1
-      - zensols.mednlp~=1.8.0
-      - zensols.mimic==1.8.0
-      - https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.6.0/en_core_web_sm-3.6.0-py3-none-any.whl
-      - https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.6.0/en_core_web_md-3.6.0-py3-none-any.whl
-      - https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.3/en_core_sci_md-0.5.3.tar.gz
-      - https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.3/en_ner_bionlp13cg_md-0.5.3.tar.gz
-      - zensols.mimicsid==1.9.0
 name: mimicsid
-prefix: env
+channels:
+- conda-forge
+- nodefaults
+dependencies:
+- python ~=3.11.12
+- python >=3.11,<3.13
+- pip
+- pip:
+  - zensols-deepnlp~=1.18.0
+  - zensols-mimic==1.9.1
+

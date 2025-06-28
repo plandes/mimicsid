@@ -339,14 +339,14 @@ For the header model use:
 
 TL;DR: if you're feeling lucky:
 
-1. Create a Conda environment with `src/python/environment.yml`
 1. Update the new *model* version in:
    * [resources/default.conf](resources/default.conf) for property
      `msid_model:version`.
-   * [dist-resources/app.conf][dist-resources/app.conf] for properth
+   * [dist-resources/app.conf][dist-resources/app.conf] for property
      `deeplearn_model_packer:version`
 1. Run detached from the console since it will take about a day to train all
    four models: `nohup src/bin/all.sh > train.log 2>&1 &`
+1. Recreate the environment file: `make envfile`
 
 However, there are many moving parts and libraries with many things that can go
 wrong.  More in-depth training instructions follow.

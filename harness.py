@@ -11,7 +11,7 @@ deepnlp.init()
 if (__name__ == '__main__'):
     from zensols.cli import CliHarness
     harness = CliHarness(
-        src_dir_name='src/python',
+        src_dir_name='src',
         app_factory_class='zensols.mimicsid.ApplicationFactory',
         proto_args='proto -c config/glove300.conf',
         proto_factory_kwargs={

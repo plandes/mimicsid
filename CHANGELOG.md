@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 
+## [1.10.0] - 2025-06-28
+### Changed
+- Switch build tools to [pixi].
+- Upgraded dependencies:
+  - [zensols.deepnlp] to 1.18.0
+  - [zensols.mimic] to 1.10.0
+
+
 ## [1.9.0] - 2025-01-24
 ### Removed
 - Support for Python 3.10.
@@ -141,7 +149,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 <!-- links -->
-[Unreleased]: https://github.com/plandes/mimicsid/compare/v1.9.0...HEAD
+[Unreleased]: https://github.com/plandes/mimicsid/compare/v1.10.0...HEAD
+[1.10.0]: https://github.com/plandes/mimicsid/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/plandes/mimicsid/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/plandes/mimicsid/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/plandes/mimicsid/compare/v1.6.0...v1.7.0
@@ -162,3 +171,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 [zensols.deepnlp]: https://github.com/plandes/deepnlp
 [zensols.mimic]: https://github.com/plandes/mimic
 [No section: 'medcat_status_move_update']: https://github.com/plandes/mimicsid/issues/2
+[pixi]: https://pixi.sh

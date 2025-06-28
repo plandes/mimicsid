@@ -1,5 +1,5 @@
 #!/bin/bash
-#@meta {desc: 'build production models from scratch', date: '2024-04-11'}
+#@meta {desc: "build production models from scratch", date: "2024-04-11"}
 
 # before starting, make sure to increment: 
 #   - resources/default.conf msid_model:version

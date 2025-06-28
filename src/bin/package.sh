@@ -1,5 +1,5 @@
 #!/bin/bash
-#@meta {desc: 'model training and packaging', date: '2024-04-06'}
+#@meta {desc: "model training and packaging", date: "2024-04-06"}
 
 PROG=$(basename $0)
 BIN=./dist
@@ -86,6 +86,7 @@ function write_results() {
 
 # do all
 function main() {
+    PATH="./.pixi/envs/build-pypi:${PATH}"
     # comment out check_data and train when using updateconfigs.sh
     check_data
     train
