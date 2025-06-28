@@ -9,13 +9,10 @@ from enum import Enum, auto
 import logging
 import pandas as pd
 from zensols.persist import persisted
-from zensols.config import ConfigFactory, ConfigurableError, Configurable
 from zensols.nlp import FeatureToken, FeatureDocument, LexicalSpan
 from zensols.mimic import MimicTokenDecorator
 from zensols.deeplearn.batch import DataPoint
 from zensols.deeplearn.result import ResultsContainer
-from zensols.deeplearn.model import ModelFacade
-from zensols.deeplearn.model.pack import ModelUnpacker
 from zensols.deepnlp.classify import (
     ClassificationPredictionMapper, TokenClassifyModelFacade
 )
@@ -340,52 +337,3 @@ class SectionFacade(TokenClassifyModelFacade):
         super()._configure_cli_logging(info_loggers, debug_loggers)
         if not self.progress_bar:
             info_loggers.append('zensols.install')
-
-
-# class _SubsetConfig(SubsetConfig):
-#     """Like :class:`zensols.deeplearn.model.pack.SubsetConfig` but removes
-#     configured properties after addding sections and options.  Each entry in
-#     ``removes`` has the same colon format as ``options`` in the superclass.
-
-#     """
-#     def __init__(self, config_factory: ConfigFactory, sections: Tuple[str, ...],
-#                  options: Tuple[str, ...], option_delim: str = ':',
-#                  removes: Tuple[str, ...] = ()):
-#         print('HERE OD', option_delim)
-#         super().__init__(config_factory, sections, options, option_delim)
-#         remove: str
-#         for remove in removes:
-#             sec_name: Tuple[str, str] = remove.split(option_delim)
-#             if len(sec_name) != 2:
-#                 raise ConfigurableError('Wrong format: expecting delim ' +
-#                                         f'{option_delim} but got: {remove}')
-#             sec, name = sec_name
-#             val: Any = self._dict_config.pop(name, None)
-#             print(f'removed entry {sec}:{name}: {val}')
-
-
-# @dataclass
-# class _ModelUnpacker(ModelUnpacker):
-#     removes: Tuple[str, ...] = field(default=())
-
-#     @property
-#     @persisted('_facade')
-#     def facade(self) -> ModelFacade:
-#         """The cached facade from installed model.  This installs the model if
-#         isn't already.
-
-#         :return: a model facade that allows the caller to deallocate
-
-#         """
-#         option_delim: str = ':'
-#         config: Configurable = self.model_config_overwrites
-#         remove: str
-#         for remove in self.removes:
-#             sec_name: Tuple[str, str] = remove.split(option_delim)
-#             if len(sec_name) != 2:
-#                 raise ConfigurableError('Wrong format: expecting delim ' +
-#                                         f'{option_delim} but got: {remove}')
-#             sec, name = sec_name
-#             val: Any = config._dict_config.pop(name, None)
-#             print(f'NEXT removed entry {sec}:{name}: {val}')
-#         return super().facade
