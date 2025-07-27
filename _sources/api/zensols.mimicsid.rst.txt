@@ -1,0 +1,77 @@
+zensols.mimicsid package
+========================
+
+Submodules
+----------
+
+zensols.mimicsid.anon module
+----------------------------
+
+.. automodule:: zensols.mimicsid.anon
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.mimicsid.app module
+---------------------------
+
+.. automodule:: zensols.mimicsid.app
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.mimicsid.cli module
+---------------------------
+
+.. automodule:: zensols.mimicsid.cli
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.mimicsid.compat module
+------------------------------
+
+.. automodule:: zensols.mimicsid.compat
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.mimicsid.dapp module
+----------------------------
+
+.. automodule:: zensols.mimicsid.dapp
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.mimicsid.domain module
+------------------------------
+
+.. automodule:: zensols.mimicsid.domain
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.mimicsid.model module
+-----------------------------
+
+.. automodule:: zensols.mimicsid.model
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+zensols.mimicsid.pred module
+----------------------------
+
+.. automodule:: zensols.mimicsid.pred
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: zensols.mimicsid
+   :members:
+   :undoc-members:
+   :show-inheritance:
